@@ -28,7 +28,6 @@ class rwcTextActionStart extends HTMLElement {
       });
 
       this.addEventListener('click', e => {
-        console.log(msgJSON);
         var goal = new ROSLIB.Goal({
           actionClient: rwcActionClient,
           goalMessage: msgJSON
@@ -43,10 +42,17 @@ class rwcTextActionStart extends HTMLElement {
 
       });
 
+      if (this.hasAttribute("data-class")) {
+        var rwcClass = this.dataset.class;
+      } else {
+        var rwcClass = "rwc-text-action-start";
+      }
+
       const shadowRoot = this.attachShadow({ mode: "open" });
       shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
       + '<style>@import url("styles/rwc-user-styles.css")</style><div id="'
-      + this.dataset.id + '" class="rwc-text-action-start" style="cursor:pointer;"><span>' + this.dataset.text + '</span></div>';
+      + this.dataset.id + '" class="' + rwcClass
+      + '" style="cursor:pointer;"><span>' + this.dataset.text + '</span></div>';
     }
 }
 
