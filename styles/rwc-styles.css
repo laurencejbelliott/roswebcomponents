@@ -1,0 +1,19 @@
+div.rwc-text-action-start{
+    font-size: 20px;
+    display: inline-block;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: black;
+    color: white;
+    background-color: black;
+}
+
+div.rwc-text-action-start:active{
+    background-color: gray;
+    color: black;
+}
+
+div.rwc-text-action-start > span{
+    margin: 5px;
+}

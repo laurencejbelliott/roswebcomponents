@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>rwc testing</title>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <h1>ROS Web Components Testing Page</h1>
+        <script
+			  src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"></script>
+        <script src="scripts/eventemitter2.js"></script>
+        <script src="scripts/roslib.min.js"></script>
+        <script src="scripts/rwc.js?v=0.05"></script>
+
+        <rwc-text-action-start data-id="moveActionStart"
+        data-class="actionStart"
+        data-text="Click me!"
+        data-action-server-name="/move_base"
+        data-action-name="move_base_msgs/MoveBaseAction"></rwc-text-action-start>
+    </body>
+</html>
