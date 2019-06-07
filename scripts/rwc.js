@@ -15,8 +15,8 @@ ros.on('close', function(){
     console.log('Closed connection to websocket server.');
 });
 
-// Class for custom element 'rwc-text-action-start'
-class rwcTextActionStart extends HTMLElement {
+// Class for custom element 'rwc-button-action-start'
+class rwcButtonActionStart extends HTMLElement {
     connectedCallback() {
       var msgJSON;
       $.getJSON("json-msgs/forward-half-m.json", function(json){msgJSON = json;});
@@ -45,7 +45,7 @@ class rwcTextActionStart extends HTMLElement {
       if (this.hasAttribute("data-class")) {
         var rwcClass = this.dataset.class;
       } else {
-        var rwcClass = "rwc-text-action-start";
+        var rwcClass = "rwc-button-action-start";
       }
 
       const shadowRoot = this.attachShadow({ mode: "open" });
@@ -56,4 +56,4 @@ class rwcTextActionStart extends HTMLElement {
     }
 }
 
-customElements.define("rwc-text-action-start", rwcTextActionStart);
+customElements.define("rwc-button-action-start", rwcButtonActionStart);

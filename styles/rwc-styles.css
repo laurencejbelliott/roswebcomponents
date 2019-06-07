@@ -1,4 +1,4 @@
-div.rwc-text-action-start{
+div.rwc-button-action-start{
     font-size: 20px;
     display: inline-block;
     border-style: solid;
@@ -9,11 +9,11 @@ div.rwc-text-action-start{
     background-color: black;
 }
 
-div.rwc-text-action-start:active{
+div.rwc-button-action-start:active{
     background-color: gray;
     color: black;
 }
 
-div.rwc-text-action-start > span{
+div.rwc-button-action-start > span{
     margin: 5px;
 }
