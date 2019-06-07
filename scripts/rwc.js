@@ -38,7 +38,7 @@ class rwcButtonActionStart extends HTMLElement {
         });
 
         goal.send();
-        console.log("Goal sent!");
+        console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
 
       });
 
