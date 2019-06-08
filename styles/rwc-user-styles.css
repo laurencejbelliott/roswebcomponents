@@ -1,0 +1,9 @@
+div.myButton{
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+div.myDisabledButton{
+    color: grey;
+}

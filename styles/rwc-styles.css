@@ -1,3 +1,4 @@
+/* Default styling for rwc-button-action-start */
 div.rwc-button-action-start{
     font-size: 20px;
     display: inline-block;
@@ -11,7 +12,6 @@ div.rwc-button-action-start{
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
 }
 
 div.rwc-button-action-start:active{
@@ -24,6 +24,7 @@ div.rwc-button-action-start > span{
     margin: 5px;
 }
 
+/* Default styling for rwc-button-action-start-disabled */
 div.rwc-button-action-start-disabled{
     font-size: 20px;
     display: inline-block;
@@ -36,5 +37,8 @@ div.rwc-button-action-start-disabled{
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
+}
+
+div.rwc-button-action-start-disabled > span{
+    margin: 5px;
 }

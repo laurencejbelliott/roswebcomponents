@@ -31,12 +31,19 @@ class rwcButtonActionStart extends HTMLElement {
       }
 
       this.rwcClass;
-      if (this.hasAttribute("data-class")) {
-        this.rwcClass = this.dataset.class;
-      } else if (this.isDisabled) {
-        this.rwcClass = "rwc-button-action-start-disabled";
+
+      if (this.isDisabled) {
+        if (this.hasAttribute("data-disabled-class")) {
+          this.rwcClass = this.dataset.disabledClass;
+        } else {
+          this.rwcClass = "rwc-button-action-start-disabled";
+        }
       } else {
-        this.rwcClass = "rwc-button-action-start";
+        if (this.hasAttribute("data-class")) {
+          this.rwcClass = this.dataset.class;
+        } else {
+          this.rwcClass = "rwc-button-action-start";
+        }
       }
 
       var rwcActionClient = new ROSLIB.ActionClient({
@@ -72,11 +79,23 @@ class rwcButtonActionStart extends HTMLElement {
 
     set disabled(bool){
       this.isDisabled = bool;
-      if (this.isDisabled){
-        this.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start-disabled");
+      
+      if (this.isDisabled) {
+        if (this.hasAttribute("data-disabled-class")) {
+          this.rwcClass = this.dataset.disabledClass;
+        } else {
+          this.rwcClass = "rwc-button-action-start-disabled";
+        }
       } else {
-        this.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start");
+        if (this.hasAttribute("data-class")) {
+          this.rwcClass = this.dataset.class;
+        } else {
+          this.rwcClass = "rwc-button-action-start";
+        }
       }
+
+      this.shadowRoot.querySelector("div").setAttribute("class", this.rwcClass);
+
     }
 
     get disabled(){
