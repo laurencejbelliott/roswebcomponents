@@ -22,7 +22,7 @@ ros.on('close', function(){
 class rwcButtonActionStart extends HTMLElement {
     connectedCallback() {
       var msgJSON;
-      $.getJSON("json-msgs/forward-half-m.json", function(json){msgJSON = json;});
+      $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
 
       if (this.dataset.disabled) {
         this.isDisabled = true;
