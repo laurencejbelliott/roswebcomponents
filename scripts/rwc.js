@@ -1,5 +1,8 @@
- // Connection to ROSbridge server websocket
- var ros = new ROSLIB.Ros({
+// Array to track instances of toggleable components for bulk enabling/disabling
+var toggleableComponents = [];
+
+// Connection to ROSbridge server websocket
+var ros = new ROSLIB.Ros({
     url: 'ws://localhost:9090'
 });
 
@@ -21,6 +24,21 @@ class rwcButtonActionStart extends HTMLElement {
       var msgJSON;
       $.getJSON("json-msgs/forward-half-m.json", function(json){msgJSON = json;});
 
+      if (this.dataset.disabled) {
+        this.isDisabled = true;
+      } else {
+        this.isDisabled = false;
+      }
+
+      this.rwcClass;
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else if (this.isDisabled) {
+        this.rwcClass = "rwc-button-action-start-disabled";
+      } else {
+        this.rwcClass = "rwc-button-action-start";
+      }
+
       var rwcActionClient = new ROSLIB.ActionClient({
         ros: ros,
         serverName: this.dataset.actionServerName,
@@ -28,31 +46,41 @@ class rwcButtonActionStart extends HTMLElement {
       });
 
       this.addEventListener('click', e => {
-        var goal = new ROSLIB.Goal({
-          actionClient: rwcActionClient,
-          goalMessage: msgJSON
-        });
+        if (!this.isDisabled){
+          var goal = new ROSLIB.Goal({
+            actionClient: rwcActionClient,
+            goalMessage: msgJSON
+          });
 
-        goal.on('result', function (status) {    
-          console.log(goal.status.text);
-        });
+          goal.on('result', function (status) {    
+            console.log(goal.status.text);
+          });
 
-        goal.send();
-        console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
-
+          goal.send();
+          console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+        }
       });
-
-      if (this.hasAttribute("data-class")) {
-        var rwcClass = this.dataset.class;
-      } else {
-        var rwcClass = "rwc-button-action-start";
-      }
 
       const shadowRoot = this.attachShadow({ mode: "open" });
       shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
       + '<style>@import url("styles/rwc-user-styles.css")</style><div id="'
-      + this.dataset.id + '" class="' + rwcClass
-      + '" style="cursor:pointer;"><span>' + this.dataset.text + '</span></div>';
+      + this.dataset.id + '" class="' + this.rwcClass
+      + '"><span>' + this.dataset.text + '</span></div>';
+
+      toggleableComponents.push(this);
+    }
+
+    set disabled(bool){
+      this.isDisabled = bool;
+      if (this.isDisabled){
+        this.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start-disabled");
+      } else {
+        this.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start");
+      }
+    }
+
+    get disabled(){
+      return this.isDisabled;
     }
 }
 

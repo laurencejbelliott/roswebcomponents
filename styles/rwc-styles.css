@@ -7,13 +7,34 @@ div.rwc-button-action-start{
     border-color: black;
     color: white;
     background-color: black;
+    cursor:pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 div.rwc-button-action-start:active{
     background-color: gray;
     color: black;
+    cursor:pointer;
 }
 
 div.rwc-button-action-start > span{
     margin: 5px;
+}
+
+div.rwc-button-action-start-disabled{
+    font-size: 20px;
+    display: inline-block;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: gray;
+    color: gray;
+    background-color: lightgray;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
