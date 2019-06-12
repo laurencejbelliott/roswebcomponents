@@ -18,6 +18,91 @@ ros.on('close', function(){
     console.log('Closed connection to websocket server.');
 });
 
+
+// Action function 'rwcActionSetPoseRelative'
+function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
+  var msg = {
+    target_pose: {
+        header :{
+            frame_id: "base_link"
+        },
+        pose: {
+            position: {
+                x: x,
+                y: y,
+                z: z
+                },
+            orientation: quaternion
+        }
+    }
+  };
+
+  // Need to replace server and message names with those defined in config file
+  var serverName = "/move_base";
+  var actionName = "move_base_msgs/MoveBaseAction";
+
+  var actionClient = new ROSLIB.ActionClient({
+    ros: ros,
+    serverName: serverName,
+    actionName: actionName
+  });
+
+  var goal = new ROSLIB.Goal({
+    actionClient: actionClient,
+    goalMessage: msg
+  });
+
+  goal.on('result', function (status) {    
+    console.log(goal.status.text);
+  });
+
+  goal.send();
+  console.log("Goal '" + serverName + "/goal' sent!");
+}
+
+
+// Action function 'rwcActionSetPoseMap'
+function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
+  var msg = {
+    target_pose: {
+        header :{
+            frame_id: "map"
+        },
+        pose: {
+            position: {
+                x: x,
+                y: y,
+                z: z
+                },
+            orientation: quaternion
+        }
+    }
+  };
+
+  // Need to replace server and message names with those defined in config file
+  var serverName = "/move_base";
+  var actionName = "move_base_msgs/MoveBaseAction";
+
+  var actionClient = new ROSLIB.ActionClient({
+    ros: ros,
+    serverName: serverName,
+    actionName: actionName
+  });
+
+  var goal = new ROSLIB.Goal({
+    actionClient: actionClient,
+    goalMessage: msg
+  });
+
+  goal.on('result', function (status) {    
+    console.log(goal.status.text);
+  });
+
+  goal.send();
+  console.log("Goal '" + serverName + "/goal' sent!");
+}
+
+
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
     connectedCallback() {
