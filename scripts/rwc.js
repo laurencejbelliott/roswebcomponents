@@ -134,6 +134,26 @@ function rwcActionGoToNode(node_name, no_orientation = false){
 }
 
 
+// Action function 'rwcActionVolumePercentChange'
+function rwcActionVolumePercentChange(percentage_change){
+  pcntChange = new ROSLIB.Topic({
+    ros : ros,
+    name : '/volume/percentChange',
+    messageType : 'std_msgs/Int8'
+  });
+  
+  var Int8 = new ROSLIB.Message({
+    data : percentage_change
+  });
+  pcntChange.publish(Int8);
+  if(percentage_change >= 0){
+    console.log("Volume changed by +" + percentage_change + "%");
+  } else {
+    console.log("Volume changed by " + percentage_change + "%");
+  }
+}
+
+
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
     connectedCallback() {
