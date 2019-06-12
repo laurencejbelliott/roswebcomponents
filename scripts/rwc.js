@@ -81,9 +81,9 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
     }
   };
 
-  // Need to replace server and message names with those defined in config file
-  var serverName = "/move_base";
-  var actionName = "move_base_msgs/MoveBaseAction";
+  // Action name and action server name loaded from rwc-config JSON file
+  var serverName = configJSON.move_base.actionServerName;
+  var actionName = configJSON.move_base.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,
@@ -112,9 +112,9 @@ function rwcActionGoToNode(node_name, no_orientation = false){
     no_orientation: no_orientation
   };
 
-  // Need to replace server and message names with those defined in config file
-  var serverName = "/topological_navigation";
-  var actionName = "topological_navigation/GotoNodeAction";
+  // Action name and action server name loaded from rwc-config JSON file
+  var serverName = configJSON.topological_navigation.actionServerName;
+  var actionName = configJSON.topological_navigation.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,
@@ -138,10 +138,11 @@ function rwcActionGoToNode(node_name, no_orientation = false){
 
 // Action function 'rwcActionVolumePercentChange'
 function rwcActionVolumePercentChange(percentage_change){
+  // Topic info loaded from rwc-config JSON file
   pcntChangeTopic = new ROSLIB.Topic({
     ros : ros,
-    name : '/volume/percentChange',
-    messageType : 'std_msgs/Int8'
+    name : configJSON.volume.topicName,
+    messageType : configJSON.volume.topicMessageType
   });
   
   var Int8 = new ROSLIB.Message({
@@ -156,16 +157,15 @@ function rwcActionVolumePercentChange(percentage_change){
 }
 
 
-// Action function 'rwcActionSpeak'
-// Action function 'rwcActionSetPoseMap'
+// Action function 'rwcActionSay'
 function rwcActionSay(phrase){
   var msg = {
     text: phrase
   };
 
-  // Need to replace server and message names with those defined in config file
-  var serverName = "/speak";
-  var actionName = "mary_tts/maryttsAction";
+  // Action name and action server name loaded from rwc-config JSON file
+  var serverName = configJSON.speak.actionServerName;
+  var actionName = configJSON.speak.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,
