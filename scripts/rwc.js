@@ -136,7 +136,7 @@ function rwcActionGoToNode(node_name, no_orientation = false){
 
 // Action function 'rwcActionVolumePercentChange'
 function rwcActionVolumePercentChange(percentage_change){
-  pcntChange = new ROSLIB.Topic({
+  pcntChangeTopic = new ROSLIB.Topic({
     ros : ros,
     name : '/volume/percentChange',
     messageType : 'std_msgs/Int8'
@@ -145,12 +145,43 @@ function rwcActionVolumePercentChange(percentage_change){
   var Int8 = new ROSLIB.Message({
     data : percentage_change
   });
-  pcntChange.publish(Int8);
+  pcntChangeTopic.publish(Int8);
   if(percentage_change >= 0){
     console.log("Volume changed by +" + percentage_change + "%");
   } else {
     console.log("Volume changed by " + percentage_change + "%");
   }
+}
+
+
+// Action function 'rwcActionSpeak'
+// Action function 'rwcActionSetPoseMap'
+function rwcActionSay(phrase){
+  var msg = {
+    text: phrase
+  };
+
+  // Need to replace server and message names with those defined in config file
+  var serverName = "/speak";
+  var actionName = "mary_tts/maryttsAction";
+
+  var actionClient = new ROSLIB.ActionClient({
+    ros: ros,
+    serverName: serverName,
+    actionName: actionName
+  });
+
+  var goal = new ROSLIB.Goal({
+    actionClient: actionClient,
+    goalMessage: msg
+  });
+
+  goal.on('result', function (status) {    
+    console.log(goal.status.text);
+  });
+
+  goal.send();
+  console.log("Goal '" + serverName + "/goal' sent!");
 }
 
 
