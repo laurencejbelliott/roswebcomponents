@@ -1,0 +1,6 @@
+{
+    "move_base": {
+        "actionServerName": "/move_base",
+        "actionName": "move_base_msgs/MoveBaseAction"
+    }
+}

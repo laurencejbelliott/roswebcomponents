@@ -18,6 +18,8 @@ ros.on('close', function(){
     console.log('Closed connection to websocket server.');
 });
 
+var configJSON;
+  $.getJSON("rwc-config.json", function(json){configJSON = json;});
 
 // Action function 'rwcActionSetPoseRelative'
 function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
@@ -37,9 +39,9 @@ function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
     }
   };
 
-  // Need to replace server and message names with those defined in config file
-  var serverName = "/move_base";
-  var actionName = "move_base_msgs/MoveBaseAction";
+  // Action name and action server name loaded from rwc-config JSON file
+  var serverName = configJSON.move_base.actionServerName;
+  var actionName = configJSON.move_base.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,
