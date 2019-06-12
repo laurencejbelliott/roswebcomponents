@@ -103,6 +103,37 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
 }
 
 
+// Action function 'rwcActionGoToNode'
+function rwcActionGoToNode(node_name, no_orientation = false){
+  var msg = {
+    target: node_name,
+    no_orientation: no_orientation
+  };
+
+  // Need to replace server and message names with those defined in config file
+  var serverName = "/topological_navigation";
+  var actionName = "topological_navigation/GotoNodeAction";
+
+  var actionClient = new ROSLIB.ActionClient({
+    ros: ros,
+    serverName: serverName,
+    actionName: actionName
+  });
+
+  var goal = new ROSLIB.Goal({
+    actionClient: actionClient,
+    goalMessage: msg
+  });
+
+  goal.on('result', function (status) {    
+    console.log(goal.status.text);
+  });
+
+  goal.send();
+  console.log("Goal '" + serverName + "/goal' sent!");
+}
+
+
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
     connectedCallback() {
