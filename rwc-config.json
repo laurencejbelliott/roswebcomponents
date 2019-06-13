@@ -25,6 +25,10 @@
         "odom": {
             "topicName": "/odom",
             "topicMessageType": "nav_msgs/Odometry"
+        },
+        "current_node": {
+            "topicName": "/current_node",
+            "topicMessageType": "std_msgs/String"
         }
     }
 }

@@ -27,6 +27,7 @@ ros.on('close', function(){
 $( window ).on( "load", function() {
   rwcListenerGetPosition();
   rwcListenerGetOrientation();
+  rwcListenerGetNode();
 });
 
 
@@ -208,13 +209,13 @@ function rwcListenerGetPosition(){
   });
 
   listener.subscribe(function(message) {
-    window.position = [message.pose.pose.position.x,
+    window.rwcPosition = [message.pose.pose.position.x,
       message.pose.pose.position.y,
       message.pose.pose.position.z];
     listener.unsubscribe();
   });
 
-  return window.position;
+  return window.rwcPosition;
 }
 
 // Listener function 'rwcListenerGetOrientation'
@@ -235,6 +236,23 @@ function rwcListenerGetOrientation(){
   });
 
   return window.rwcOrientation;
+}
+
+// Listener function 'rwcListenerGetNode'
+function rwcListenerGetNode(){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.listeners.current_node.topicName,
+    messageType : configJSON.listeners.current_node.topicMessageType
+  });
+
+  listener.subscribe(function(message) {
+    window.rwcNode = message.data;
+    listener.unsubscribe();
+  });
+
+  return window.rwcNode;
 }
 
 // Class for custom element 'rwc-button-action-start'
