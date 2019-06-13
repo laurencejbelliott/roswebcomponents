@@ -1,3 +1,7 @@
+// Load config of topic and action server names from 'rwc-config.json'
+var configJSON;
+$.getJSON("rwc-config.json", function(json){configJSON = json;});
+
 // Array to track instances of toggleable components for bulk enabling/disabling
 var toggleableComponents = [];
 
@@ -18,12 +22,12 @@ ros.on('close', function(){
     console.log('Closed connection to websocket server.');
 });
 
-var configJSON;
-  $.getJSON("rwc-config.json", function(json){configJSON = json;});
 
 // Call all listener functions to connect their subscribers
-rwcListenerGetPosition();
-rwcListenerGetOrientation();
+$( window ).on( "load", function() {
+  rwcListenerGetPosition();
+  rwcListenerGetOrientation();
+});
 
 
 // --- Action fuctions ---
@@ -199,8 +203,8 @@ function rwcListenerGetPosition(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
-    name : '/odom',
-    messageType : 'nav_msgs/Odometry'
+    name : configJSON.listeners.odom.topicName,
+    messageType : configJSON.listeners.odom.topicMessageType
   });
 
   listener.subscribe(function(message) {
@@ -218,8 +222,8 @@ function rwcListenerGetOrientation(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
-    name : '/odom',
-    messageType : 'nav_msgs/Odometry'
+    name : configJSON.listeners.odom.topicName,
+    messageType : configJSON.listeners.odom.topicMessageType
   });
 
   listener.subscribe(function(message) {

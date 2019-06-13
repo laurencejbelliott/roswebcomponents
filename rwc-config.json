@@ -20,5 +20,11 @@
                 "topicMessageType": "std_msgs/Int8"
             }
         }
+    },
+    "listeners": {
+        "odom": {
+            "topicName": "/odom",
+            "topicMessageType": "nav_msgs/Odometry"
+        }
     }
 }
