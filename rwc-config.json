@@ -29,6 +29,10 @@
         "current_node": {
             "topicName": "/current_node",
             "topicMessageType": "std_msgs/String"
+        },
+        "battery_state": {
+            "topicName": "/battery_state",
+            "topicMessageType": "scitos_msgs/BatteryState"
         }
     }
 }
