@@ -40,8 +40,8 @@ function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
   };
 
   // Action name and action server name loaded from rwc-config JSON file
-  var serverName = configJSON.move_base.actionServerName;
-  var actionName = configJSON.move_base.actionName;
+  var serverName = configJSON.actions.actionServers.move_base.actionServerName;
+  var actionName = configJSON.actions.actionServers.move_base.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,
@@ -82,8 +82,8 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
   };
 
   // Action name and action server name loaded from rwc-config JSON file
-  var serverName = configJSON.move_base.actionServerName;
-  var actionName = configJSON.move_base.actionName;
+  var serverName = configJSON.actions.actionServers.move_base.actionServerName;
+  var actionName = configJSON.actions.actionServers.move_base.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,
@@ -113,8 +113,8 @@ function rwcActionGoToNode(node_name, no_orientation = false){
   };
 
   // Action name and action server name loaded from rwc-config JSON file
-  var serverName = configJSON.topological_navigation.actionServerName;
-  var actionName = configJSON.topological_navigation.actionName;
+  var serverName = configJSON.actions.actionServers.topological_navigation.actionServerName;
+  var actionName = configJSON.actions.actionServers.topological_navigation.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,
@@ -141,10 +141,10 @@ function rwcActionVolumePercentChange(percentage_change){
   // Topic info loaded from rwc-config JSON file
   pcntChangeTopic = new ROSLIB.Topic({
     ros : ros,
-    name : configJSON.volume.topicName,
-    messageType : configJSON.volume.topicMessageType
+    name : configJSON.actions.topics.volume.topicName,
+    messageType : configJSON.actions.topics.volume.topicMessageType
   });
-  
+
   var Int8 = new ROSLIB.Message({
     data : percentage_change
   });
@@ -164,8 +164,8 @@ function rwcActionSay(phrase){
   };
 
   // Action name and action server name loaded from rwc-config JSON file
-  var serverName = configJSON.speak.actionServerName;
-  var actionName = configJSON.speak.actionName;
+  var serverName = configJSON.actions.actionServers.speak.actionServerName;
+  var actionName = configJSON.actions.actionServers.speak.actionName;
 
   var actionClient = new ROSLIB.ActionClient({
     ros: ros,

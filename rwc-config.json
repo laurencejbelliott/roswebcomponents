@@ -1,18 +1,24 @@
 {
-    "move_base": {
-        "actionServerName": "/move_base",
-        "actionName": "move_base_msgs/MoveBaseAction"
-    },
-    "topological_navigation": {
-        "actionServerName": "/topological_navigation",
-        "actionName": "topological_navigation/GotoNodeAction"
-    },
-    "speak": {
-        "actionServerName": "/speak",
-        "actionName": "mary_tts/maryttsAction"
-    },
-    "volume": {
-        "topicName": "/volume/percentChange",
-        "topicMessageType": "std_msgs/Int8"
+    "actions": {
+        "actionServers": {
+            "move_base": {
+                "actionServerName": "/move_base",
+                "actionName": "move_base_msgs/MoveBaseAction"
+            },
+            "topological_navigation": {
+                "actionServerName": "/topological_navigation",
+                "actionName": "topological_navigation/GotoNodeAction"
+            },
+            "speak": {
+                "actionServerName": "/speak",
+                "actionName": "mary_tts/maryttsAction"
+            }
+        },
+        "topics": {
+            "volume": {
+                "topicName": "/volume/percentChange",
+                "topicMessageType": "std_msgs/Int8"
+            }
+        }
     }
 }
