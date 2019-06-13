@@ -21,6 +21,10 @@ ros.on('close', function(){
 var configJSON;
   $.getJSON("rwc-config.json", function(json){configJSON = json;});
 
+// Call all listener functions once to connect their subscribers
+rwcListenerGetCurrentPosition();
+
+// --- Action fuctions ---
 // Action function 'rwcActionSetPoseRelative'
 function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
   var msg = {
@@ -139,7 +143,7 @@ function rwcActionGoToNode(node_name, no_orientation = false){
 // Action function 'rwcActionVolumePercentChange'
 function rwcActionVolumePercentChange(percentage_change){
   // Topic info loaded from rwc-config JSON file
-  pcntChangeTopic = new ROSLIB.Topic({
+  var pcntChangeTopic = new ROSLIB.Topic({
     ros : ros,
     name : configJSON.actions.topics.volume.topicName,
     messageType : configJSON.actions.topics.volume.topicMessageType
@@ -151,7 +155,7 @@ function rwcActionVolumePercentChange(percentage_change){
   pcntChangeTopic.publish(Int8);
   if(percentage_change >= 0){
     console.log("Volume changed by +" + percentage_change + "%");
-  } else {
+  } else { 
     console.log("Volume changed by " + percentage_change + "%");
   }
 }
@@ -186,6 +190,26 @@ function rwcActionSay(phrase){
   console.log("Goal '" + serverName + "/goal' sent!");
 }
 
+
+// --- Listener functions ---
+// Listener function 'rwcListenerGetCurrentPose'
+function rwcListenerGetCurrentPosition(){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/odom',
+    messageType : 'nav_msgs/Odometry'
+  });
+
+  listener.subscribe(function(message) {
+    window.position = [message.pose.pose.position.x,
+      message.pose.pose.position.y,
+      message.pose.pose.position.z];
+    listener.unsubscribe();
+  });
+
+  return window.position;
+}
 
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
