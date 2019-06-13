@@ -21,8 +21,10 @@ ros.on('close', function(){
 var configJSON;
   $.getJSON("rwc-config.json", function(json){configJSON = json;});
 
-// Call all listener functions once to connect their subscribers
-rwcListenerGetCurrentPosition();
+// Call all listener functions to connect their subscribers
+rwcListenerGetPosition();
+rwcListenerGetOrientation();
+
 
 // --- Action fuctions ---
 // Action function 'rwcActionSetPoseRelative'
@@ -192,8 +194,8 @@ function rwcActionSay(phrase){
 
 
 // --- Listener functions ---
-// Listener function 'rwcListenerGetCurrentPose'
-function rwcListenerGetCurrentPosition(){
+// Listener function 'rwcListenerGetPosition'
+function rwcListenerGetPosition(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -209,6 +211,26 @@ function rwcListenerGetCurrentPosition(){
   });
 
   return window.position;
+}
+
+// Listener function 'rwcListenerGetOrientation'
+function rwcListenerGetOrientation(){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/odom',
+    messageType : 'nav_msgs/Odometry'
+  });
+
+  listener.subscribe(function(message) {
+    window.rwcOrientation = [message.pose.pose.orientation.x,
+      message.pose.pose.orientation.y,
+      message.pose.pose.orientation.z,
+      message.pose.pose.orientation.w];
+    listener.unsubscribe();
+  });
+
+  return window.rwcOrientation;
 }
 
 // Class for custom element 'rwc-button-action-start'
