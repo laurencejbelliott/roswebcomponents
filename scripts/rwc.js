@@ -1,6 +1,13 @@
 // Load config of topic and action server names from 'rwc-config.json'
 var configJSON;
-$.getJSON("rwc-config.json", function(json){configJSON = json;});
+var JSONreq = $.getJSON("rwc-config.json", function(json){
+  configJSON = json;
+  rwcListenerGetPosition();
+  rwcListenerGetOrientation();
+  rwcListenerGetNode();
+  rwcListenerGetBatteryPercentage();
+  rwcListenerGetVolumePercent();
+});
 
 // Array to track instances of toggleable components for bulk enabling/disabling
 var toggleableComponents = [];
@@ -23,13 +30,14 @@ ros.on('close', function(){
 });
 
 
-// Call all listener functions to connect their subscribers
-$( window ).on( "load", function() {
-  rwcListenerGetPosition();
-  rwcListenerGetOrientation();
-  rwcListenerGetNode();
-  rwcListenerGetBatteryPercentage();
-});
+// // Call all listener functions to connect their subscribers
+// $( window ).on( "load", function() {
+//   rwcListenerGetPosition();
+//   rwcListenerGetOrientation();
+//   rwcListenerGetNode();
+//   rwcListenerGetBatteryPercentage();
+//   rwcListenerGetVolumePercent()
+// });
 
 
 // --- Action fuctions ---
@@ -273,6 +281,24 @@ function rwcListenerGetBatteryPercentage(){
   return window.rwcBatteryPercentage;
 }
 
+// Listener function 'rwcListenerGetVolumePercent'
+function rwcListenerGetVolumePercent(){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.listeners.volume.topicName,
+    messageType : configJSON.listeners.volume.topicMessageType
+  });
+
+  listener.subscribe(function(message) {
+    window.rwcVolumePercent = message.data;
+    listener.unsubscribe();
+  });
+
+  return window.rwcVolumePercent;
+}
+
+
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
     connectedCallback() {
@@ -334,7 +360,7 @@ class rwcButtonActionStart extends HTMLElement {
 
     set disabled(bool){
       this.isDisabled = bool;
-      
+
       if (this.isDisabled) {
         if (this.hasAttribute("data-disabled-class")) {
           this.rwcClass = this.dataset.disabledClass;

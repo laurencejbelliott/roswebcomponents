@@ -33,6 +33,10 @@
         "battery_state": {
             "topicName": "/battery_state",
             "topicMessageType": "scitos_msgs/BatteryState"
+        },
+        "volume": {
+            "topicName": "/volume/percent",
+            "topicMessageType": "std_msgs/Int8"
         }
     }
 }
