@@ -296,6 +296,27 @@ function rwcListenerGetCameraSnapshot(){
   return img;
 }
 
+// Listener function 'rwcListenerGetQRCode'
+function rwcListenerGetQRCode(){
+  // Latest camera image obtained from 'web_video_server'
+  var img = new Image();
+  img.src = configJSON.listeners.camera_snapshot.uri;
+
+  // Temporary HTML5 canvas created to call getImageData 
+  var canvas = document.createElement('canvas');
+  var context = canvas.getContext('2d');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  context.drawImage(img, 0, 0 );
+  var imgData = context.getImageData(0, 0, img.width, img.height);
+  const code = jsQR(imgData.data, imgData.width, imgData.height);
+  if (code) {
+    return code.data;
+  } else {
+    return "No QR code detected!";
+  }
+}
+
 
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
