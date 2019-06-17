@@ -30,16 +30,6 @@ ros.on('close', function(){
 });
 
 
-// // Call all listener functions to connect their subscribers
-// $( window ).on( "load", function() {
-//   rwcListenerGetPosition();
-//   rwcListenerGetOrientation();
-//   rwcListenerGetNode();
-//   rwcListenerGetBatteryPercentage();
-//   rwcListenerGetVolumePercent()
-// });
-
-
 // --- Action fuctions ---
 // Action function 'rwcActionSetPoseRelative'
 function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
@@ -296,6 +286,14 @@ function rwcListenerGetVolumePercent(){
   });
 
   return window.rwcVolumePercent;
+}
+
+// Listener function 'rwcListenerGetCameraSnapshot'
+function rwcListenerGetCameraSnapshot(){
+  // Latest camera image obtained from 'web_video_server'
+  var img = new Image();
+  img.src = configJSON.listeners.camera_snapshot.uri;
+  return img;
 }
 
 

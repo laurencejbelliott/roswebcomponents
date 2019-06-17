@@ -37,6 +37,9 @@
         "volume": {
             "topicName": "/volume/percent",
             "topicMessageType": "std_msgs/Int8"
+        },
+        "camera_snapshot": {
+            "uri": "localhost:8080/snapshot?topic=/upper_body_detector/image"
         }
     }
 }
