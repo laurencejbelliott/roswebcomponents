@@ -211,7 +211,7 @@ async function rwcListenerGetPosition(){
   // the promise is resolved
   rwcPosition = await subPosition(listener);
 
-  return window.rwcPosition;
+  return rwcPosition;
 }
 
 // Promise returns value 50ms after subscribing to topic,
