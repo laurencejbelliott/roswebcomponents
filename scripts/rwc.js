@@ -290,7 +290,7 @@ function subNode(listener){
 }
 
 // Listener function 'rwcListenerGetBatteryPercentage'
-function rwcListenerGetBatteryPercentage(){
+async function rwcListenerGetBatteryPercentage(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -298,12 +298,23 @@ function rwcListenerGetBatteryPercentage(){
     messageType : configJSON.listeners.battery_state.topicMessageType
   });
 
-  listener.subscribe(function(message) {
-    window.rwcBatteryPercentage = message.lifePercent;
-    listener.unsubscribe();
-  });
+  rwcBatteryPercentage = await subBatteryPercentage(listener);
 
   return window.rwcBatteryPercentage;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subBatteryPercentage(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      window.rwcBatteryPercentage = message.lifePercent;
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(window.rwcBatteryPercentage);
+      }, 50);
+    });
+  });
 }
 
 // Listener function 'rwcListenerGetVolumePercent'
