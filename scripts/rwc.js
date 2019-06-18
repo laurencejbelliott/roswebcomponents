@@ -227,7 +227,7 @@ function subPosition(listener){
         resolve(window.rwcPosition);
       }, 50);
     });
-  })
+  });
 }
 
 // Listener function 'rwcListenerGetOrientation'
@@ -258,11 +258,11 @@ function subOrientation(listener){
         resolve(window.rwcOrientation);
       }, 50);
     });
-  })
+  });
 }
 
 // Listener function 'rwcListenerGetNode'
-function rwcListenerGetNode(){
+async function rwcListenerGetNode(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -270,12 +270,23 @@ function rwcListenerGetNode(){
     messageType : configJSON.listeners.current_node.topicMessageType
   });
 
-  listener.subscribe(function(message) {
-    window.rwcNode = message.data;
-    listener.unsubscribe();
-  });
+  rwcNode = await subNode(listener);
 
-  return window.rwcNode;
+  return rwcNode;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subNode(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      window.rwcNode = message.data;
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(window.rwcNode);
+      }, 50);
+    });
+  });
 }
 
 // Listener function 'rwcListenerGetBatteryPercentage'
