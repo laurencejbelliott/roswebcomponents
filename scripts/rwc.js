@@ -300,7 +300,7 @@ async function rwcListenerGetBatteryPercentage(){
 
   rwcBatteryPercentage = await subBatteryPercentage(listener);
 
-  return window.rwcBatteryPercentage;
+  return rwcBatteryPercentage;
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -318,7 +318,7 @@ function subBatteryPercentage(listener){
 }
 
 // Listener function 'rwcListenerGetVolumePercent'
-function rwcListenerGetVolumePercent(){
+async function rwcListenerGetVolumePercent(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -326,12 +326,24 @@ function rwcListenerGetVolumePercent(){
     messageType : configJSON.listeners.volume.topicMessageType
   });
 
-  listener.subscribe(function(message) {
-    window.rwcVolumePercent = message.data;
-    listener.unsubscribe();
-  });
+  rwcVolumePercent = await subVolumePercent(listener);
+  console.log()
 
-  return window.rwcVolumePercent;
+  return rwcVolumePercent;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subVolumePercent(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      window.rwcVolumePercent = message.data;
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(window.rwcVolumePercent);
+      }, 50);
+    });
+  });
 }
 
 // Listener function 'rwcListenerGetCameraSnapshot'
