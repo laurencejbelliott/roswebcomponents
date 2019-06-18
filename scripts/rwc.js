@@ -2,11 +2,6 @@
 var configJSON;
 var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
-  // rwcListenerGetPosition();
-  // rwcListenerGetOrientation();
-  // rwcListenerGetNode();
-  // rwcListenerGetBatteryPercentage();
-  // rwcListenerGetVolumePercent();
 });
 
 // Array to track instances of toggleable components for bulk enabling/disabling
