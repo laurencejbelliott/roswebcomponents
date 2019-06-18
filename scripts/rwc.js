@@ -2,11 +2,11 @@
 var configJSON;
 var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
-  rwcListenerGetPosition();
-  rwcListenerGetOrientation();
-  rwcListenerGetNode();
-  rwcListenerGetBatteryPercentage();
-  rwcListenerGetVolumePercent();
+  // rwcListenerGetPosition();
+  // rwcListenerGetOrientation();
+  // rwcListenerGetNode();
+  // rwcListenerGetBatteryPercentage();
+  // rwcListenerGetVolumePercent();
 });
 
 // Array to track instances of toggleable components for bulk enabling/disabling
@@ -199,7 +199,7 @@ function rwcActionSay(phrase){
 
 // --- Listener functions ---
 // Listener function 'rwcListenerGetPosition'
-function rwcListenerGetPosition(){
+async function rwcListenerGetPosition(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -207,14 +207,27 @@ function rwcListenerGetPosition(){
     messageType : configJSON.listeners.odom.topicMessageType
   });
 
-  listener.subscribe(function(message) {
-    window.rwcPosition = [message.pose.pose.position.x,
-      message.pose.pose.position.y,
-      message.pose.pose.position.z];
-    listener.unsubscribe();
-  });
+  // promise function called and function execution halts until
+  // the promise is resolved
+  rwcPosition = await subPosition(listener);
 
   return window.rwcPosition;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subPosition(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      window.rwcPosition = [message.pose.pose.position.x,
+        message.pose.pose.position.y,
+        message.pose.pose.position.z];
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(window.rwcPosition);
+      }, 50);
+    });
+  })
 }
 
 // Listener function 'rwcListenerGetOrientation'
