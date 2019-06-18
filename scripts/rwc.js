@@ -231,7 +231,7 @@ function subPosition(listener){
 }
 
 // Listener function 'rwcListenerGetOrientation'
-function rwcListenerGetOrientation(){
+async function rwcListenerGetOrientation(){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -239,15 +239,26 @@ function rwcListenerGetOrientation(){
     messageType : configJSON.listeners.odom.topicMessageType
   });
 
-  listener.subscribe(function(message) {
-    window.rwcOrientation = [message.pose.pose.orientation.x,
-      message.pose.pose.orientation.y,
-      message.pose.pose.orientation.z,
-      message.pose.pose.orientation.w];
-    listener.unsubscribe();
-  });
+  rwcOrientation = await subOrientation(listener);
 
-  return window.rwcOrientation;
+  return rwcOrientation;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subOrientation(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      window.rwcOrientation = [message.pose.pose.orientation.x,
+        message.pose.pose.orientation.y,
+        message.pose.pose.orientation.z,
+        message.pose.pose.orientation.w];
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(window.rwcOrientation);
+      }, 50);
+    });
+  })
 }
 
 // Listener function 'rwcListenerGetNode'
