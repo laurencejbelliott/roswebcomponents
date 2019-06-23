@@ -4,6 +4,37 @@ var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
 });
 
+
+// Dictionary of action functions, for matching 'data-action' action names to 
+// functions
+var actions = {
+  "setPoseRelative": rwcActionSetPoseRelative,
+  "setPoseMap": rwcActionSetPoseMap,
+  "goToNode": rwcActionGoToNode,
+  "volumePercentChange": rwcActionVolumePercentChange,
+  "say": rwcActionSay
+};
+
+// List of 'data-action' action names which require their parameter to be parsed as
+// string
+strActions = [
+  "goToNode",
+  "say"
+];
+
+// List of 'data-action' action names which require their parameter to be parsed as
+// integer
+intActions = [
+  "volumePercentChange"
+];
+
+// List of 'data-action' action names which require their parameters to be parsed
+// as an array of floats
+floatArrayActions = [
+  "setPoseRelative",
+  "setPoseMap"
+];
+
 // Array to track instances of toggleable components for bulk enabling/disabling
 var toggleableComponents = [];
 
@@ -322,7 +353,6 @@ async function rwcListenerGetVolumePercent(){
   });
 
   rwcVolumePercent = await subVolumePercent(listener);
-  console.log()
 
   return rwcVolumePercent;
 }
@@ -373,6 +403,86 @@ function rwcListenerGetQRCode(){
 
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
+  connectedCallback() {
+    if (this.dataset.disabled) {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+
+    this.rwcClass;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-button-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-button-action-start";
+      }
+    }
+
+    this.addEventListener('click', e => {
+      if (!this.isDisabled){
+        if (strActions.includes(this.dataset.action)) {
+          actions[this.dataset.action](this.dataset.actionParameters);
+        }
+        if (intActions.includes(this.dataset.action)) {
+          actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+        }
+        if (floatArrayActions.includes(this.dataset.action)) {
+          var strArray = this.dataset.actionParameters.split(",");
+          var floatArray = strArray.map(Number);
+          actions[this.dataset.action](floatArray);
+        }
+        console.log("Action '" + this.dataset.action + " performed!\nParameter(s): " +
+        this.dataset.actionParameters);
+      }
+    });
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
+    + '<style>@import url("styles/rwc-user-styles.css")</style><div id="'
+    + this.dataset.id + '" class="' + this.rwcClass
+    + '"><span>' + this.dataset.text + '</span></div>';
+
+    toggleableComponents.push(this);
+  }
+
+  set disabled(bool){
+    this.isDisabled = bool;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-button-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-button-action-start";
+      }
+    }
+
+    this.shadowRoot.querySelector("div").setAttribute("class", this.rwcClass);
+
+  }
+
+  get disabled(){
+    return this.isDisabled;
+  }
+}
+
+customElements.define("rwc-button-action-start", rwcButtonActionStart);
+
+// Class for custom element 'rwc-button-custom-action-start'
+class rwcButtonCustomActionStart extends HTMLElement {
     connectedCallback() {
       var msgJSON;
       $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
@@ -456,4 +566,4 @@ class rwcButtonActionStart extends HTMLElement {
     }
 }
 
-customElements.define("rwc-button-action-start", rwcButtonActionStart);
+customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionStart);
