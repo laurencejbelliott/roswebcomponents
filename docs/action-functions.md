@@ -1,4 +1,4 @@
-[Home](https://github.com/laurencejbelliott/roswebcomponents) | [Action Functions](/docs/action-functions.md) | [Listener Functions](/docs/listener-functions.md) | [UI Components]()
+[Home](https://github.com/laurencejbelliott/roswebcomponents) | [Action Functions](/docs/action-functions.md) | [Listener Functions](/docs/listener-functions.md) | [UI Components](/docs/ui-components.md)
 # Action functions
  - rwcActionSetPoseRelative
     - Arguments: `x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}`
@@ -24,6 +24,7 @@
         - Changes the master audio volume of the robot's speaker by -100%, effectively muting the speaker.
  - rwcActionSay
      - Arguments: `phrase`
-    - Description: Asks the robot to speak the given `phrase` using TTS (Text To Speech). By default this library uses [MaryTTS](https://github.com/strands-project/strands_ui/tree/hydro-devel/mary_tts), but you can specify an ActionServer name and goal message type for your own TTS ActionServer in `rwc-config.json`.
+    - Description: Asks the robot to speak the given `phrase` using TTS (Text To Speech). By default this library uses [MaryTTS](https://github.com/strands-project/strands_ui/tree/hydro-devel/mary_tts), but you can specify an ActionServer name and goal message type for your own TTS ActionServer in [rwc-config.json](/rwc-config.json) under "actions" > "actionServers" > "speak".
     - Example: `rwcActionSay("Hello world!");`
         - Tells the robot to speak the phrase "Hello world!" using TTS.
+ - And more to follow soon...
