@@ -23,7 +23,6 @@ Asynchronous Listener functions:
      - Return type: Number.
      - Description: Gets the percentage of how completely the  robot's battery is charged.
  - rwcListenerGetVolumePercent
-<<<<<<< HEAD
      - Return type: Number.
      - Description: Gets the percentage of the master audio volume of the robot's speaker.
  
