@@ -35,3 +35,4 @@ Asynchronous Listener functions:
  - rwcListenerGetQRCode
      - Return type: String.
      - Description:  Uses [jsQR](https://github.com/cozmo/jsQR) to detect the presence of a QR code in a snapshot of the latest frame of video from a camera on the robot. If a QR code is present then the function gets the encoded String data, otherwise the String `"No QR code detected!"` is returned. The URI of this snapshot is made avaiable using the [web_video_server](http://wiki.ros.org/web_video_server) ROS package. And can be specified in [rwc-config.json](/rwc-config.json) under "listeners" > "camera_snapshot" > "uri".
+ - And more to follow shortly...
