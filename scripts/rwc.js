@@ -29,8 +29,8 @@ intActions = [
 ];
 
 // List of 'data-action' action names which require their parameters to be parsed
-// as an array of floats
-floatArrayActions = [
+// as an array of numbers
+numArrayActions = [
   "setPoseRelative",
   "setPoseMap"
 ];
@@ -434,7 +434,7 @@ class rwcButtonActionStart extends HTMLElement {
         if (intActions.includes(this.dataset.action)) {
           actions[this.dataset.action](parseInt(this.dataset.actionParameters));
         }
-        if (floatArrayActions.includes(this.dataset.action)) {
+        if (numArrayActions.includes(this.dataset.action)) {
           var strArray = this.dataset.actionParameters.split(",");
           var floatArray = strArray.map(Number);
           actions[this.dataset.action](floatArray);
