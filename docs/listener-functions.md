@@ -2,8 +2,7 @@
 # Listener functions
 Listener functions return data from the robot. This data is obtained by subscribing to [ROS topics](http://wiki.ros.org/Topics) asynchronously using [roslibjs](https://github.com/RobotWebTools/roslibjs), and so these listener functions are [async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function), which return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), from which a value can be extracted once the function has obtained its value. This is done using the `then` method of the returned `Promise` object.
 
-An example of obtaining and logging the value in the `Promise` returned by an `async function` named 'myFunction':
-
+E.g., to obtain and log the value in the `Promise` returned by an `async function` named 'myFunction', you could write:
 ```
 var myValue;
 myFunction().then(function(value){myValue = value;});
@@ -24,6 +23,7 @@ Asynchronous Listener functions:
      - Return type: Number.
      - Description: Gets the percentage of how completely the  robot's battery is charged.
  - rwcListenerGetVolumePercent
+<<<<<<< HEAD
      - Return type: Number.
      - Description: Gets the percentage of the master audio volume of the robot's speaker.
  
