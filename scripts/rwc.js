@@ -4,8 +4,17 @@ var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
 });
 
+// Dictionary of listener functions, for matching 'data-listener' listener names to
+// functions
+var listeners = {
+  "getPosition": rwcListenerGetPosition,
+  "getOrientation": rwcListenerGetOrientation,
+  "getNode": rwcListenerGetNode,
+  "getBatteryPercentage": rwcListenerGetBatteryPercentage,
+  "getVolumePercent": rwcListenerGetVolumePercent
+};
 
-// Dictionary of action functions, for matching 'data-action' action names to 
+// Dictionary of action functions, for matching 'data-action' action names to
 // functions
 var actions = {
   "setPoseRelative": rwcActionSetPoseRelative,
@@ -35,8 +44,26 @@ numArrayActions = [
   "setPoseMap"
 ];
 
+// Array to track instances of live components for bulk updating
+var liveListenerComponents = [];
+
+// Array to track instances of static components for bulk updating
+var staticListenerComponents = [];
+
 // Array to track instances of toggleable components for bulk enabling/disabling
 var toggleableComponents = [];
+
+$(document).ready(function(){
+  staticListenerComponents.forEach(function(item, index){
+    item.update();
+    setTimeout(function(){item.update();}, 500);
+  });
+  liveListenerComponents.forEach(function(item, index){
+    item.update();
+    setTimeout(function(){item.update();}, 500);
+    window.setInterval(function(){item.update();}, 500);
+  });
+});
 
 // Connection to ROSbridge server websocket
 var ros = new ROSLIB.Ros({
@@ -400,7 +427,9 @@ function rwcListenerGetQRCode(){
   }
 }
 
+// --- Web Components ---
 
+// --- Action Components ---
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
   connectedCallback() {
@@ -567,3 +596,48 @@ class rwcButtonCustomActionStart extends HTMLElement {
 }
 
 customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionStart);
+
+// --- Listener Components ---
+async function prepareListenerData (listener){
+  window.rwcListenerData = await awaitListenerData(listener);
+  // setTimeout(function(){window.rwcListenerData = rwcListenerData;}, 50);
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function awaitListenerData(listener){
+  return new Promise(function(resolve) {
+    setTimeout(function(){
+      window.rwcListenerData = listeners[listener]()
+      resolve(window.rwcListenerData);
+    }, 50);
+  });
+}
+
+// Class for custom element 'rwc-text-listener'
+class rwcTextListener extends HTMLElement {
+  connectedCallback() {
+    const shadowRoot = this.attachShadow({ mode: "open" });
+
+    setTimeout(this.update, 50);
+    if (this.dataset.live == "true" || this.dataset.live == null) {
+      liveListenerComponents.push(this);
+    }
+    else {
+      staticListenerComponents.push(this);
+    }
+  }
+
+  update() {
+    if (configJSON != null && this.dataset != null){
+      prepareListenerData(this.dataset.listener);
+      if (String(window.rwcListenerData) != "[object Promise]"){
+        this.shadowRoot.innerHTML = "<div>" + String(window.rwcListenerData) +"</div>";
+      } else {
+        this.shadowRoot.innerHTML = "<div></div>";
+      }
+    }
+  }
+}
+
+customElements.define("rwc-text-listener", rwcTextListener);
