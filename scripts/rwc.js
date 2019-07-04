@@ -677,6 +677,93 @@ class rwcImageActionStart extends HTMLElement {
 
 customElements.define("rwc-img-action-start", rwcImageActionStart);
 
+// Class for custom element 'rwc-img-custom-action-start'
+class rwcImageCustomActionStart extends HTMLElement {
+  connectedCallback() {
+    var msgJSON;
+    $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
+
+    if (this.dataset.disabled) {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+
+    this.rwcClass;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-image-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-image-action-start";
+      }
+    }
+
+    var rwcActionClient = new ROSLIB.ActionClient({
+      ros: ros,
+      serverName: this.dataset.actionServerName,
+      actionName: this.dataset.actionName
+    });
+
+    this.addEventListener('click', e => {
+      if (!this.isDisabled){
+        var goal = new ROSLIB.Goal({
+          actionClient: rwcActionClient,
+          goalMessage: msgJSON
+        });
+
+        goal.on('result', function (status) {    
+          console.log(goal.status.text);
+        });
+
+        goal.send();
+        console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+      }
+    });
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
+    + '<style>@import url("styles/rwc-user-styles.css")</style><img id="'
+    + this.dataset.id + '" class="' + this.rwcClass
+    + '" src="' + this.getAttribute("src") + '"></img>';
+
+    toggleableComponents.push(this);
+  }
+
+  set disabled(bool){
+    this.isDisabled = bool;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-img-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-img-action-start";
+      }
+    }
+
+    this.shadowRoot.querySelector("img").setAttribute("class", this.rwcClass);
+
+  }
+
+  get disabled(){
+    return this.isDisabled;
+  }
+}
+
+customElements.define("rwc-img-custom-action-start", rwcImageCustomActionStart);
+
 // --- Listener Components ---
 async function prepareListenerData (listener){
   window.rwcListenerData = await awaitListenerData(listener);
