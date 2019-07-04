@@ -597,6 +597,86 @@ class rwcButtonCustomActionStart extends HTMLElement {
 
 customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionStart);
 
+// Class for custom element 'rwc-img-action-start'
+class rwcImageActionStart extends HTMLElement {
+  connectedCallback() {
+    if (this.dataset.disabled) {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+
+    this.rwcClass;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-img-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-img-action-start";
+      }
+    }
+
+    this.addEventListener('click', e => {
+      if (!this.isDisabled){
+        if (strActions.includes(this.dataset.action)) {
+          actions[this.dataset.action](this.dataset.actionParameters);
+        }
+        if (intActions.includes(this.dataset.action)) {
+          actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+        }
+        if (numArrayActions.includes(this.dataset.action)) {
+          var strArray = this.dataset.actionParameters.split(",");
+          var floatArray = strArray.map(Number);
+          actions[this.dataset.action](floatArray);
+        }
+        console.log("Action '" + this.dataset.action + " performed!\nParameter(s): " +
+        this.dataset.actionParameters);
+      }
+    });
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
+    + '<style>@import url("styles/rwc-user-styles.css")</style><img id="'
+    + this.dataset.id + '" class="' + this.rwcClass
+    + '" src="' + this.getAttribute("src") + '"></img>';
+
+    toggleableComponents.push(this);
+  }
+
+  set disabled(bool){
+    this.isDisabled = bool;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-img-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-img-action-start";
+      }
+    }
+
+    this.shadowRoot.querySelector("img").setAttribute("class", this.rwcClass);
+
+  }
+
+  get disabled(){
+    return this.isDisabled;
+  }
+}
+
+customElements.define("rwc-img-action-start", rwcImageActionStart);
+
 // --- Listener Components ---
 async function prepareListenerData (listener){
   window.rwcListenerData = await awaitListenerData(listener);

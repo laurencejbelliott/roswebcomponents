@@ -42,3 +42,21 @@ div.rwc-button-action-start-disabled{
 div.rwc-button-action-start-disabled > span{
     margin: 5px;
 }
+
+/* Default styling for rwc-img-action-start */
+img.rwc-img-action-start {
+    cursor:pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+img.rwc-img-action-start:active{
+    filter: saturate(0%);
+    cursor:pointer;
+}
+
+
+img.rwc-img-action-start-disabled{
+    filter: saturate(0%);
+}
