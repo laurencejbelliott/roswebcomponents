@@ -799,9 +799,9 @@ class rwcTextListener extends HTMLElement {
     if (configJSON != null && this.dataset != null){
       prepareListenerData(this.dataset.listener);
       if (String(window.rwcListenerData) != "[object Promise]"){
-        this.shadowRoot.innerHTML = "<div>" + String(window.rwcListenerData) +"</div>";
+        this.shadowRoot.innerHTML = "<span>" + String(window.rwcListenerData) +"</span>";
       } else {
-        this.shadowRoot.innerHTML = "<div></div>";
+        this.shadowRoot.innerHTML = "<span></span>";
       }
     }
   }
