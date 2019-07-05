@@ -766,7 +766,8 @@ customElements.define("rwc-img-custom-action-start", rwcImageCustomActionStart);
 
 // --- Listener Components ---
 async function prepareListenerData (listener){
-  window.rwcListenerData = await awaitListenerData(listener);
+  rwcListenerData = await awaitListenerData(listener);
+  return rwcListenerData;
   // setTimeout(function(){window.rwcListenerData = rwcListenerData;}, 50);
 }
 
@@ -775,8 +776,8 @@ async function prepareListenerData (listener){
 function awaitListenerData(listener){
   return new Promise(function(resolve) {
     setTimeout(function(){
-      window.rwcListenerData = listeners[listener]()
-      resolve(window.rwcListenerData);
+      rwcListenerData = listeners[listener]()
+      resolve(rwcListenerData);
     }, 50);
   });
 }
@@ -797,12 +798,14 @@ class rwcTextListener extends HTMLElement {
 
   update() {
     if (configJSON != null && this.dataset != null){
-      prepareListenerData(this.dataset.listener);
-      if (String(window.rwcListenerData) != "[object Promise]"){
-        this.shadowRoot.innerHTML = "<span>" + String(window.rwcListenerData) +"</span>";
-      } else {
-        this.shadowRoot.innerHTML = "<span></span>";
-      }
+      var thisListener = this;
+      prepareListenerData(this.dataset.listener).then(function(result){
+        if (String(result) != "[object Promise]"){
+          thisListener.shadowRoot.innerHTML = "<span>" + String(result) +"</span>";
+        } else {
+          thisListener.shadowRoot.innerHTML = "<span></span>";
+        }
+      });
     }
   }
 }
