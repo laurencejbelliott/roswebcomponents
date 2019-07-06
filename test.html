@@ -3,6 +3,8 @@
         <title>rwc testing</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="styles/jquery.spin.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="styles/rwc-styles.css">
+        <link rel="stylesheet" href="styles/rwc-user-styles.css">
         <script
 			  src="https://code.jquery.com/jquery-3.4.1.min.js"
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -20,6 +22,11 @@
         data-text="Say hello!"
         data-action="say"
         data-action-parameters="Hello everyone!"></rwc-button-action-start>
+        <br><br>
+        <rwc-button-action-start data-id="toNodeActionStart"
+        data-text="Go to WayPoint20!"
+        data-action="goToNode"
+        data-action-parameters="WayPoint20"></rwc-button-action-start>
         <p>
             Current node: <rwc-text-listener
             data-listener="getNode"></rwc-text-listener>

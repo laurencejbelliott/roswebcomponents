@@ -67,6 +67,16 @@ $(document).ready(function(){
   spinner = document.createElement("div");
   spinner.setAttribute("class", "spin");
   document.body.appendChild(spinner);
+
+  stopButton = document.createElement("div");
+  stopButton.setAttribute("class", "cancel-button rwc-button-action-start");
+  stopButtonSpan = document.createElement("span");
+  stopButtonSpan.innerHTML = "Cancel action";
+  stopButton.appendChild(stopButtonSpan);
+  stopButton.addEventListener('click', e => {
+    cancelCurrentAction();
+  });
+  document.body.appendChild(stopButton);
 });
 
 // Connection to ROSbridge server websocket
