@@ -14,7 +14,7 @@
         <script src="scripts/roslib.min.js"></script>
         <script src="scripts/rwc.js?v=0.15"></script>
 
-        <rwc-button-action-start data-id="moveActionStart"
+        <rwc-button-action-start data-id="speakActionStart"
         data-text="Say hello!"
         data-action="say"
         data-action-parameters="Hello everyone!"></rwc-button-action-start>
@@ -24,6 +24,11 @@
             <br>
             Volume: <rwc-text-listener
             data-listener="getVolumePercent"></rwc-text-listener>%
+            <br>
+            Click to say <rwc-text-action-start data-id="speakActionStart"
+            data-text="good day!"
+            data-action="say"
+            data-action-parameters="Good day everyone!"></rwc-text-action-start>
         </p>
         <rwc-img-action-start src="/roswebcomponents/images/lcas-logo.png"
         data-action="say"

@@ -43,6 +43,33 @@ div.rwc-button-action-start-disabled > span{
     margin: 5px;
 }
 
+
+/* Default styling for rwc-text-action-start */
+span.rwc-text-action-start{
+    font-weight: bold;
+    text-decoration: underline;
+    cursor:pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+span.rwc-text-action-start:active{
+    color: grey;
+    cursor:pointer;
+}
+
+/* Default styling for rwc-text-action-start-disabled */
+span.rwc-text-action-start-disabled{
+    color: grey;
+    font-weight: bold;
+    text-decoration: underline;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+
 /* Default styling for rwc-img-action-start */
 img.rwc-img-action-start {
     cursor:pointer;
@@ -55,7 +82,6 @@ img.rwc-img-action-start:active{
     filter: saturate(0%);
     cursor:pointer;
 }
-
 
 img.rwc-img-action-start-disabled{
     filter: saturate(0%);
