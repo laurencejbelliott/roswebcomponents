@@ -1,5 +1,6 @@
 // Load config of topic and action server names from 'rwc-config.json'
 var configJSON;
+var currentActionClient;
 var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
 });
@@ -63,6 +64,9 @@ $(document).ready(function(){
     setTimeout(function(){item.update();}, 500);
     window.setInterval(function(){item.update();}, 500);
   });
+  spinner = document.createElement("div");
+  spinner.setAttribute("class", "spin");
+  document.body.appendChild(spinner);
 });
 
 // Connection to ROSbridge server websocket
@@ -82,6 +86,18 @@ ros.on('close', function(){
     console.log('Closed connection to websocket server.');
 });
 
+// General functions
+function disableInterface(){
+  toggleableComponents.forEach(function(element){element.disabled = true;});
+}
+
+function enableInterface(){
+  toggleableComponents.forEach(function(element){element.disabled = false;});
+}
+
+function cancelCurrentAction(){
+  currentActionClient.cancel();
+}
 
 // --- Action fuctions ---
 // Action function 'rwcActionSetPoseRelative'
@@ -185,16 +201,23 @@ function rwcActionGoToNode(node_name, no_orientation = false){
     actionName: actionName
   });
 
-  var goal = new ROSLIB.Goal({
+  currentActionClient = actionClient;
+
+  goal = new ROSLIB.Goal({
     actionClient: actionClient,
     goalMessage: msg
   });
 
-  goal.on('result', function (status) {    
-    console.log(goal.status.text);
+  goal.on('result', function (status) {
+    // console.log(goal.status.text);
+    enableInterface();
+    $(".spin").spin("hide");
+    console.log("Task completed!");
   });
 
   goal.send();
+  disableInterface();
+  $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
 }
 
