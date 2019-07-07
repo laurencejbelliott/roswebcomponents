@@ -45,6 +45,20 @@ numArrayActions = [
   "setPoseMap"
 ];
 
+// List of goal status ID's and the status' corresponding names
+var goalStatusNames = [
+  "PENDING",
+  "ACTIVE",
+  "PREEMPTED",
+  "SUCCEEDED",
+  "ABORTED",
+  "REJECTED",
+  "PREEMPTING",
+  "RECALLING",
+  "RECALLED",
+  "LOST"
+];
+
 // Array to track instances of live components for bulk updating
 var liveListenerComponents = [];
 
@@ -138,16 +152,22 @@ function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
     actionName: actionName
   });
 
-  var goal = new ROSLIB.Goal({
+  currentActionClient = actionClient;
+
+  goal = new ROSLIB.Goal({
     actionClient: actionClient,
     goalMessage: msg
   });
 
-  goal.on('result', function (status) {    
+  goal.on('result', function (status) {
     console.log(goal.status.text);
+    enableInterface();
+    $(".spin").spin("hide");
   });
 
   goal.send();
+  disableInterface();
+  $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
 }
 
@@ -180,16 +200,22 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
     actionName: actionName
   });
 
-  var goal = new ROSLIB.Goal({
+  currentActionClient = actionClient;
+
+  goal = new ROSLIB.Goal({
     actionClient: actionClient,
     goalMessage: msg
   });
 
-  goal.on('result', function (status) {    
+  goal.on('result', function (status) {
     console.log(goal.status.text);
+    enableInterface();
+    $(".spin").spin("hide");
   });
 
   goal.send();
+  disableInterface();
+  $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
 }
 
@@ -219,10 +245,10 @@ function rwcActionGoToNode(node_name, no_orientation = false){
   });
 
   goal.on('result', function (status) {
-    // console.log(goal.status.text);
+    status = goal.status.status;
+    console.log("Action status: " + goalStatusNames[status]);
     enableInterface();
     $(".spin").spin("hide");
-    console.log("Task completed!");
   });
 
   goal.send();
@@ -269,13 +295,16 @@ function rwcActionSay(phrase){
     actionName: actionName
   });
 
-  var goal = new ROSLIB.Goal({
+  currentActionClient = actionClient;
+
+  goal = new ROSLIB.Goal({
     actionClient: actionClient,
     goalMessage: msg
   });
 
-  goal.on('result', function (status) {    
-    console.log(goal.status.text);
+  goal.on('result', function (status) {
+    status = goal.status.status;
+    console.log("Action status: " + goalStatusNames[status]);
   });
 
   goal.send();
@@ -501,7 +530,7 @@ class rwcButtonActionStart extends HTMLElement {
           var floatArray = strArray.map(Number);
           actions[this.dataset.action](floatArray);
         }
-        console.log("Action '" + this.dataset.action + " performed!\nParameter(s): " +
+        console.log("Action '" + this.dataset.action + " started!\nParameter(s): " +
         this.dataset.actionParameters);
       }
     });
@@ -668,7 +697,7 @@ class rwcTextActionStart extends HTMLElement {
           var floatArray = strArray.map(Number);
           actions[this.dataset.action](floatArray);
         }
-        console.log("Action '" + this.dataset.action + " performed!\nParameter(s): " +
+        console.log("Action '" + this.dataset.action + " started!\nParameter(s): " +
         this.dataset.actionParameters);
       }
     });
@@ -748,7 +777,7 @@ class rwcImageActionStart extends HTMLElement {
           var floatArray = strArray.map(Number);
           actions[this.dataset.action](floatArray);
         }
-        console.log("Action '" + this.dataset.action + " performed!\nParameter(s): " +
+        console.log("Action '" + this.dataset.action + " started!\nParameter(s): " +
         this.dataset.actionParameters);
       }
     });
