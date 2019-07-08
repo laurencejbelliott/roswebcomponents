@@ -4,7 +4,7 @@ This library provides a number of custom HTML elements with their own unique tag
 
 ## Action Components
 - rwc-button-action-start
-    - Description: A button which calls an action function when clicked.
+    - Description: A button which calls an [action function](/docs/action-functions.md) when clicked.
     - Example:
         ```html
         <rwc-button-action-start
