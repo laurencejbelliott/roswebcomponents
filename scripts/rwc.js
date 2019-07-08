@@ -530,7 +530,7 @@ class rwcButtonActionStart extends HTMLElement {
           var floatArray = strArray.map(Number);
           actions[this.dataset.action](floatArray);
         }
-        console.log("Action '" + this.dataset.action + " started!\nParameter(s): " +
+        console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
         this.dataset.actionParameters);
       }
     });
@@ -697,7 +697,7 @@ class rwcTextActionStart extends HTMLElement {
           var floatArray = strArray.map(Number);
           actions[this.dataset.action](floatArray);
         }
-        console.log("Action '" + this.dataset.action + " started!\nParameter(s): " +
+        console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
         this.dataset.actionParameters);
       }
     });
@@ -777,7 +777,7 @@ class rwcImageActionStart extends HTMLElement {
           var floatArray = strArray.map(Number);
           actions[this.dataset.action](floatArray);
         }
-        console.log("Action '" + this.dataset.action + " started!\nParameter(s): " +
+        console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
         this.dataset.actionParameters);
       }
     });
