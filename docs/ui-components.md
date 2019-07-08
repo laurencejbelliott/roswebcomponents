@@ -7,7 +7,7 @@ This library provides a number of custom HTML elements with their own unique tag
     - Description: A button which calls an [action function](/docs/action-functions.md) when clicked.
     - Example:
 
-        ![alt text](/images/hello-button.png "Logo Title Text 1")
+        ![alt text](/images/hello-button.png "A button with the text 'Say hello!'")
 
         ```html
         <rwc-button-action-start
