@@ -41,6 +41,3 @@ This library provides a number of custom HTML elements with their own unique tag
         - data-text
             - Description: Defines the text which is displayed inside the button
             - Example: `data-text="Click me!"`
-
-
-## Listener Components
