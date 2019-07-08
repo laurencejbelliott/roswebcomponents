@@ -14,7 +14,7 @@ This library provides a number of custom HTML elements with their own unique tag
         data-action-parameters="Hello everyone!">
         </rwc-button-action-start>
         ```
-        A button with the text 'Say hello!', which calls the `say` action with the parameter "Hello everyone!", resulting in the robot speaking the phrase when the button is clicked.
+        A button with the text 'Say hello!', which calls the `rwcActionSay` [action function](/docs/action-functions.md) with the parameter "Hello everyone!", resulting in the robot speaking the phrase when the button is clicked.
     
     - Attributes:
         - data-id
