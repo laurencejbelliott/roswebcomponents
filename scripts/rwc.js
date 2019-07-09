@@ -614,10 +614,16 @@ class rwcButtonCustomActionStart extends HTMLElement {
           });
 
           goal.on('result', function (status) {    
+            enableInterface();
+            $(".spin").spin("hide");
             console.log(goal.status.text);
+            status = goal.status.status;
+            console.log("Action status: " + goalStatusNames[status]);
           });
 
           goal.send();
+          disableInterface();
+          $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
       });
