@@ -28,13 +28,13 @@
         data-action="goToNode"
         data-action-parameters="WayPoint20"></rwc-button-action-start>
         <br><br>
-        <rwc-button-custom-action-start
+        <rwc-text-custom-action-start
         data-id="moveActionStart"
         data-text="Forward 0.5m!"
         data-action-server-name="/move_base"
         data-action-name="move_base_msgs/MoveBaseAction"
         data-goal-msg-path="json-msgs/forward-half-m.json">
-        </rwc-button-custom-action-start>
+        </rwc-text-custom-action-start>
         <p>
             Current node: <rwc-text-listener
             data-listener="getNode"></rwc-text-listener>

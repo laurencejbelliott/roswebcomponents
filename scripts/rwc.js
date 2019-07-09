@@ -665,6 +665,7 @@ class rwcButtonCustomActionStart extends HTMLElement {
 
 customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionStart);
 
+
 // Class for custom element 'rwc-text-action-start'
 class rwcTextActionStart extends HTMLElement {
   connectedCallback() {
@@ -744,6 +745,100 @@ class rwcTextActionStart extends HTMLElement {
 }
 
 customElements.define("rwc-text-action-start", rwcTextActionStart);
+
+// Class for custom element 'rwc-text-custom-action-start'
+class rwcTextCustomActionStart extends HTMLElement {
+  connectedCallback() {
+    var msgJSON;
+      $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
+
+      if (this.dataset.disabled) {
+        this.isDisabled = true;
+      } else {
+        this.isDisabled = false;
+      }
+
+    this.rwcClass;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-text-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-text-action-start";
+      }
+    }
+
+    var rwcActionClient = new ROSLIB.ActionClient({
+      ros: ros,
+      serverName: this.dataset.actionServerName,
+      actionName: this.dataset.actionName
+    });
+
+    this.addEventListener('click', e => {
+      if (!this.isDisabled){
+        var goal = new ROSLIB.Goal({
+          actionClient: rwcActionClient,
+          goalMessage: msgJSON
+        });
+
+        goal.on('result', function (status) {    
+          enableInterface();
+          $(".spin").spin("hide");
+          console.log(goal.status.text);
+          status = goal.status.status;
+          console.log("Action status: " + goalStatusNames[status]);
+        });
+
+        goal.send();
+        disableInterface();
+        $(".spin").spin("show");
+        console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+      }
+    });
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
+    + '<style>@import url("styles/rwc-user-styles.css")</style><span id="'
+    + this.dataset.id + '" class="' + this.rwcClass
+    + '">' + this.dataset.text + '</span>';
+
+    toggleableComponents.push(this);
+  }
+
+  set disabled(bool){
+    this.isDisabled = bool;
+
+    if (this.isDisabled) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-text-action-start-disabled";
+      }
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-text-action-start";
+      }
+    }
+
+    this.shadowRoot.querySelector("span").setAttribute("class", this.rwcClass);
+
+  }
+
+  get disabled(){
+    return this.isDisabled;
+  }
+}
+
+customElements.define("rwc-text-custom-action-start", rwcTextCustomActionStart);
+
 
 // Class for custom element 'rwc-img-action-start'
 class rwcImageActionStart extends HTMLElement {
@@ -843,13 +938,13 @@ class rwcImageCustomActionStart extends HTMLElement {
       if (this.hasAttribute("data-disabled-class")) {
         this.rwcClass = this.dataset.disabledClass;
       } else {
-        this.rwcClass = "rwc-image-action-start-disabled";
+        this.rwcClass = "rwc-img-action-start-disabled";
       }
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
       } else {
-        this.rwcClass = "rwc-image-action-start";
+        this.rwcClass = "rwc-img-action-start";
       }
     }
 
@@ -867,10 +962,16 @@ class rwcImageCustomActionStart extends HTMLElement {
         });
 
         goal.on('result', function (status) {    
+          enableInterface();
+          $(".spin").spin("hide");
           console.log(goal.status.text);
+          status = goal.status.status;
+          console.log("Action status: " + goalStatusNames[status]);
         });
 
         goal.send();
+        disableInterface();
+        $(".spin").spin("show");
         console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
       }
     });
