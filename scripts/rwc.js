@@ -100,14 +100,26 @@ var ros = new ROSLIB.Ros({
 
 ros.on('connection', function(){
     console.log('Connected to websocket server.');
+    enableInterface();
+    $(".spin").spin("hide");
 });
 
 ros.on('error', function(){
     console.log('Error connecting to websocket server.');
+    disableInterface();
+    $(".spin").spin("show");
+    setTimeout(function(){
+      location.reload();
+    }, 5000);
 });
 
 ros.on('close', function(){
     console.log('Closed connection to websocket server.');
+    disableInterface();
+    $(".spin").spin("show");
+    setTimeout(function(){
+      location.reload();
+    }, 5000);
 });
 
 // General functions
