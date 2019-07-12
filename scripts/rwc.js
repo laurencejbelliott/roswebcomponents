@@ -399,7 +399,7 @@ async function rwcListenerGetNearestPersonPosition(){
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcPosition = await subPosition(listener);
+  rwcPosition = await subNearestPersonPosition(listener);
 
   return rwcPosition;
 }
