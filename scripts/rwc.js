@@ -328,19 +328,29 @@ function rwcActionGazeAtPosition(x, y, z, secs){
   var rwcPoseTopic = new ROSLIB.Topic({
     ros : ros,
     name : "/rwc_gaze_pose",
-    messageType : "geometry_msgs/Pose"
+    messageType : "geometry_msgs/PoseStamped"
   });
 
+  header = {
+    seq: 0,
+    stamp: {
+      secs: 1,
+      nsecs:1},
+    frame_id: "map"
+  };
   position = new ROSLIB.Vector3(null);
   position.x = x;
   position.y = y;
   position.z = z;
   orientation = new ROSLIB.Quaternion({x:0, y:0, z:0, w:1.0});
-  var pose = new ROSLIB.Message({
-    position: position,
-    orientation: orientation
+  var poseStamped = new ROSLIB.Message({
+    header: header,
+    pose: {
+      position: position,
+      orientation: orientation
+    }
   });
-  rwcPoseTopic.publish(pose);
+  rwcPoseTopic.publish(poseStamped);
   console.log("Gaze pose published...");
 
   var gazeActionClient = new ROSLIB.ActionClient({
