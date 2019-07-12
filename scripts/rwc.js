@@ -455,6 +455,22 @@ function subPeoplePositions(listener){
   });
 }
 
+// Listener function 'rwcListenerGetNumberOfPeople'
+async function rwcListenerGetNumberOfPeople(){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.listeners.people_pose_array.topicName,
+    messageType : configJSON.listeners.people_pose_array.topicMessageType
+  });
+
+  // promise function called and function execution halts until
+  // the promise is resolved
+  rwcPeoplePoses = await subPeoplePositions(listener);
+
+  return rwcPeoplePositions.length;
+}
+
 // Listener function 'rwcListenerGetNode'
 async function rwcListenerGetNode(){
   // Topic info loaded from rwc-config JSON file
