@@ -420,6 +420,36 @@ function subNearestPersonPosition(listener){
   });
 }
 
+// Listener function 'rwcListenerGetPeoplePositions'
+async function rwcListenerGetPeoplePositions(){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.listeners.people_pose_array.topicName,
+    messageType : configJSON.listeners.people_pose_array.topicMessageType
+  });
+
+  // promise function called and function execution halts until
+  // the promise is resolved
+  rwcPeoplePositions = await subPeoplePositions(listener);
+
+  return rwcPeoplePositions;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subPeoplePositions(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      rwcPeoplePositions = message.poses;
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(rwcPeoplePositions);
+      }, 50);
+    });
+  });
+}
+
 // Listener function 'rwcListenerGetNode'
 async function rwcListenerGetNode(){
   // Topic info loaded from rwc-config JSON file

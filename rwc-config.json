@@ -30,6 +30,10 @@
             "topicName": "/people_tracker/pose",
             "topicMessageType": "geometry_msgs/PoseStamped"
         },
+        "people_pose_array": {
+            "topicName": "/people_tracker/pose_array",
+            "topicMessageType": "geometry_msgs/PoseArray"
+        },
         "current_node": {
             "topicName": "/current_node",
             "topicMessageType": "std_msgs/String"
