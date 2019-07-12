@@ -434,7 +434,7 @@ async function rwcListenerGetPeoplePositions(){
   rwcPeoplePoses = await subPeoplePositions(listener);
 
   rwcPeoplePositions = [];
-  rwcPeoplePositions.forEach(function(person_pose){
+  rwcPeoplePoses.forEach(function(person_pose){
     rwcPeoplePositions.push([person_pose.position.x, person_pose.position.y, person_pose.position.z]);
   });
 
