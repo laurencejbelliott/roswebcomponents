@@ -349,7 +349,7 @@ function rwcActionGazeAtPosition(x, y, z, secs){
     actionName: "strands_gazing/GazeAtPoseAction"
   });
 
-  currentActionClient = actionClient;
+  currentActionClient = gazeActionClient;
 
   msg = {
     runtime_sec: secs,
