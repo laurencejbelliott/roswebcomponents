@@ -47,7 +47,7 @@
             "topicMessageType": "std_msgs/Int8"
         },
         "camera_snapshot": {
-            "uri": "/roswebcomponents/images/qr-code.png"
+            "uri": "http://localhost:8080/snapshot?topic=/head_xtion/rgb/image_color"
         }
     }
 }
