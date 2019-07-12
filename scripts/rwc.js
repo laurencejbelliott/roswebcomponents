@@ -399,9 +399,9 @@ async function rwcListenerGetNearestPersonPosition(){
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcPosition = await subNearestPersonPosition(listener);
+  rwcNearestPersonPosition = await subNearestPersonPosition(listener);
 
-  return rwcPosition;
+  return rwcNearestPersonPosition;
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -409,12 +409,12 @@ async function rwcListenerGetNearestPersonPosition(){
 function subNearestPersonPosition(listener){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
-      window.rwcNearestPersonPosition = [message.pose.position.x,
+      rwcNearestPersonPosition = [message.pose.position.x,
         message.pose.position.y,
         message.pose.position.z];
       listener.unsubscribe();
       setTimeout(function(){
-        resolve(window.rwcPosition);
+        resolve(rwcNearestPersonPosition);
       }, 50);
     });
   });
