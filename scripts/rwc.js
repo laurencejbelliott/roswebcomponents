@@ -367,7 +367,7 @@ function rwcActionGazeAtPosition(x, y, z, secs){
   });
 
   goal.send();
-  console.log("Goal '" + serverName + "/goal' sent!");
+  console.log("Goal '/gaze_at_pose/goal' sent!");
 }
 
 
