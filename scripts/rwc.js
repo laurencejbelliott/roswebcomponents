@@ -324,8 +324,7 @@ function rwcActionSay(phrase){
 }
 
 // Action function 'rwcActionGazeAtPosition'
-function rwcActionGazeAtPosition(x, y, z){
-  // Topic info loaded from rwc-config JSON file
+function rwcActionGazeAtPosition(x, y, z, secs){
   var rwcPoseTopic = new ROSLIB.Topic({
     ros : ros,
     name : "/rwc_gaze_pose",
@@ -343,7 +342,32 @@ function rwcActionGazeAtPosition(x, y, z){
   });
   rwcPoseTopic.publish(pose);
   console.log("Gaze pose published...");
-  console.log(pose);
+
+  var gazeActionClient = new ROSLIB.ActionClient({
+    ros: ros,
+    serverName: "/gaze_at_pose",
+    actionName: "strands_gazing/GazeAtPoseAction"
+  });
+
+  currentActionClient = actionClient;
+
+  msg = {
+    runtime_sec: secs,
+    topic_name: "/rwc_gaze_pose"
+  };
+
+  goal = new ROSLIB.Goal({
+    actionClient: gazeActionClient,
+    goalMessage: msg
+  });
+
+  goal.on('result', function (status) {
+    status = goal.status.status;
+    console.log("Action status: " + goalStatusNames[status]);
+  });
+
+  goal.send();
+  console.log("Goal '" + serverName + "/goal' sent!");
 }
 
 
