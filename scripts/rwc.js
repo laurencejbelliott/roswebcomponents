@@ -323,6 +323,32 @@ function rwcActionSay(phrase){
   console.log("Goal '" + serverName + "/goal' sent!");
 }
 
+// Action function 'rwcActionGazeAtPosition'
+function rwcActionGazeAtPosition(x, y, z){
+  // Topic info loaded from rwc-config JSON file
+  var rwcPoseTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : "/rwc_gaze_pose",
+    messageType : "geometry_msgs/PoseStamped"
+  });
+
+  var pose = new ROSLIB.Message({
+    position: {
+        x: x,
+        y: y,
+        z: z
+        },
+    orientation:{
+        x: 0,
+        y: 0,
+        z: 0,
+        w: 1
+    }
+  });
+  rwcPoseTopic.publish(pose);
+  console.log("Gaze pose published...");
+}
+
 
 // --- Listener functions ---
 // Listener function 'rwcListenerGetPosition'
