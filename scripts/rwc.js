@@ -431,7 +431,12 @@ async function rwcListenerGetPeoplePositions(){
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcPeoplePositions = await subPeoplePositions(listener);
+  rwcPeoplePoses = await subPeoplePositions(listener);
+
+  rwcPeoplePositions = [];
+  rwcPeoplePositions.forEach(function(person_pose){
+    rwcPeoplePositions.push([person_pose.position.x, person_pose.position.y, person_pose.position.z]);
+  });
 
   return rwcPeoplePositions;
 }
