@@ -388,6 +388,38 @@ function subOrientation(listener){
   });
 }
 
+// Listener function 'rwcListenerGetNearestPersonPosition'
+async function rwcListenerGetNearestPersonPosition(){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.listeners.nearest_person_pose.topicName,
+    messageType : configJSON.listeners.nearest_person_pose.topicMessageType
+  });
+
+  // promise function called and function execution halts until
+  // the promise is resolved
+  rwcPosition = await subPosition(listener);
+
+  return rwcPosition;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subNearestPersonPosition(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      window.rwcNearestPersonPosition = [message.pose.position.x,
+        message.pose.position.y,
+        message.pose.position.z];
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(window.rwcPosition);
+      }, 50);
+    });
+  });
+}
+
 // Listener function 'rwcListenerGetNode'
 async function rwcListenerGetNode(){
   // Topic info loaded from rwc-config JSON file

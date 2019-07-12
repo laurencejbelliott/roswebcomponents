@@ -26,6 +26,10 @@
             "topicName": "/odom",
             "topicMessageType": "nav_msgs/Odometry"
         },
+        "nearest_person_pose": {
+            "topicName": "/people_tracker/pose",
+            "topicMessageType": "geometry_msgs/PoseStamped"
+        },
         "current_node": {
             "topicName": "/current_node",
             "topicMessageType": "std_msgs/String"
