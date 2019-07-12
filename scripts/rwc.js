@@ -362,8 +362,7 @@ function rwcActionGazeAtPosition(x, y, z, secs){
   });
 
   goal.on('result', function (status) {
-    status = goal.status.status;
-    console.log("Action status: " + goalStatusNames[status]);
+    console.log("Action '/gaze_at_pose/' completed!");
   });
 
   goal.send();
