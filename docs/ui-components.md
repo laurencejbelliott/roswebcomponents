@@ -3,8 +3,8 @@
 This library provides a number of custom HTML elements with their own unique tags and attributes. Each element connects to ROS, either to provide a graphical interface for requesting an action on the connected robot, or to continuously display the latest data from a topic published by said robot.
 
 ## Action Components
-- rwc-button-action-start
-    - Description: A button which calls an [action function](/docs/action-functions.md) when clicked.
+### rwc-button-action-start
+- Description: A button which calls an [action function](/docs/action-functions.md) when clicked.
     - Example:
 
         ![alt text](/images/hello-button.png "A button with the text 'Say hello!'")
@@ -45,8 +45,8 @@ This library provides a number of custom HTML elements with their own unique tag
             - Description: Defines the text which is displayed inside the button.
             - Example: `data-text="Click me!"`
 
-- rwc-button-custom-action-start
-    - Description: A button which sends a user-specified goal with a user-specified message to a user-specified [action server](http://wiki.ros.org/actionlib) when clicked.
+ ### rwc-button-custom-action-start
+- Description: A button which sends a user-specified goal with a user-specified message to a user-specified [action server](http://wiki.ros.org/actionlib) when clicked.
     - Example:
 
         ![alt text](/images/forward-half-m.png "A button with the text 'Forward 0.5 meters!'")
@@ -114,8 +114,8 @@ This library provides a number of custom HTML elements with their own unique tag
             - Description: Defines the text which is displayed inside the button.
             - Example: `data-text="Click me!"`
 
-- rwc-text-action-start
-    - Description: Bold and underlined text which calls an [action function](/docs/action-functions.md) when clicked.
+### rwc-text-action-start
+- Description: Bold and underlined text which calls an [action function](/docs/action-functions.md) when clicked.
     - Example:
 
         ![alt text](/images/text-action-start.png "Decorated text that reads: 'Forward 0.5 meters!'")
@@ -156,8 +156,8 @@ This library provides a number of custom HTML elements with their own unique tag
             - Description: Defines the text which is displayed inside the tag.
             - Example: `data-text="Click me!"`
 
-- rwc-text-custom-action-start
-    - Description: Bold and underlined text which sends a user-specified goal with a user-specified message to a user-specified [action server](http://wiki.ros.org/actionlib) when clicked.
+### rwc-text-custom-action-start
+- Description: Bold and underlined text which sends a user-specified goal with a user-specified message to a user-specified [action server](http://wiki.ros.org/actionlib) when clicked.
     - Example:
 
         ![alt text](/images/text-action-start.png "Decorated text that reads: 'Forward 0.5 meters!'")
