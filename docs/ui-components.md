@@ -1,6 +1,6 @@
 [Home](https://github.com/laurencejbelliott/roswebcomponents) | [Action Functions](/docs/action-functions.md) | [Listener Functions](/docs/listener-functions.md) | [UI Components](/docs/ui-components.md)
 # UI Components
-This library provides a number of custom HTML elements with their own unique tags and attributes. Each element connects to ROS, either to provide a graphical interface for requesting an action on the connected robot, or to continuously display the latest data from a topic published by said robot.
+This library provides a number of custom  elements with their own unique tags and attributes. Each element connects to ROS, either to provide a graphical interface for requesting an action on the connected robot, or to continuously display the latest data from a topic published by said robot.
 
 ## Action Components
 ### cancel-button
@@ -14,6 +14,7 @@ This library provides a number of custom HTML elements with their own unique tag
 
         ![alt text](/images/hello-button.png "A button with the text 'Say hello!'")
 
+        
         ```html
         <rwc-button-action-start
         data-id="speakActionStart"
@@ -41,7 +42,7 @@ This library provides a number of custom HTML elements with their own unique tag
             - Description: The name of the [action function](/docs/action-functions.md) to be called when the button is clicked. The name should be specified in camelCase without the `rwcAction` prefix, as in the example.
             - Example: `data-action="setPoseRelative"`        
         - data-action-parameters
-            - Description: The parameter(s) of the [action function](/docs/action-functions.md) specified by the `data-action` attribute. Though HTML tag attributes are `String` data, numerical data, and comma seperated parameters are handled by the API before calling the action function. It should be noted that at this time the optional quaternion in the parameters of the `setPose...` action functions cannot be defined in this attribute. 
+            - Description: The parameter(s) of the [action function](/docs/action-functions.md) specified by the `data-action` attribute. Though  tag attributes are `String` data, numerical data, and comma seperated parameters are handled by the API before calling the action function. It should be noted that at this time the optional quaternion in the parameters of the `setPose...` action functions cannot be defined in this attribute. 
             - Example: `data-action-parameters="WayPoint20"`
             - Example: `data-action-parameters="1, 0, 0"`
             - Example: `data-action-parameters="-100"`
@@ -56,7 +57,7 @@ This library provides a number of custom HTML elements with their own unique tag
 
         ![alt text](/images/forward-half-m.png "A button with the text 'Forward 0.5 meters!'")
 
-        HTML
+        
         ```html
         <rwc-button-custom-action-start
         data-id="moveActionStart"
@@ -125,6 +126,7 @@ This library provides a number of custom HTML elements with their own unique tag
 
         ![alt text](/images/text-action-start.png "Decorated text that reads: 'Forward 0.5 meters!'")
 
+        
         ```html
         <rwc-text-custom-action-start
         data-id="moveActionStart"
@@ -152,7 +154,7 @@ This library provides a number of custom HTML elements with their own unique tag
             - Description: The name of the [action function](/docs/action-functions.md) to be called when the text is clicked. The name should be specified in camelCase without the `rwcAction` prefix, as in the example.
             - Example: `data-action="setPoseRelative"`        
         - data-action-parameters
-            - Description: The parameter(s) of the [action function](/docs/action-functions.md) specified by the `data-action` attribute. Though HTML tag attributes are `String` data, numerical data, and comma seperated parameters are handled by the API before calling the action function. It should be noted that at this time the optional quaternion in the parameters of the `setPose...` action functions cannot be defined in this attribute. 
+            - Description: The parameter(s) of the [action function](/docs/action-functions.md) specified by the `data-action` attribute. Though  tag attributes are `String` data, numerical data, and comma seperated parameters are handled by the API before calling the action function. It should be noted that at this time the optional quaternion in the parameters of the `setPose...` action functions cannot be defined in this attribute. 
             - Example: `data-action-parameters="WayPoint20"`
             - Example: `data-action-parameters="1, 0, 0"`
             - Example: `data-action-parameters="-100"`
@@ -167,7 +169,7 @@ This library provides a number of custom HTML elements with their own unique tag
 
         ![alt text](/images/text-action-start.png "Decorated text that reads: 'Forward 0.5 meters!'")
         
-        HTML
+        
         ```html
         <rwc-text-custom-action-start
         data-id="moveActionStart"
@@ -235,7 +237,8 @@ This library provides a number of custom HTML elements with their own unique tag
     - Example:
 
         ![alt text](/images/lcas-logo.png "The L-CAS (Lincoln Centre for Autonomous Systems) logo")
-
+        
+        
         ```html
         <rwc-img-action-start src="images/lcas-logo.png"
         data-action="say"
@@ -263,7 +266,7 @@ This library provides a number of custom HTML elements with their own unique tag
             - Description: The name of the [action function](/docs/action-functions.md) to be called when the image is clicked. The name should be specified in camelCase without the `rwcAction` prefix, as in the example.
             - Example: `data-action="setPoseRelative"`        
         - data-action-parameters
-            - Description: The parameter(s) of the [action function](/docs/action-functions.md) specified by the `data-action` attribute. Though HTML tag attributes are `String` data, numerical data, and comma seperated parameters are handled by the API before calling the action function. It should be noted that at this time the optional quaternion in the parameters of the `setPose...` action functions cannot be defined in this attribute. 
+            - Description: The parameter(s) of the [action function](/docs/action-functions.md) specified by the `data-action` attribute. Though  tag attributes are `String` data, numerical data, and comma seperated parameters are handled by the API before calling the action function. It should be noted that at this time the optional quaternion in the parameters of the `setPose...` action functions cannot be defined in this attribute. 
             - Example: `data-action-parameters="WayPoint20"`
             - Example: `data-action-parameters="1, 0, 0"`
             - Example: `data-action-parameters="-100"`
@@ -275,7 +278,7 @@ This library provides a number of custom HTML elements with their own unique tag
 
         ![alt text](/images/lcas-logo.png "The L-CAS (Lincoln Centre for Autonomous Systems) logo")
 
-        HTML
+        
         ```html
         <rwc-img-custom-action-start
         src="images/lcas-logo.png"
