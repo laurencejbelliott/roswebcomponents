@@ -45,7 +45,7 @@ This library provides a number of custom HTML elements with their own unique tag
             - Description: Defines the text which is displayed inside the button.
             - Example: `data-text="Click me!"`
 
- ### rwc-button-custom-action-start
+### rwc-button-custom-action-start
 - Description: A button which sends a user-specified goal with a user-specified message to a user-specified [action server](http://wiki.ros.org/actionlib) when clicked.
     - Example:
 
@@ -224,3 +224,111 @@ This library provides a number of custom HTML elements with their own unique tag
         - data-text
             - Description: Defines the text which is displayed inside the tag.
             - Example: `data-text="Click me!"`
+
+### rwc-img-action-start
+- Description: An image which calls an [action function](/docs/action-functions.md) when clicked.
+    - Example:
+
+        ![alt text](/images/lcas-logo.png "The L-CAS (Lincoln Centre for Autonomous Systems) logo")
+
+        ```html
+        <rwc-img-action-start src="images/lcas-logo.png"
+        data-action="say"
+        data-action-parameters="You have clicked the L-CAS logo!"></rwc-img-custom-action-start>
+        ```
+        An image which calls the `rwcActionSay` [action function](/docs/action-functions.md) with the parameter "You have clicked the L-CAS logo!", resulting in the robot speaking the phrase when the image is clicked.
+    
+    - Attributes:
+        - src
+            - Description: Specifies the path of the image to be displayed.
+            - Example: `src="images/lcas-logo.png"`
+        - data-id
+            - Description: Specifies an ID to be assigned to the tag for CSS styling.
+            - Example: `data-id="myActionImage"`
+        - data-class
+            - Description: Specifies a custom class to be assigned to the tag for CSS styling, overriding the default styling in `styles/rwc-styles.css`. Custom CSS should be defined in `styles/rwc-user-styles.css`.
+            - Example: `data-class="customImageClass"`
+        - data-disabled-class
+            - Description: Specifies a custom class to be assigned to the tag when interaction is disabled, for CSS styling, overriding the default styling in `styles/rwc-styles.css`. Custom CSS should be defined in `styles/rwc-user-styles.css`.
+            - Example: `data-disabled-class="customDisabledImageClass"`
+        - data-disabled
+            - Description: Set this to `true` to have the image load in a disabled state. Otherwise the interaction is enabled when loaded, by default.
+            - Example: `data-disabled="true"`
+        - data-action
+            - Description: The name of the [action function](/docs/action-functions.md) to be called when the image is clicked. The name should be specified in camelCase without the `rwcAction` prefix, as in the example.
+            - Example: `data-action="setPoseRelative"`        
+        - data-action-parameters
+            - Description: The parameter(s) of the [action function](/docs/action-functions.md) specified by the `data-action` attribute. Though HTML tag attributes are `String` data, numerical data, and comma seperated parameters are handled by the API before calling the action function. It should be noted that at this time the optional quaternion in the parameters of the `setPose...` action functions cannot be defined in this attribute. 
+            - Example: `data-action-parameters="WayPoint20"`
+            - Example: `data-action-parameters="1, 0, 0"`
+            - Example: `data-action-parameters="-100"`
+            - Example: `data-action-parameters="Hello world!"`
+
+### rwc-button-custom-action-start
+- Description: An image which sends a user-specified goal with a user-specified message to a user-specified [action server](http://wiki.ros.org/actionlib) when clicked.
+    - Example:
+
+        ![alt text](/images/lcas-logo.png "The L-CAS (Lincoln Centre for Autonomous Systems) logo")
+
+        HTML
+        ```html
+        <rwc-img-custom-action-start
+        src="images/lcas-logo.png"
+        data-id="moveActionStart"
+        data-action-server-name="/move_base"
+        data-action-name="move_base_msgs/MoveBaseAction"
+        data-goal-msg-path="json-msgs/forward-half-m.json">
+        </rwc-img-custom-action-start>
+        ```
+
+        JSON goal message in `json-msgs/forward-half-m.json`
+        ```json
+        {
+            "target_pose":{
+                "header":{
+                    "frame_id":"base_link"
+                },
+                "pose":{
+                    "position":{
+                        "x":0.5,
+                        "y":0,
+                        "z":0
+                        },
+                    "orientation":{
+                        "x":0,
+                        "y":0,
+                        "z":0,
+                        "w":1
+                    }
+                }
+            }
+        }
+        ```
+
+        An image which when clicked sends a goal to the `/move_base` [action server](http://wiki.ros.org/actionlib), with the message defined in JSON format in `json-msgs/forward-half-m.json` as shown above. This particular message specifies that the robot should move forward 0.5m from it's current position, and so this action is performed when the image is clicked.
+    
+    - Attributes:
+        - src
+            - Description: Specifies the path of the image to be displayed.
+            - Example: `src="images/lcas-logo.png"`
+        - data-action-server-name
+            - Description: The name of the action server which you wish to send a goal to when the image is clicked.
+            - Example: `data-action-server-name="/move_base"`
+        - data-action-name
+            - Description: The name of the action associated with the given action server. This can be obtained in ROS by using the terminal command `rostopic info /<action-server-name>/goal`, replacing `<action-server-name>` with the name of your chosen action server, and looking for the text after `Type:` in the output, e.g. `Type: move_base_msgs/MoveBaseActionGoal`. Then the `Goal` suffix should be removed leaving `move_base_msgs/MoveBaseAction` for example.
+            - Example: `data-action-name="move_base_msgs/MoveBaseAction"`
+        - data-goal-msg-path
+            - Description: The path of a JSON file which defines the action goal message in JSON format, as in the [example file](/json-msgs/forward-half-m.json).
+            - Example: `data-goal-msg-path="json-msgs/forward-half-m.json"`
+        - data-id
+            - Description: Specifies an ID to be assigned to the image for CSS styling
+            - Example: `data-id="myActionImage"`
+        - data-class
+            - Description: Specifies a custom class to be assigned to the image for CSS styling, overriding the default styling in `styles/rwc-styles.css`. Custom CSS should be defined in `styles/rwc-user-styles.css`.
+            - Example: `data-class="customImageClass"`
+        - data-disabled-class
+            - Description: Specifies a custom class to be assigned to the image when interaction is disabled, for CSS styling, overriding the default styling in `styles/rwc-styles.css`. Custom CSS should be defined in `styles/rwc-user-styles.css`.
+            - Example: `data-disabled-class="customDisabledImageClass"`
+        - data-disabled
+            - Description: Set this to `true` to have the image load in a disabled state. Otherwise interaction is enabled when loaded, by default.
+            - Example: `data-disabled="true"`
