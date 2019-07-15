@@ -3,6 +3,11 @@
 This library provides a number of custom HTML elements with their own unique tags and attributes. Each element connects to ROS, either to provide a graphical interface for requesting an action on the connected robot, or to continuously display the latest data from a topic published by said robot.
 
 ## Action Components
+### cancel-button
+- Description: A red button with the text 'cancel action' which is automatically added to the bottom-left corner of the page. When the button is clicked the most recently started action is cancelled.
+- Example:
+
+    ![alt text](/images/cancel-button.png "A red button with the text 'Cancel action'")
 ### rwc-button-action-start
 - Description: A button which calls an [action function](/docs/action-functions.md) when clicked.
     - Example:
