@@ -340,3 +340,23 @@ This library provides a number of custom  elements with their own unique tags an
         - data-disabled
             - Description: Set this to `true` to have the image load in a disabled state. Otherwise interaction is enabled when loaded, by default.
             - Example: `data-disabled="true"`
+
+## Listener Components
+### rwc-text-listener
+- Description: Text which displays the data returned by a [listener function](/docs/listener-functions.md), updating continuously to reflect changes in the returned data.
+    - Example:
+
+        ![alt text](/images/text-listener.png "Text that reads: 'Current node: WayPoint33'")
+        
+        ```html
+        Current node: <rwc-text-listener data-listener="getNode"></rwc-text-listener>
+        ```
+        Text that reads: 'Current node: WayPoint33', calling the `getNode` [listener function](/docs/listener-functions.md) and displaying the returned value as text after 'Current node: '.
+    
+    - Attributes:
+        - data-listener
+            - Description: Specifies the name of the listener function to display data from. The name should be specified in camelCase without the `rwcListener` prefix, as in the example.
+            - Example: `data-listener="getNode"`
+        - data-live
+            - Description: If set to false then the value returned by the chosen listener function will displayed when the element is loaded, and will not be updated thereafter.
+            - Example: `data-live="false"`
