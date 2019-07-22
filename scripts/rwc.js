@@ -1,3 +1,12 @@
+// Detect mobile devices
+var md = new MobileDetect(window.navigator.userAgent);
+var isPhone = md.mobile() != null;
+if (isPhone){
+  console.log("Client is a phone or tablet");
+} else {
+  console.log("Client is not a phone or tablet");
+}
+
 // Load config of topic and action server names from 'rwc-config.json'
 var configJSON;
 var currentActionClient;
@@ -87,9 +96,15 @@ $(document).ready(function(){
   stopButtonSpan = document.createElement("span");
   stopButtonSpan.innerHTML = "Cancel action";
   stopButton.appendChild(stopButtonSpan);
-  stopButton.addEventListener('click', e => {
-    cancelCurrentAction();
-  });
+  if(isPhone){
+    stopButton.addEventListener('touchstart', function(event){
+      cancelCurrentAction();
+    });
+  } else {
+    stopButton.addEventListener('click', e => {
+      cancelCurrentAction();
+    });
+  }
   document.body.appendChild(stopButton);
 });
 
@@ -668,23 +683,43 @@ class rwcButtonActionStart extends HTMLElement {
       }
     }
 
-    this.addEventListener('click', e => {
-      if (!this.isDisabled){
-        if (strActions.includes(this.dataset.action)) {
-          actions[this.dataset.action](this.dataset.actionParameters);
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        if (!this.isDisabled){
+          if (strActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](this.dataset.actionParameters);
+          }
+          if (intActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+          }
+          if (numArrayActions.includes(this.dataset.action)) {
+            var strArray = this.dataset.actionParameters.split(",");
+            var floatArray = strArray.map(Number);
+            actions[this.dataset.action](floatArray);
+          }
+          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
+          this.dataset.actionParameters);
         }
-        if (intActions.includes(this.dataset.action)) {
-          actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+      });
+    } else {
+      this.addEventListener('click', e => {
+        if (!this.isDisabled){
+          if (strActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](this.dataset.actionParameters);
+          }
+          if (intActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+          }
+          if (numArrayActions.includes(this.dataset.action)) {
+            var strArray = this.dataset.actionParameters.split(",");
+            var floatArray = strArray.map(Number);
+            actions[this.dataset.action](floatArray);
+          }
+          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
+          this.dataset.actionParameters);
         }
-        if (numArrayActions.includes(this.dataset.action)) {
-          var strArray = this.dataset.actionParameters.split(",");
-          var floatArray = strArray.map(Number);
-          actions[this.dataset.action](floatArray);
-        }
-        console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
-        this.dataset.actionParameters);
-      }
-    });
+      });
+    }
 
     const shadowRoot = this.attachShadow({ mode: "open" });
     shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
@@ -757,27 +792,51 @@ class rwcButtonCustomActionStart extends HTMLElement {
         actionName: this.dataset.actionName
       });
 
-      this.addEventListener('click', e => {
-        if (!this.isDisabled){
-          var goal = new ROSLIB.Goal({
-            actionClient: rwcActionClient,
-            goalMessage: msgJSON
-          });
-
-          goal.on('result', function (status) {    
-            enableInterface();
-            $(".spin").spin("hide");
-            console.log(goal.status.text);
-            status = goal.status.status;
-            console.log("Action status: " + goalStatusNames[status]);
-          });
-
-          goal.send();
-          disableInterface();
-          $(".spin").spin("show");
-          console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
-        }
-      });
+      if(isPhone){
+        this.addEventListener('touchstart', e => {
+          if (!this.isDisabled){
+            var goal = new ROSLIB.Goal({
+              actionClient: rwcActionClient,
+              goalMessage: msgJSON
+            });
+  
+            goal.on('result', function (status) {    
+              enableInterface();
+              $(".spin").spin("hide");
+              console.log(goal.status.text);
+              status = goal.status.status;
+              console.log("Action status: " + goalStatusNames[status]);
+            });
+  
+            goal.send();
+            disableInterface();
+            $(".spin").spin("show");
+            console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+          }
+        });
+      } else {
+        this.addEventListener('click', e => {
+          if (!this.isDisabled){
+            var goal = new ROSLIB.Goal({
+              actionClient: rwcActionClient,
+              goalMessage: msgJSON
+            });
+  
+            goal.on('result', function (status) {    
+              enableInterface();
+              $(".spin").spin("hide");
+              console.log(goal.status.text);
+              status = goal.status.status;
+              console.log("Action status: " + goalStatusNames[status]);
+            });
+  
+            goal.send();
+            disableInterface();
+            $(".spin").spin("show");
+            console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+          }
+        });
+      }
 
       const shadowRoot = this.attachShadow({ mode: "open" });
       shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
@@ -842,23 +901,43 @@ class rwcTextActionStart extends HTMLElement {
       }
     }
 
-    this.addEventListener('click', e => {
-      if (!this.isDisabled){
-        if (strActions.includes(this.dataset.action)) {
-          actions[this.dataset.action](this.dataset.actionParameters);
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        if (!this.isDisabled){
+          if (strActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](this.dataset.actionParameters);
+          }
+          if (intActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+          }
+          if (numArrayActions.includes(this.dataset.action)) {
+            var strArray = this.dataset.actionParameters.split(",");
+            var floatArray = strArray.map(Number);
+            actions[this.dataset.action](floatArray);
+          }
+          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
+          this.dataset.actionParameters);
         }
-        if (intActions.includes(this.dataset.action)) {
-          actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+      });
+    } else {
+      this.addEventListener('click', e => {
+        if (!this.isDisabled){
+          if (strActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](this.dataset.actionParameters);
+          }
+          if (intActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+          }
+          if (numArrayActions.includes(this.dataset.action)) {
+            var strArray = this.dataset.actionParameters.split(",");
+            var floatArray = strArray.map(Number);
+            actions[this.dataset.action](floatArray);
+          }
+          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
+          this.dataset.actionParameters);
         }
-        if (numArrayActions.includes(this.dataset.action)) {
-          var strArray = this.dataset.actionParameters.split(",");
-          var floatArray = strArray.map(Number);
-          actions[this.dataset.action](floatArray);
-        }
-        console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
-        this.dataset.actionParameters);
-      }
-    });
+      });
+    }
 
     const shadowRoot = this.attachShadow({ mode: "open" });
     shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
@@ -931,27 +1010,51 @@ class rwcTextCustomActionStart extends HTMLElement {
       actionName: this.dataset.actionName
     });
 
-    this.addEventListener('click', e => {
-      if (!this.isDisabled){
-        var goal = new ROSLIB.Goal({
-          actionClient: rwcActionClient,
-          goalMessage: msgJSON
-        });
-
-        goal.on('result', function (status) {    
-          enableInterface();
-          $(".spin").spin("hide");
-          console.log(goal.status.text);
-          status = goal.status.status;
-          console.log("Action status: " + goalStatusNames[status]);
-        });
-
-        goal.send();
-        disableInterface();
-        $(".spin").spin("show");
-        console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
-      }
-    });
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        if (!this.isDisabled){
+          var goal = new ROSLIB.Goal({
+            actionClient: rwcActionClient,
+            goalMessage: msgJSON
+          });
+  
+          goal.on('result', function (status) {    
+            enableInterface();
+            $(".spin").spin("hide");
+            console.log(goal.status.text);
+            status = goal.status.status;
+            console.log("Action status: " + goalStatusNames[status]);
+          });
+  
+          goal.send();
+          disableInterface();
+          $(".spin").spin("show");
+          console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+        }
+      });
+    } else {
+      this.addEventListener('click', e => {
+        if (!this.isDisabled){
+          var goal = new ROSLIB.Goal({
+            actionClient: rwcActionClient,
+            goalMessage: msgJSON
+          });
+  
+          goal.on('result', function (status) {    
+            enableInterface();
+            $(".spin").spin("hide");
+            console.log(goal.status.text);
+            status = goal.status.status;
+            console.log("Action status: " + goalStatusNames[status]);
+          });
+  
+          goal.send();
+          disableInterface();
+          $(".spin").spin("show");
+          console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+        }
+      });
+    }
 
     const shadowRoot = this.attachShadow({ mode: "open" });
     shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
@@ -1016,23 +1119,43 @@ class rwcImageActionStart extends HTMLElement {
       }
     }
 
-    this.addEventListener('click', e => {
-      if (!this.isDisabled){
-        if (strActions.includes(this.dataset.action)) {
-          actions[this.dataset.action](this.dataset.actionParameters);
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        if (!this.isDisabled){
+          if (strActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](this.dataset.actionParameters);
+          }
+          if (intActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+          }
+          if (numArrayActions.includes(this.dataset.action)) {
+            var strArray = this.dataset.actionParameters.split(",");
+            var floatArray = strArray.map(Number);
+            actions[this.dataset.action](floatArray);
+          }
+          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
+          this.dataset.actionParameters);
         }
-        if (intActions.includes(this.dataset.action)) {
-          actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+      });
+    } else {
+      this.addEventListener('click', e => {
+        if (!this.isDisabled){
+          if (strActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](this.dataset.actionParameters);
+          }
+          if (intActions.includes(this.dataset.action)) {
+            actions[this.dataset.action](parseInt(this.dataset.actionParameters));
+          }
+          if (numArrayActions.includes(this.dataset.action)) {
+            var strArray = this.dataset.actionParameters.split(",");
+            var floatArray = strArray.map(Number);
+            actions[this.dataset.action](floatArray);
+          }
+          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
+          this.dataset.actionParameters);
         }
-        if (numArrayActions.includes(this.dataset.action)) {
-          var strArray = this.dataset.actionParameters.split(",");
-          var floatArray = strArray.map(Number);
-          actions[this.dataset.action](floatArray);
-        }
-        console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
-        this.dataset.actionParameters);
-      }
-    });
+      });
+    }
 
     const shadowRoot = this.attachShadow({ mode: "open" });
     shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
@@ -1105,27 +1228,51 @@ class rwcImageCustomActionStart extends HTMLElement {
       actionName: this.dataset.actionName
     });
 
-    this.addEventListener('click', e => {
-      if (!this.isDisabled){
-        var goal = new ROSLIB.Goal({
-          actionClient: rwcActionClient,
-          goalMessage: msgJSON
-        });
-
-        goal.on('result', function (status) {    
-          enableInterface();
-          $(".spin").spin("hide");
-          console.log(goal.status.text);
-          status = goal.status.status;
-          console.log("Action status: " + goalStatusNames[status]);
-        });
-
-        goal.send();
-        disableInterface();
-        $(".spin").spin("show");
-        console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
-      }
-    });
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        if (!this.isDisabled){
+          var goal = new ROSLIB.Goal({
+            actionClient: rwcActionClient,
+            goalMessage: msgJSON
+          });
+  
+          goal.on('result', function (status) {    
+            enableInterface();
+            $(".spin").spin("hide");
+            console.log(goal.status.text);
+            status = goal.status.status;
+            console.log("Action status: " + goalStatusNames[status]);
+          });
+  
+          goal.send();
+          disableInterface();
+          $(".spin").spin("show");
+          console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+        }
+      });
+    } else {
+      this.addEventListener('click', e => {
+        if (!this.isDisabled){
+          var goal = new ROSLIB.Goal({
+            actionClient: rwcActionClient,
+            goalMessage: msgJSON
+          });
+  
+          goal.on('result', function (status) {    
+            enableInterface();
+            $(".spin").spin("hide");
+            console.log(goal.status.text);
+            status = goal.status.status;
+            console.log("Action status: " + goalStatusNames[status]);
+          });
+  
+          goal.send();
+          disableInterface();
+          $(".spin").spin("show");
+          console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
+        }
+      });
+    }
 
     const shadowRoot = this.attachShadow({ mode: "open" });
     shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
