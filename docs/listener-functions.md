@@ -16,6 +16,15 @@ Asynchronous Listener functions:
  - rwcListenerGetOrientation
      - Return type: Number array.
      - Description: Gets the quaternion of the robot's orientation from odometry.
+ - rwcListenerGetNearestPersonPosition
+    - Return type: Number array.
+    - Description: Gets the co-ordinates of the nearest person's position from [the STRANDS project's Bayesian people tracker](https://strands.readthedocs.io/en/latest/strands_perception_people/bayes_people_tracker.html).
+ - rwcListenerGetPeoplePositions
+    - Return type: Array of Number arrays.
+    - Description: Returns an array of arrays of the position co-ordinates of all people detected by [the STRANDS project's Bayesian people tracker](https://strands.readthedocs.io/en/latest/strands_perception_people/bayes_people_tracker.html).
+ - rwcListenerGetNumberOfPeople
+    - Return type: Number.
+    - Description: Gets the number of people detected by [the STRANDS project's Bayesian people tracker](https://strands.readthedocs.io/en/latest/strands_perception_people/bayes_people_tracker.html).
  - rwcListenerGetNode
      - Return type: String.
      - Description: Gets the name of the topological node where the robot is currently positioned.
