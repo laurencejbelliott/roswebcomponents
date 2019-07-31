@@ -196,6 +196,8 @@ function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
   disableInterface();
   $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
+
+  return goal;
 }
 
 
@@ -244,6 +246,8 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
   disableInterface();
   $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
+
+  return goal;
 }
 
 
@@ -282,6 +286,8 @@ function rwcActionGoToNode(node_name, no_orientation = false){
   disableInterface();
   $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
+
+  return goal;
 }
 
 
@@ -336,6 +342,8 @@ function rwcActionSay(phrase){
 
   goal.send();
   console.log("Goal '" + serverName + "/goal' sent!");
+
+  return goal;
 }
 
 // Action function 'rwcActionGazeAtPosition'
@@ -392,6 +400,8 @@ function rwcActionGazeAtPosition(x, y, z, secs){
 
   goal.send();
   console.log("Goal '/gaze_at_pose/goal' sent!");
+
+  return goal;
 }
 
 
@@ -1358,3 +1368,73 @@ class rwcTextListener extends HTMLElement {
 }
 
 customElements.define("rwc-text-listener", rwcTextListener);
+
+
+// // Class for custom element 'rwc-text-custom-listener'
+// class rwcTextCustomListener extends HTMLElement {
+//   connectedCallback() {
+//     const shadowRoot = this.attachShadow({ mode: "open" });
+
+//     setTimeout(this.update, 50);
+//     if (this.dataset.live == "true" || this.dataset.live == null) {
+//       liveListenerComponents.push(this);
+//     }
+//     else {
+//       staticListenerComponents.push(this);
+//     }
+//   }
+
+//   update() {
+//     if (this.dataset != null){
+//       var thisListener = this;
+//       prepareCustomListenerData(this.dataset.listener).then(function(result){
+//         if (String(result) != "[object Promise]"){
+//           thisListener.shadowRoot.innerHTML = "<span>" + String(result) +"</span>";
+//         } else {
+//           thisListener.shadowRoot.innerHTML = "<span></span>";
+//         }
+//       });
+//     }
+//   }
+// }
+
+// // Listener function 'rwcListenerGetCustomData'
+// async function rwcListenerGetCustomData(listener, msgName = "data"){
+//   rwcNode = await subCustomListenerData(listener, msgName);
+
+//   return rwcNode;
+// }
+
+// // Promise returns value 50ms after subscribing to topic,
+// // preventing old or undefined values from being returned
+// function subCustomListenerData(listener, msgName){
+//   return new Promise(function(resolve) {
+//     listener.subscribe(function(message) {
+//       msgNameArray = msgName.split("\.");
+//       console.log(msgNameArray);
+//       rwcListenerData = message[msgName];
+//       listener.unsubscribe();
+//       setTimeout(function(){
+//         resolve(rwcListenerData);
+//       }, 50);
+//     });
+//   });
+// }
+
+// async function prepareCustomListenerData (listener){
+//   rwcListenerData = await awaitCustomListenerData(listener);
+//   return rwcListenerData;
+// }
+
+// // Promise returns value 50ms after subscribing to topic,
+// // preventing old or undefined values from being returned
+// function awaitCustomListenerData(listener){
+//   return new Promise(function(resolve) {
+//     setTimeout(function(){
+//       rwcListenerData = listeners[listener]()
+//       resolve(rwcListenerData);
+//     }, 50);
+//   });
+// }
+
+// customElements.define("rwc-text-custom-listener", rwcTextCustomListener);
