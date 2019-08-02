@@ -29,6 +29,22 @@ div.rwc-button-action-start:active{
     cursor:pointer;
 }
 
+/* Same effect as active but for reciever interfaces */
+div.rwc-button-action-start-clicked{
+    background-color: gray;
+    color: black;
+    cursor:pointer;
+    font-size: 20px;
+    display: inline-block;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: black;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
 div.rwc-button-action-start > span{
     margin: 5px;
 }
@@ -68,6 +84,13 @@ span.rwc-text-action-start:active{
     cursor:pointer;
 }
 
+/* Same effect as active but for reciever interfaces */
+span.rwc-text-action-start-clicked{
+    color: grey;
+    cursor:pointer;
+}
+
+
 /* Default styling for rwc-text-action-start-disabled */
 span.rwc-text-action-start-disabled{
     color: grey;
@@ -88,6 +111,12 @@ img.rwc-img-action-start {
 }
 
 img.rwc-img-action-start:active{
+    filter: saturate(0%);
+    cursor:pointer;
+}
+
+/* Same effect as active but for reciever interfaces */
+img.rwc-img-action-start-clicked{
     filter: saturate(0%);
     cursor:pointer;
 }

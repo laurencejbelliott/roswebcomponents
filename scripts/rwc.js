@@ -81,8 +81,22 @@ var toggleableComponents = [];
 window.rwcCurrentPage = window.location.pathname;
 
 $(document).ready(function(){
+  // Initial publication of '/rwc/current_page'
   currentPageTopicString.data = window.rwcCurrentPage;
   currentPageTopic.publish(currentPageTopicString);
+
+  // Initial publication of '/rwc/components_currently_clicked'
+  // Build, stringify, and publish clicked dictionary
+  clickedComponents = {};
+  toggleableComponents.forEach(function(element){
+    clickedComponents[element.dataset.id] = element.clicked;
+  });
+
+  clickedComponentsString = JSON.stringify(clickedComponents);
+  clickedTopicString.data = clickedComponentsString;
+  clickedTopic.publish(clickedTopicString);
+
+  window.rwcClickedComponents = clickedComponents;
 
   staticListenerComponents.forEach(function(item, index){
     item.update();
@@ -118,8 +132,6 @@ $(document).ready(function(){
       window.rwcInterfaceEnabled = param;
     });
 
-    console.log(window.rwcInterfaceEnabled);
-
     if (window.rwcInterfaceEnabled == 1){
       toggleableComponents.forEach(function(element){element.disabled = false;});
       $(".spin").spin("hide");
@@ -128,14 +140,30 @@ $(document).ready(function(){
       $(".spin").spin("show");
     }
 
+    // Publish '/rwc/current_page'
     rwcListenerGetCurrentPage().then(function(subCurrentPage){
       if (window.rwcCurrentPage != subCurrentPage){
-        console.log()
         window.rwcCurrentPage = subCurrentPage;
         currentPageTopicString.data = window.rwcCurrentPage;
         currentPageTopic.publish(currentPageTopicString);
       }
     });
+
+    // Build, stringify, and publish clicked dictionary
+    clickedComponents = {};
+    toggleableComponents.forEach(function(element){
+      clickedComponents[element.dataset.id] = element.clicked;
+    });
+
+    if (typeof window.rwcClickedComponents !== 'undefined'){
+      clickedComponentsString = JSON.stringify(clickedComponents);
+      if (clickedComponentsString !== JSON.stringify(window.rwcClickedComponents)){
+        clickedTopicString.data = clickedComponentsString;
+        clickedTopic.publish(clickedTopicString);
+      }
+    }
+
+    window.rwcClickedComponents = clickedComponents;
   }, 500);
 });
 
@@ -192,13 +220,23 @@ var currentPageTopicString = new ROSLIB.Message({
   data : ""
 });
 
+// Variables for tracking object click / touch interactions in a ROS topic
+var clickedTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/components_currently_clicked",
+  messageType : "std_msgs/String",
+  latch: true
+});
+
+var clickedTopicString = new ROSLIB.Message({
+  data : ""
+});
+
 // ROS parameter '/interface_enabled'
 var interfaceEnabledParam = new ROSLIB.Param({
   ros: ros,
   name: "/interface_enabled"
 });
-
-
 
 
 // General functions
@@ -773,6 +811,8 @@ function rwcListenerGetQRCode(){
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
   connectedCallback() {
+    this.clicked = false;
+
     if (this.dataset.disabled) {
       this.isDisabled = true;
     } else {
@@ -797,6 +837,7 @@ class rwcButtonActionStart extends HTMLElement {
 
     if(isPhone){
       this.addEventListener('touchstart', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           if (strActions.includes(this.dataset.action)) {
             actions[this.dataset.action](this.dataset.actionParameters);
@@ -812,9 +853,14 @@ class rwcButtonActionStart extends HTMLElement {
           console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
           this.dataset.actionParameters);
         }
+        var actionButton = this;
+        setTimeout(function(){
+          actionButton.clicked = false;
+        }, 500);
       });
     } else {
       this.addEventListener('click', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           if (strActions.includes(this.dataset.action)) {
             actions[this.dataset.action](this.dataset.actionParameters);
@@ -830,6 +876,10 @@ class rwcButtonActionStart extends HTMLElement {
           console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
           this.dataset.actionParameters);
         }
+        var actionButton = this;
+        setTimeout(function(){
+          actionButton.clicked = false;
+        }, 500);
       });
     }
 
@@ -873,6 +923,7 @@ customElements.define("rwc-button-action-start", rwcButtonActionStart);
 // Class for custom element 'rwc-button-custom-action-start'
 class rwcButtonCustomActionStart extends HTMLElement {
     connectedCallback() {
+      this.clicked = false;
       var msgJSON;
       $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
 
@@ -910,6 +961,7 @@ class rwcButtonCustomActionStart extends HTMLElement {
 
       if(isPhone){
         this.addEventListener('touchstart', e => {
+          this.clicked = true;
           if (!this.isDisabled){
             var goal = new ROSLIB.Goal({
               actionClient: rwcActionClient,
@@ -929,9 +981,14 @@ class rwcButtonCustomActionStart extends HTMLElement {
             $(".spin").spin("show");
             console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
           }
+          var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
         });
       } else {
         this.addEventListener('click', e => {
+          this.clicked = true;
           if (!this.isDisabled){
             var goal = new ROSLIB.Goal({
               actionClient: rwcActionClient,
@@ -951,6 +1008,10 @@ class rwcButtonCustomActionStart extends HTMLElement {
             $(".spin").spin("show");
             console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
           }
+          var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
         });
       }
 
@@ -995,6 +1056,7 @@ customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionSta
 // Class for custom element 'rwc-text-action-start'
 class rwcTextActionStart extends HTMLElement {
   connectedCallback() {
+    this.clicked = false;
     if (this.dataset.disabled) {
       this.isDisabled = true;
     } else {
@@ -1019,6 +1081,7 @@ class rwcTextActionStart extends HTMLElement {
 
     if(isPhone){
       this.addEventListener('touchstart', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           if (strActions.includes(this.dataset.action)) {
             actions[this.dataset.action](this.dataset.actionParameters);
@@ -1034,9 +1097,14 @@ class rwcTextActionStart extends HTMLElement {
           console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
           this.dataset.actionParameters);
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     } else {
       this.addEventListener('click', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           if (strActions.includes(this.dataset.action)) {
             actions[this.dataset.action](this.dataset.actionParameters);
@@ -1052,6 +1120,10 @@ class rwcTextActionStart extends HTMLElement {
           console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
           this.dataset.actionParameters);
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     }
 
@@ -1095,6 +1167,7 @@ customElements.define("rwc-text-action-start", rwcTextActionStart);
 // Class for custom element 'rwc-text-custom-action-start'
 class rwcTextCustomActionStart extends HTMLElement {
   connectedCallback() {
+    this.clicked = false;
     var msgJSON;
       $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
 
@@ -1132,6 +1205,7 @@ class rwcTextCustomActionStart extends HTMLElement {
 
     if(isPhone){
       this.addEventListener('touchstart', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           var goal = new ROSLIB.Goal({
             actionClient: rwcActionClient,
@@ -1151,9 +1225,14 @@ class rwcTextCustomActionStart extends HTMLElement {
           $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     } else {
       this.addEventListener('click', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           var goal = new ROSLIB.Goal({
             actionClient: rwcActionClient,
@@ -1173,6 +1252,10 @@ class rwcTextCustomActionStart extends HTMLElement {
           $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     }
 
@@ -1217,6 +1300,7 @@ customElements.define("rwc-text-custom-action-start", rwcTextCustomActionStart);
 // Class for custom element 'rwc-img-action-start'
 class rwcImageActionStart extends HTMLElement {
   connectedCallback() {
+    this.clicked = false;
     if (this.dataset.disabled) {
       this.isDisabled = true;
     } else {
@@ -1241,6 +1325,7 @@ class rwcImageActionStart extends HTMLElement {
 
     if(isPhone){
       this.addEventListener('touchstart', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           if (strActions.includes(this.dataset.action)) {
             actions[this.dataset.action](this.dataset.actionParameters);
@@ -1256,9 +1341,14 @@ class rwcImageActionStart extends HTMLElement {
           console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
           this.dataset.actionParameters);
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     } else {
       this.addEventListener('click', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           if (strActions.includes(this.dataset.action)) {
             actions[this.dataset.action](this.dataset.actionParameters);
@@ -1274,6 +1364,10 @@ class rwcImageActionStart extends HTMLElement {
           console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
           this.dataset.actionParameters);
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     }
 
@@ -1317,6 +1411,7 @@ customElements.define("rwc-img-action-start", rwcImageActionStart);
 // Class for custom element 'rwc-img-custom-action-start'
 class rwcImageCustomActionStart extends HTMLElement {
   connectedCallback() {
+    this.clicked = false;
     var msgJSON;
     $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
 
@@ -1354,6 +1449,7 @@ class rwcImageCustomActionStart extends HTMLElement {
 
     if(isPhone){
       this.addEventListener('touchstart', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           var goal = new ROSLIB.Goal({
             actionClient: rwcActionClient,
@@ -1373,9 +1469,14 @@ class rwcImageCustomActionStart extends HTMLElement {
           $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     } else {
       this.addEventListener('click', e => {
+        this.clicked = true;
         if (!this.isDisabled){
           var goal = new ROSLIB.Goal({
             actionClient: rwcActionClient,
@@ -1395,6 +1496,10 @@ class rwcImageCustomActionStart extends HTMLElement {
           $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
+        var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
       });
     }
 
