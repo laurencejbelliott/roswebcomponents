@@ -77,7 +77,13 @@ var staticListenerComponents = [];
 // Array to track instances of toggleable components for bulk enabling/disabling
 var toggleableComponents = [];
 
+// Global var to track curernt page
+window.rwcCurrentPage = window.location.pathname;
+
 $(document).ready(function(){
+  currentPageTopicString.data = window.rwcCurrentPage;
+  currentPageTopic.publish(currentPageTopicString);
+
   staticListenerComponents.forEach(function(item, index){
     item.update();
     setTimeout(function(){item.update();}, 500);
@@ -121,6 +127,15 @@ $(document).ready(function(){
       toggleableComponents.forEach(function(element){element.disabled = true;});
       $(".spin").spin("show");
     }
+
+    rwcListenerGetCurrentPage().then(function(subCurrentPage){
+      if (window.rwcCurrentPage != subCurrentPage){
+        console.log()
+        window.rwcCurrentPage = subCurrentPage;
+        currentPageTopicString.data = window.rwcCurrentPage;
+        currentPageTopic.publish(currentPageTopicString);
+      }
+    });
   }, 500);
 });
 
@@ -165,11 +180,25 @@ var currentActionTopicString = new ROSLIB.Message({
   data : ""
 });
 
+// Variables for tracking current page in a ROS topic
+var currentPageTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/current_page",
+  messageType : "std_msgs/String",
+  latch: true
+});
+
+var currentPageTopicString = new ROSLIB.Message({
+  data : ""
+});
+
 // ROS parameter '/interface_enabled'
 var interfaceEnabledParam = new ROSLIB.Param({
   ros: ros,
   name: "/interface_enabled"
 });
+
+
 
 
 // General functions
@@ -453,6 +482,32 @@ function rwcActionGazeAtPosition(x, y, z, secs){
 
 
 // --- Listener functions ---
+// Listener function 'rwcListenerGetCurrentPage'
+async function rwcListenerGetCurrentPage(){
+  var listener = currentPageTopic;
+
+  // promise function called and function execution halts until
+  // the promise is resolved
+  rwcCurrentPage = await subCurrentPage(listener);
+
+  return rwcCurrentPage;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subCurrentPage(listener){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      rwcCurrentPage = message.data;
+      listener.unsubscribe();
+      setTimeout(function(){
+        resolve(rwcCurrentPage);
+      }, 50);
+    });
+  });
+}
+
+
 // Listener function 'rwcListenerGetPosition'
 async function rwcListenerGetPosition(){
   // Topic info loaded from rwc-config JSON file
