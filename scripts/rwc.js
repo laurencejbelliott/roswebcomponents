@@ -106,6 +106,22 @@ $(document).ready(function(){
     });
   }
   document.body.appendChild(stopButton);
+
+  window.setInterval(function(){
+    interfaceEnabledParam.get(function(param){
+      window.rwcInterfaceEnabled = param;
+    });
+
+    console.log(window.rwcInterfaceEnabled);
+
+    if (window.rwcInterfaceEnabled == 1){
+      toggleableComponents.forEach(function(element){element.disabled = false;});
+      $(".spin").spin("hide");
+    } else if(window.rwcInterfaceEnabled == 0){
+      toggleableComponents.forEach(function(element){element.disabled = true;});
+      $(".spin").spin("show");
+    }
+  }, 500);
 });
 
 // Connection to ROSbridge server websocket
@@ -137,17 +153,40 @@ ros.on('close', function(){
     }, 5000);
 });
 
+// Variables for tracking current action in a ROS topic
+var currentActionTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/current_action",
+  messageType : "std_msgs/String",
+  latch: true
+});
+
+var currentActionTopicString = new ROSLIB.Message({
+  data : ""
+});
+
+// ROS parameter '/interface_enabled'
+var interfaceEnabledParam = new ROSLIB.Param({
+  ros: ros,
+  name: "/interface_enabled"
+});
+
+
 // General functions
 function disableInterface(){
   toggleableComponents.forEach(function(element){element.disabled = true;});
+  interfaceEnabledParam.set(0);
 }
 
 function enableInterface(){
   toggleableComponents.forEach(function(element){element.disabled = false;});
+  interfaceEnabledParam.set(1);
 }
 
 function cancelCurrentAction(){
   currentActionClient.cancel();
+  enableInterface();
+  $(".spin").spin("hide");
 }
 
 // --- Action fuctions ---
@@ -180,6 +219,8 @@ function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
   });
 
   currentActionClient = actionClient;
+  currentActionTopicString.data = currentActionClient.actionName;
+  currentActionTopic.publish(currentActionTopicString);
 
   goal = new ROSLIB.Goal({
     actionClient: actionClient,
@@ -230,6 +271,8 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
   });
 
   currentActionClient = actionClient;
+  currentActionTopicString.data = currentActionClient.actionName;
+  currentActionTopic.publish(currentActionTopicString);
 
   goal = new ROSLIB.Goal({
     actionClient: actionClient,
@@ -269,6 +312,8 @@ function rwcActionGoToNode(node_name, no_orientation = false){
   });
 
   currentActionClient = actionClient;
+  currentActionTopicString.data = currentActionClient.actionName;
+  currentActionTopic.publish(currentActionTopicString);
 
   goal = new ROSLIB.Goal({
     actionClient: actionClient,
@@ -329,6 +374,8 @@ function rwcActionSay(phrase){
   });
 
   currentActionClient = actionClient;
+  currentActionTopicString.data = currentActionClient.actionName;
+  currentActionTopic.publish(currentActionTopicString);
 
   goal = new ROSLIB.Goal({
     actionClient: actionClient,
@@ -802,6 +849,10 @@ class rwcButtonCustomActionStart extends HTMLElement {
         actionName: this.dataset.actionName
       });
 
+      currentActionClient = rwcActionClient;
+      currentActionTopicString.data = currentActionClient.actionName;
+      currentActionTopic.publish(currentActionTopicString);
+
       if(isPhone){
         this.addEventListener('touchstart', e => {
           if (!this.isDisabled){
@@ -1020,6 +1071,10 @@ class rwcTextCustomActionStart extends HTMLElement {
       actionName: this.dataset.actionName
     });
 
+    currentActionClient = rwcActionClient;
+    currentActionTopicString.data = currentActionClient.actionName;
+    currentActionTopic.publish(currentActionTopicString);
+
     if(isPhone){
       this.addEventListener('touchstart', e => {
         if (!this.isDisabled){
@@ -1237,6 +1292,10 @@ class rwcImageCustomActionStart extends HTMLElement {
       serverName: this.dataset.actionServerName,
       actionName: this.dataset.actionName
     });
+
+    currentActionClient = rwcActionClient;
+    currentActionTopicString.data = currentActionClient.actionName;
+    currentActionTopic.publish(currentActionTopicString);
 
     if(isPhone){
       this.addEventListener('touchstart', e => {
