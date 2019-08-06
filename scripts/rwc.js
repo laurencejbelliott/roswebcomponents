@@ -81,6 +81,15 @@ var toggleableComponents = [];
 window.rwcCurrentPage = window.location.pathname;
 
 $(document).ready(function(){
+  // Check which elements are individually disabled
+  window.rwcDisabledComponents = [];
+  toggleableComponents.forEach(function(element){
+    if (element.disabled == true) {
+      window.rwcDisabledComponents.push(element);
+    }
+  });
+  console.log(rwcDisabledComponents);
+
   // Initial publication of '/rwc/current_page'
   currentPageTopicString.data = window.rwcCurrentPage;
   currentPageTopic.publish(currentPageTopicString);
@@ -133,10 +142,15 @@ $(document).ready(function(){
     });
 
     if (window.rwcInterfaceEnabled == 1){
-      toggleableComponents.forEach(function(element){element.disabled = false;});
+      toggleableComponents.forEach(function(element){
+        if (!window.rwcDisabledComponents.includes(element)){
+          element.disabled = false;
+        }
+      });
       $(".spin").spin("hide");
     } else if(window.rwcInterfaceEnabled == 0){
       toggleableComponents.forEach(function(element){element.disabled = true;});
+      // disableInterface();
       $(".spin").spin("show");
     }
 
@@ -241,12 +255,23 @@ var interfaceEnabledParam = new ROSLIB.Param({
 
 // General functions
 function disableInterface(){
+  window.rwcDisabledComponents = [];
+  toggleableComponents.forEach(function(element){
+    if (element.disabled == true) {
+      window.rwcDisabledComponents.push(element);
+    }
+  });
+  console.log(window.rwcDisabledComponents);
   toggleableComponents.forEach(function(element){element.disabled = true;});
   interfaceEnabledParam.set(0);
 }
 
 function enableInterface(){
-  toggleableComponents.forEach(function(element){element.disabled = false;});
+  toggleableComponents.forEach(function(element){
+    if (!window.rwcDisabledComponents.includes(element)){
+      element.disabled = false;
+    }
+  });
   interfaceEnabledParam.set(1);
 }
 
@@ -916,6 +941,23 @@ class rwcButtonActionStart extends HTMLElement {
   get disabled(){
     return this.isDisabled;
   }
+
+  disable(){
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
+  }
 }
 
 customElements.define("rwc-button-action-start", rwcButtonActionStart);
@@ -1048,6 +1090,23 @@ class rwcButtonCustomActionStart extends HTMLElement {
     get disabled(){
       return this.isDisabled;
     }
+
+    disable(){
+      if (!window.rwcDisabledComponents.includes(this)){
+        window.rwcDisabledComponents.push(this);
+      }
+      this.disabled = true;
+    }
+  
+    enable(){
+      this.disabled = false;
+      window.rwcDisabledComponents = [];
+      toggleableComponents.forEach(function(element){
+        if (element.disabled == true) {
+          window.rwcDisabledComponents.push(element);
+        }
+      });
+    }
 }
 
 customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionStart);
@@ -1159,6 +1218,23 @@ class rwcTextActionStart extends HTMLElement {
 
   get disabled(){
     return this.isDisabled;
+  }
+
+  disable(){
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
   }
 }
 
@@ -1292,6 +1368,23 @@ class rwcTextCustomActionStart extends HTMLElement {
   get disabled(){
     return this.isDisabled;
   }
+
+  disable(){
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
+  }
 }
 
 customElements.define("rwc-text-custom-action-start", rwcTextCustomActionStart);
@@ -1403,6 +1496,23 @@ class rwcImageActionStart extends HTMLElement {
 
   get disabled(){
     return this.isDisabled;
+  }
+
+  disable(){
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
   }
 }
 
@@ -1536,6 +1646,23 @@ class rwcImageCustomActionStart extends HTMLElement {
   get disabled(){
     return this.isDisabled;
   }
+
+  disable(){
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
+  }
 }
 
 customElements.define("rwc-img-custom-action-start", rwcImageCustomActionStart);
@@ -1544,7 +1671,6 @@ customElements.define("rwc-img-custom-action-start", rwcImageCustomActionStart);
 async function prepareListenerData (listener){
   rwcListenerData = await awaitListenerData(listener);
   return rwcListenerData;
-  // setTimeout(function(){window.rwcListenerData = rwcListenerData;}, 50);
 }
 
 // Promise returns value 50ms after subscribing to topic,
