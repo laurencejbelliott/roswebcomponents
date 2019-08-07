@@ -178,7 +178,7 @@ $(document).ready(function(){
     }
 
     window.rwcClickedComponents = clickedComponents;
-  }, 500);
+  }, 250);
 });
 
 // Connection to ROSbridge server websocket
@@ -261,24 +261,18 @@ function disableInterface(){
       window.rwcDisabledComponents.push(element);
     }
   });
-  console.log(window.rwcDisabledComponents);
-  toggleableComponents.forEach(function(element){element.disabled = true;});
   interfaceEnabledParam.set(0);
+  $(".spin").show();
 }
 
 function enableInterface(){
-  toggleableComponents.forEach(function(element){
-    if (!window.rwcDisabledComponents.includes(element)){
-      element.disabled = false;
-    }
-  });
   interfaceEnabledParam.set(1);
+  $(".spin").hide();
 }
 
 function cancelCurrentAction(){
   currentActionClient.cancel();
   enableInterface();
-  $(".spin").spin("hide");
 }
 
 // --- Action fuctions ---
@@ -322,12 +316,10 @@ function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
   goal.on('result', function (status) {
     console.log(goal.status.text);
     enableInterface();
-    $(".spin").spin("hide");
   });
 
   goal.send();
   disableInterface();
-  $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
 
   return goal;
@@ -374,12 +366,10 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
   goal.on('result', function (status) {
     console.log(goal.status.text);
     enableInterface();
-    $(".spin").spin("hide");
   });
 
   goal.send();
   disableInterface();
-  $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
 
   return goal;
@@ -416,12 +406,10 @@ function rwcActionGoToNode(node_name, no_orientation = false){
     status = goal.status.status;
     console.log("Action status: " + goalStatusNames[status]);
     enableInterface();
-    $(".spin").spin("hide");
   });
 
   goal.send();
   disableInterface();
-  $(".spin").spin("show");
   console.log("Goal '" + serverName + "/goal' sent!");
 
   return goal;
@@ -1012,7 +1000,6 @@ class rwcButtonCustomActionStart extends HTMLElement {
   
             goal.on('result', function (status) {    
               enableInterface();
-              $(".spin").spin("hide");
               console.log(goal.status.text);
               status = goal.status.status;
               console.log("Action status: " + goalStatusNames[status]);
@@ -1020,7 +1007,6 @@ class rwcButtonCustomActionStart extends HTMLElement {
   
             goal.send();
             disableInterface();
-            $(".spin").spin("show");
             console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
           }
           var actionButton = this;
@@ -1039,7 +1025,6 @@ class rwcButtonCustomActionStart extends HTMLElement {
   
             goal.on('result', function (status) {    
               enableInterface();
-              $(".spin").spin("hide");
               console.log(goal.status.text);
               status = goal.status.status;
               console.log("Action status: " + goalStatusNames[status]);
@@ -1047,7 +1032,6 @@ class rwcButtonCustomActionStart extends HTMLElement {
   
             goal.send();
             disableInterface();
-            $(".spin").spin("show");
             console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
           }
           var actionButton = this;
@@ -1290,7 +1274,6 @@ class rwcTextCustomActionStart extends HTMLElement {
   
           goal.on('result', function (status) {    
             enableInterface();
-            $(".spin").spin("hide");
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
@@ -1298,7 +1281,6 @@ class rwcTextCustomActionStart extends HTMLElement {
   
           goal.send();
           disableInterface();
-          $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
         var actionButton = this;
@@ -1317,7 +1299,6 @@ class rwcTextCustomActionStart extends HTMLElement {
   
           goal.on('result', function (status) {    
             enableInterface();
-            $(".spin").spin("hide");
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
@@ -1325,7 +1306,6 @@ class rwcTextCustomActionStart extends HTMLElement {
   
           goal.send();
           disableInterface();
-          $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
         var actionButton = this;
@@ -1568,7 +1548,6 @@ class rwcImageCustomActionStart extends HTMLElement {
   
           goal.on('result', function (status) {    
             enableInterface();
-            $(".spin").spin("hide");
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
@@ -1576,7 +1555,6 @@ class rwcImageCustomActionStart extends HTMLElement {
   
           goal.send();
           disableInterface();
-          $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
         var actionButton = this;
@@ -1595,7 +1573,6 @@ class rwcImageCustomActionStart extends HTMLElement {
   
           goal.on('result', function (status) {    
             enableInterface();
-            $(".spin").spin("hide");
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
@@ -1603,7 +1580,6 @@ class rwcImageCustomActionStart extends HTMLElement {
   
           goal.send();
           disableInterface();
-          $(".spin").spin("show");
           console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
         }
         var actionButton = this;
