@@ -14,7 +14,7 @@
         <script src="scripts/mobile-detect.min.js"></script>
         <script src="scripts/eventemitter2.js"></script>
         <script src="scripts/roslib.min.js"></script>
-        <script src="scripts/rwc.js?v=0.17"></script>
+        <script src="scripts/rwc.js?v=0.18"></script>
     </head>
     <body>
         <h1>ROS Web Components Testing Page</h1>
@@ -22,7 +22,8 @@
         <rwc-button-action-start data-id="speakActionStart"
         data-text="Say hello!"
         data-action="say"
-        data-action-parameters="Hello everyone!"></rwc-button-action-start>
+        data-action-parameters="Hello everyone!"
+        data-disabled="true"></rwc-button-action-start>
         <br><br>
         <rwc-button-action-start data-id="toNodeActionStart"
         data-text="Go to WayPoint20!"
@@ -43,12 +44,18 @@
             Volume: <rwc-text-listener
             data-listener="getVolumePercent"></rwc-text-listener>%
             <br>
-            Click to say <rwc-text-action-start data-id="speakActionStart"
+            Current node custom: <rwc-text-custom-listener
+            data-topic-name="/current_node"
+            data-topic-msg-type="std_msgs/String"></rwc-text-custom-listener>
+            <br>
+            Click to say <rwc-text-action-start data-id="speakActionStartText"
             data-text="good day!"
             data-action="say"
             data-action-parameters="Good day everyone!"></rwc-text-action-start>
         </p>
-        <rwc-img-action-start src="images/lcas-logo.png"
+        <rwc-img-action-start
+        data-id="speakActionStartImg"
+        src="images/lcas-logo.png"
         data-action="say"
         data-action-parameters="You have clicked the L-CAS logo!"></rwc-img-custom-action-start>
     </body>

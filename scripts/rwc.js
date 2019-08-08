@@ -77,7 +77,7 @@ var staticListenerComponents = [];
 // Array to track instances of toggleable components for bulk enabling/disabling
 var toggleableComponents = [];
 
-// Global var to track curernt page
+// Global var to track currrent page
 window.rwcCurrentPage = window.location.pathname;
 
 $(document).ready(function(){
@@ -88,7 +88,6 @@ $(document).ready(function(){
       window.rwcDisabledComponents.push(element);
     }
   });
-  console.log(rwcDisabledComponents);
 
   // Initial publication of '/rwc/current_page'
   currentPageTopicString.data = window.rwcCurrentPage;
