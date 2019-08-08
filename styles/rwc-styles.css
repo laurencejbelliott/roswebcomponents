@@ -7,6 +7,30 @@ div.cancel-button{
     font-size: 30px !important;
 }
 
+/* Default styling for receiver cancel button */
+div.cancel-button-receiver{
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background-color: darkred !important;
+    font-size: 30px !important;
+    cursor: auto !important;
+    font-size: 20px;
+    display: inline-block;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: black;
+    color: white;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+div.cancel-button-receiver > span{
+    margin: 5px;
+}
+
 /* Default styling for rwc-button-action-start */
 div.rwc-button-action-start{
     font-size: 20px;
