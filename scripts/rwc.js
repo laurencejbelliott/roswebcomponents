@@ -162,6 +162,14 @@ $(document).ready(function(){
       }
     });
 
+    // Publish `/rwc/disabled_components`
+    var disabledComponentIDs = [];
+    window.rwcDisabledComponents.forEach(function(element){
+      disabledComponentIDs.push(element.dataset.id);
+    });
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
+
     // Build, stringify, and publish clicked dictionary
     clickedComponents = {};
     toggleableComponents.forEach(function(element){
@@ -242,6 +250,18 @@ var clickedTopic = new ROSLIB.Topic({
 });
 
 var clickedTopicString = new ROSLIB.Message({
+  data : ""
+});
+
+// Variables for individually disabled components in a ROS topic
+var disabledTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/disabled_components",
+  messageType : "std_msgs/String",
+  latch: true
+});
+
+var disabledTopicString = new ROSLIB.Message({
   data : ""
 });
 
