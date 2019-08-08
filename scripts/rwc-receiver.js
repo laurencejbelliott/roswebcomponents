@@ -211,6 +211,11 @@ $("document").ready(function(){
     });
   });
 
+  // Create spinner element
+  spinner = document.createElement("div");
+  spinner.setAttribute("class", "spin");
+  document.body.appendChild(spinner);
+
   // Get `/interface_enabled` param and style elements accordingly
   window.setInterval(function(){
     interfaceEnabledParam.get(function(interface_enabled){
@@ -218,11 +223,13 @@ $("document").ready(function(){
         toggleableComponents.forEach(function (element) {
           element.disabled = true;
         });
+        $(".spin").spin("show");
       } else {
         toggleableComponents.forEach(function (element) {
           if (!(disabledComponentIDs.includes(element.dataset.id))){
             element.enable();
           }
+          $(".spin").spin("hide");
         });
       }
     });

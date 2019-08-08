@@ -115,6 +115,7 @@ $(document).ready(function(){
     setTimeout(function(){item.update();}, 500);
     window.setInterval(function(){item.update();}, 500);
   });
+
   spinner = document.createElement("div");
   spinner.setAttribute("class", "spin");
   document.body.appendChild(spinner);
