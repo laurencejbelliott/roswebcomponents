@@ -70,6 +70,20 @@ var clickedTopicString = new ROSLIB.Message({
 data : ""
 });
 
+// Variables for individually disabled components in a ROS topic
+var disabledTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/disabled_components",
+  messageType : "std_msgs/String",
+  latch: true
+});
+
+var disabledTopicString = new ROSLIB.Message({
+  data : ""
+});
+
+var disabledComponentIDs = [];
+
 // ROS parameter '/interface_enabled'
 var interfaceEnabledParam = new ROSLIB.Param({
 ros: ros,
@@ -108,7 +122,7 @@ class rwcButtonActionStart extends HTMLElement {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
       } else {
-        this.rwcClass = "rwc-button-action-start";
+        this.rwcClass = "rwc-button-action-start-receiver";
       }
     }
 
@@ -166,9 +180,14 @@ class rwcButtonActionStart extends HTMLElement {
 
 customElements.define("rwc-button-action-start", rwcButtonActionStart);
 
+// Class for custom element 'rwc-button-custom-action-start'
+class rwcButtonCustomActionStart extends rwcButtonActionStart{}
+customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionStart);
+
 
 // Run when page has finished loading
 $("document").ready(function(){
+
   // Get `/rwc/current_page`
   var currentPage;
   currentPageTopic.subscribe(function(data){
@@ -191,4 +210,30 @@ $("document").ready(function(){
       }
     });
   });
+
+  // Get `/interface_enabled` param and style elements accordingly
+  window.setInterval(function(){
+    interfaceEnabledParam.get(function(interface_enabled){
+      if (!(interface_enabled)) {
+        toggleableComponents.forEach(function (element) {
+          element.disabled = true;
+        });
+      } else {
+        toggleableComponents.forEach(function (element) {
+          if (!(disabledComponentIDs.includes(element.dataset.id))){
+            element.enable();
+          }
+        });
+      }
+    });
+
+    disabledTopic.subscribe(function(message){
+      disabledComponentIDs = JSON.parse(message.data);
+      toggleableComponents.forEach(function(element){
+        if (disabledComponentIDs.includes(element.dataset.id)){
+          element.disable();
+        }
+      });
+    });
+  }, 500);
 });
