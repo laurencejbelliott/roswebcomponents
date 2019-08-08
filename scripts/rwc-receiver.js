@@ -148,7 +148,7 @@ class rwcButtonActionStart extends HTMLElement {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
       } else {
-        this.rwcClass = "rwc-button-action-start";
+        this.rwcClass = "rwc-button-action-start-receiver";
       }
     }
 
