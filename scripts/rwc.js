@@ -120,12 +120,6 @@ $(document).ready(function(){
     setTimeout(function(){item.update();}, 500);
   });
 
-  // liveListenerComponents.forEach(function(item, index){
-  //   item.update();
-  //   setTimeout(function(){item.update();}, 500);
-  //   window.setInterval(function(){item.update();}, 500);
-  // });
-
   spinner = document.createElement("div");
   spinner.setAttribute("class", "spin");
   document.body.appendChild(spinner);
