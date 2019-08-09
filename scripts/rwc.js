@@ -577,6 +577,9 @@ function subCurrentPage(listener, listenerComponent = null){
       if (listenerComponent === null){
         listener.unsubscribe();
       }
+      else if (listenerComponent.dataset.live === "false"){
+        listener.unsubscribe();
+      }
       else {
         listenerComponent.shadowRoot.innerHTML = "<span>" + rwcCurrentPage + "</span>";
       }
@@ -614,7 +617,11 @@ function subPosition(listener, listenerComponent = null){
         message.pose.pose.position.z];
       if (listenerComponent === null){
         listener.unsubscribe();
-      } else {
+      }
+      else if (listenerComponent.dataset.live === "false"){
+        listener.unsubscribe();
+      }
+      else {
         listenerComponent.shadowRoot.innerHTML = "<span>" + rwcPosition + "</span>";
       }
       setTimeout(function(){
@@ -649,7 +656,11 @@ function subOrientation(listener, listenerComponent = null){
         message.pose.pose.orientation.w];
         if (listenerComponent === null){
           listener.unsubscribe();
-        } else {
+        }
+        else if (listenerComponent.dataset.live === "false"){
+          listener.unsubscribe();
+        }
+        else {
           listenerComponent.shadowRoot.innerHTML = "<span>" + rwcOrientation + "</span>";
         }
       setTimeout(function(){
@@ -685,7 +696,11 @@ function subNearestPersonPosition(listener, listenerComponent = null){
         message.pose.position.z];
         if (listenerComponent === null){
           listener.unsubscribe();
-        } else {
+        }
+        else if (listenerComponent.dataset.live === "false"){
+          listener.unsubscribe();
+        }
+        else {
           listenerComponent.shadowRoot.innerHTML = "<span>" + rwcNearestPersonPosition + "</span>";
         }
       setTimeout(function(){
@@ -724,7 +739,11 @@ function subPeoplePositions(listener, listenerComponent = null){
       rwcPeoplePositions = message.poses;
       if (listenerComponent === null){
         listener.unsubscribe();
-      } else {
+      }
+      else if (listenerComponent.dataset.live === "false"){
+        listener.unsubscribe();
+      }
+      else {
         listenerComponent.shadowRoot.innerHTML = "<span>" + rwcPeoplePositions + "</span>";
       }
       setTimeout(function(){
@@ -772,7 +791,11 @@ function subNode(listener, listenerComponent = null){
       var rwcNode = message.data;
       if (listenerComponent === null){
         listener.unsubscribe();
-      } else {
+      }
+      else if (listenerComponent.dataset.live === "false"){
+        listener.unsubscribe();
+      }
+      else {
         listenerComponent.shadowRoot.innerHTML = "<span>" + rwcNode + "</span>";
       }
       setTimeout(function(){
@@ -804,7 +827,11 @@ function subBatteryPercentage(listener, listenerComponent = null){
       var rwcBatteryPercentage = message.lifePercent;
       if (listenerComponent === null){
         listener.unsubscribe();
-      } else {
+      }
+      else if (listenerComponent.dataset.live === "false"){
+        listener.unsubscribe();
+      }
+      else {
         listenerComponent.shadowRoot.innerHTML = "<span>" + rwcBatteryPercentage + "</span>";
       }
       setTimeout(function(){
@@ -836,7 +863,11 @@ function subVolumePercent(listener, listenerComponent = null){
       var rwcVolumePercent = message.data;
       if (listenerComponent === null){
         listener.unsubscribe();
-      } else {
+      }
+      else if (listenerComponent.dataset.live === "false"){
+        listener.unsubscribe();
+      }
+      else {
         listenerComponent.shadowRoot.innerHTML = "<span>" + rwcVolumePercent + "</span>";
       }
       setTimeout(function(){
