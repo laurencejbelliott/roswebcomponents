@@ -17,8 +17,12 @@ var JSONreq = $.getJSON("rwc-config.json", function(json){
 // Dictionary of listener functions, for matching 'data-listener' listener names to
 // functions
 var listeners = {
+  "getCurrentPage": rwcListenerGetCurrentPage,
   "getPosition": rwcListenerGetPosition,
   "getOrientation": rwcListenerGetOrientation,
+  "getNearestPersonPosition": rwcListenerGetNearestPersonPosition,
+  "getPeoplePositions": rwcListenerGetPeoplePositions,
+  "getNumberOfPeople": rwcListenerGetNumberOfPeople,
   "getNode": rwcListenerGetNode,
   "getBatteryPercentage": rwcListenerGetBatteryPercentage,
   "getVolumePercent": rwcListenerGetVolumePercent
@@ -110,11 +114,17 @@ $(document).ready(function(){
     item.update();
     setTimeout(function(){item.update();}, 500);
   });
+
   liveListenerComponents.forEach(function(item, index){
     item.update();
     setTimeout(function(){item.update();}, 500);
-    window.setInterval(function(){item.update();}, 500);
   });
+
+  // liveListenerComponents.forEach(function(item, index){
+  //   item.update();
+  //   setTimeout(function(){item.update();}, 500);
+  //   window.setInterval(function(){item.update();}, 500);
+  // });
 
   spinner = document.createElement("div");
   spinner.setAttribute("class", "spin");
@@ -425,7 +435,7 @@ function rwcActionGoToNode(node_name, no_orientation = false){
   goal.on('result', function (status) {
     status = goal.status.status;
     console.log("Action status: " + goalStatusNames[status]);
-    enableInterface();
+    if (goalStatusNames[status] !== "PENDING"){enableInterface();}
   });
 
   goal.send();
@@ -554,23 +564,28 @@ function rwcActionGazeAtPosition(x, y, z, secs){
 
 // --- Listener functions ---
 // Listener function 'rwcListenerGetCurrentPage'
-async function rwcListenerGetCurrentPage(){
+async function rwcListenerGetCurrentPage(listenerComponent = null){
   var listener = currentPageTopic;
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcCurrentPage = await subCurrentPage(listener);
+  rwcCurrentPage = await subCurrentPage(listener, listenerComponent);
 
   return rwcCurrentPage;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subCurrentPage(listener){
+function subCurrentPage(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
-      rwcCurrentPage = message.data;
-      listener.unsubscribe();
+      var rwcCurrentPage = message.data;
+      if (listenerComponent === null){
+        listener.unsubscribe();
+      }
+      else {
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcCurrentPage + "</span>";
+      }
       setTimeout(function(){
         resolve(rwcCurrentPage);
       }, 50);
@@ -580,7 +595,7 @@ function subCurrentPage(listener){
 
 
 // Listener function 'rwcListenerGetPosition'
-async function rwcListenerGetPosition(){
+async function rwcListenerGetPosition(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -590,29 +605,33 @@ async function rwcListenerGetPosition(){
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcPosition = await subPosition(listener);
+  rwcPosition = await subPosition(listener, listenerComponent);
 
   return rwcPosition;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subPosition(listener){
+function subPosition(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
-      window.rwcPosition = [message.pose.pose.position.x,
+      var rwcPosition = [message.pose.pose.position.x,
         message.pose.pose.position.y,
         message.pose.pose.position.z];
-      listener.unsubscribe();
+      if (listenerComponent === null){
+        listener.unsubscribe();
+      } else {
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcPosition + "</span>";
+      }
       setTimeout(function(){
-        resolve(window.rwcPosition);
+        resolve(rwcPosition);
       }, 50);
     });
   });
 }
 
 // Listener function 'rwcListenerGetOrientation'
-async function rwcListenerGetOrientation(){
+async function rwcListenerGetOrientation(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -620,30 +639,34 @@ async function rwcListenerGetOrientation(){
     messageType : configJSON.listeners.odom.topicMessageType
   });
 
-  rwcOrientation = await subOrientation(listener);
+  rwcOrientation = await subOrientation(listener, listenerComponent);
 
   return rwcOrientation;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subOrientation(listener){
+function subOrientation(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
-      window.rwcOrientation = [message.pose.pose.orientation.x,
+      var rwcOrientation = [message.pose.pose.orientation.x,
         message.pose.pose.orientation.y,
         message.pose.pose.orientation.z,
         message.pose.pose.orientation.w];
-      listener.unsubscribe();
+        if (listenerComponent === null){
+          listener.unsubscribe();
+        } else {
+          listenerComponent.shadowRoot.innerHTML = "<span>" + rwcOrientation + "</span>";
+        }
       setTimeout(function(){
-        resolve(window.rwcOrientation);
+        resolve(rwcOrientation);
       }, 50);
     });
   });
 }
 
 // Listener function 'rwcListenerGetNearestPersonPosition'
-async function rwcListenerGetNearestPersonPosition(){
+async function rwcListenerGetNearestPersonPosition(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -653,20 +676,24 @@ async function rwcListenerGetNearestPersonPosition(){
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcNearestPersonPosition = await subNearestPersonPosition(listener);
+  rwcNearestPersonPosition = await subNearestPersonPosition(listener, listenerComponent);
 
   return rwcNearestPersonPosition;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subNearestPersonPosition(listener){
+function subNearestPersonPosition(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
       rwcNearestPersonPosition = [message.pose.position.x,
         message.pose.position.y,
         message.pose.position.z];
-      listener.unsubscribe();
+        if (listenerComponent === null){
+          listener.unsubscribe();
+        } else {
+          listenerComponent.shadowRoot.innerHTML = "<span>" + rwcNearestPersonPosition + "</span>";
+        }
       setTimeout(function(){
         resolve(rwcNearestPersonPosition);
       }, 50);
@@ -675,7 +702,7 @@ function subNearestPersonPosition(listener){
 }
 
 // Listener function 'rwcListenerGetPeoplePositions'
-async function rwcListenerGetPeoplePositions(){
+async function rwcListenerGetPeoplePositions(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -685,7 +712,7 @@ async function rwcListenerGetPeoplePositions(){
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcPeoplePoses = await subPeoplePositions(listener);
+  rwcPeoplePoses = await subPeoplePositions(listener, listenerComponent);
 
   rwcPeoplePositions = [];
   rwcPeoplePoses.forEach(function(person_pose){
@@ -697,11 +724,15 @@ async function rwcListenerGetPeoplePositions(){
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subPeoplePositions(listener){
+function subPeoplePositions(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
       rwcPeoplePositions = message.poses;
-      listener.unsubscribe();
+      if (listenerComponent === null){
+        listener.unsubscribe();
+      } else {
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcPeoplePositions + "</span>";
+      }
       setTimeout(function(){
         resolve(rwcPeoplePositions);
       }, 50);
@@ -710,7 +741,7 @@ function subPeoplePositions(listener){
 }
 
 // Listener function 'rwcListenerGetNumberOfPeople'
-async function rwcListenerGetNumberOfPeople(){
+async function rwcListenerGetNumberOfPeople(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -720,13 +751,13 @@ async function rwcListenerGetNumberOfPeople(){
 
   // promise function called and function execution halts until
   // the promise is resolved
-  rwcPeoplePoses = await subPeoplePositions(listener);
+  rwcPeoplePoses = await subPeoplePositions(listener, listenerComponent);
 
   return rwcPeoplePositions.length;
 }
 
 // Listener function 'rwcListenerGetNode'
-async function rwcListenerGetNode(){
+async function rwcListenerGetNode(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -734,27 +765,31 @@ async function rwcListenerGetNode(){
     messageType : configJSON.listeners.current_node.topicMessageType
   });
 
-  rwcNode = await subNode(listener);
+  rwcNode = await subNode(listener, listenerComponent);
 
   return rwcNode;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subNode(listener){
+function subNode(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
-      window.rwcNode = message.data;
-      listener.unsubscribe();
+      var rwcNode = message.data;
+      if (listenerComponent === null){
+        listener.unsubscribe();
+      } else {
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcNode + "</span>";
+      }
       setTimeout(function(){
-        resolve(window.rwcNode);
+        resolve(rwcNode);
       }, 50);
     });
   });
 }
 
 // Listener function 'rwcListenerGetBatteryPercentage'
-async function rwcListenerGetBatteryPercentage(){
+async function rwcListenerGetBatteryPercentage(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -762,27 +797,31 @@ async function rwcListenerGetBatteryPercentage(){
     messageType : configJSON.listeners.battery_state.topicMessageType
   });
 
-  rwcBatteryPercentage = await subBatteryPercentage(listener);
+  rwcBatteryPercentage = await subBatteryPercentage(listener, listenerComponent);
 
   return rwcBatteryPercentage;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subBatteryPercentage(listener){
+function subBatteryPercentage(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
-      window.rwcBatteryPercentage = message.lifePercent;
-      listener.unsubscribe();
+      var rwcBatteryPercentage = message.lifePercent;
+      if (listenerComponent === null){
+        listener.unsubscribe();
+      } else {
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcBatteryPercentage + "</span>";
+      }
       setTimeout(function(){
-        resolve(window.rwcBatteryPercentage);
+        resolve(rwcBatteryPercentage);
       }, 50);
     });
   });
 }
 
 // Listener function 'rwcListenerGetVolumePercent'
-async function rwcListenerGetVolumePercent(){
+async function rwcListenerGetVolumePercent(listenerComponent = null){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -790,20 +829,24 @@ async function rwcListenerGetVolumePercent(){
     messageType : configJSON.listeners.volume.topicMessageType
   });
 
-  rwcVolumePercent = await subVolumePercent(listener);
+  rwcVolumePercent = await subVolumePercent(listener, listenerComponent);
 
   return rwcVolumePercent;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function subVolumePercent(listener){
+function subVolumePercent(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
-      window.rwcVolumePercent = message.data;
-      listener.unsubscribe();
+      var rwcVolumePercent = message.data;
+      if (listenerComponent === null){
+        listener.unsubscribe();
+      } else {
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcVolumePercent + "</span>";
+      }
       setTimeout(function(){
-        resolve(window.rwcVolumePercent);
+        resolve(rwcVolumePercent);
       }, 50);
     });
   });
@@ -1017,14 +1060,13 @@ class rwcButtonCustomActionStart extends HTMLElement {
               actionClient: rwcActionClient,
               goalMessage: msgJSON
             });
-  
-            goal.on('result', function (status) {    
-              enableInterface();
-              console.log(goal.status.text);
+
+            goal.on('result', function (status) {
               status = goal.status.status;
               console.log("Action status: " + goalStatusNames[status]);
+              if (goalStatusNames[status] !== "PENDING"){enableInterface();}
             });
-  
+
             goal.send();
             disableInterface();
             console.log("Goal '" + this.dataset.actionServerName + "/goal' sent!");
@@ -1043,11 +1085,11 @@ class rwcButtonCustomActionStart extends HTMLElement {
               goalMessage: msgJSON
             });
   
-            goal.on('result', function (status) {    
-              enableInterface();
+            goal.on('result', function (status) {
               console.log(goal.status.text);
               status = goal.status.status;
               console.log("Action status: " + goalStatusNames[status]);
+              if (goalStatusNames[status] !== "PENDING"){enableInterface();}
             });
   
             goal.send();
@@ -1292,11 +1334,11 @@ class rwcTextCustomActionStart extends HTMLElement {
             goalMessage: msgJSON
           });
   
-          goal.on('result', function (status) {    
-            enableInterface();
+          goal.on('result', function (status) {
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
+            if (goalStatusNames[status] !== "PENDING"){enableInterface();}
           });
   
           goal.send();
@@ -1317,11 +1359,11 @@ class rwcTextCustomActionStart extends HTMLElement {
             goalMessage: msgJSON
           });
   
-          goal.on('result', function (status) {    
-            enableInterface();
+          goal.on('result', function (status) {
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
+            if (goalStatusNames[status] !== "PENDING"){enableInterface();}
           });
   
           goal.send();
@@ -1566,11 +1608,11 @@ class rwcImageCustomActionStart extends HTMLElement {
             goalMessage: msgJSON
           });
   
-          goal.on('result', function (status) {    
-            enableInterface();
+          goal.on('result', function (status) {
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
+            if (goalStatusNames[status] !== "PENDING"){enableInterface();}
           });
   
           goal.send();
@@ -1591,11 +1633,11 @@ class rwcImageCustomActionStart extends HTMLElement {
             goalMessage: msgJSON
           });
   
-          goal.on('result', function (status) {    
-            enableInterface();
+          goal.on('result', function (status) {
             console.log(goal.status.text);
             status = goal.status.status;
             console.log("Action status: " + goalStatusNames[status]);
+            if (goalStatusNames[status] !== "PENDING"){enableInterface();}
           });
   
           goal.send();
@@ -1664,17 +1706,17 @@ class rwcImageCustomActionStart extends HTMLElement {
 customElements.define("rwc-img-custom-action-start", rwcImageCustomActionStart);
 
 // --- Listener Components ---
-async function prepareListenerData (listener){
-  rwcListenerData = await awaitListenerData(listener);
+async function prepareListenerData (listener, listenerComponent = null){
+  rwcListenerData = await awaitListenerData(listener, listenerComponent);
   return rwcListenerData;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function awaitListenerData(listener){
+function awaitListenerData(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     setTimeout(function(){
-      rwcListenerData = listeners[listener]()
+      rwcListenerData = listeners[listener](listenerComponent)
       resolve(rwcListenerData);
     }, 50);
   });
@@ -1697,7 +1739,7 @@ class rwcTextListener extends HTMLElement {
   update() {
     if (configJSON != null && this.dataset != null){
       var thisListener = this;
-      prepareListenerData(this.dataset.listener).then(function(result){
+      prepareListenerData(this.dataset.listener, this).then(function(result){
         if (String(result) != "[object Promise]"){
           thisListener.shadowRoot.innerHTML = "<span>" + String(result) +"</span>";
         } else {
