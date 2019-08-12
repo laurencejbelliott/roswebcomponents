@@ -12,6 +12,10 @@
             "speak": {
                 "actionServerName": "/speak",
                 "actionName": "mary_tts/maryttsAction"
+            },
+            "move_base_custom_example": {
+                "actionServerName": "/move_base",
+                "actionName": "move_base_msgs/MoveBaseAction"
             }
         },
         "topics": {
