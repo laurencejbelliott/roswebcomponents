@@ -156,7 +156,6 @@ $(document).ready(function(){
       $(".spin").spin("hide");
     } else if(window.rwcInterfaceEnabled == 0){
       toggleableComponents.forEach(function(element){element.disabled = true;});
-      // disableInterface();
       $(".spin").spin("show");
     }
 
@@ -577,8 +576,6 @@ function rwcActionCustom(actionComponent){
     currentActionClient = actionClient;
     currentActionTopicString.data = currentActionClient.actionName;
     currentActionTopic.publish(currentActionTopicString);
-  
-    console.log(msg);
 
     var goal = new ROSLIB.Goal({
       actionClient: actionClient,
@@ -622,6 +619,7 @@ function subCurrentPage(listener, listenerComponent = null){
         listener.unsubscribe();
       }
       else if (listenerComponent.dataset.live === "false"){
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcCurrentPage + "</span>";
         listener.unsubscribe();
       }
       else {
@@ -663,6 +661,7 @@ function subPosition(listener, listenerComponent = null){
         listener.unsubscribe();
       }
       else if (listenerComponent.dataset.live === "false"){
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcPosition + "</span>";
         listener.unsubscribe();
       }
       else {
@@ -702,6 +701,7 @@ function subOrientation(listener, listenerComponent = null){
           listener.unsubscribe();
         }
         else if (listenerComponent.dataset.live === "false"){
+          listenerComponent.shadowRoot.innerHTML = "<span>" + rwcOrientation + "</span>";
           listener.unsubscribe();
         }
         else {
@@ -742,6 +742,7 @@ function subNearestPersonPosition(listener, listenerComponent = null){
           listener.unsubscribe();
         }
         else if (listenerComponent.dataset.live === "false"){
+          listenerComponent.shadowRoot.innerHTML = "<span>" + rwcNearestPersonPosition + "</span>";
           listener.unsubscribe();
         }
         else {
@@ -785,6 +786,7 @@ function subPeoplePositions(listener, listenerComponent = null){
         listener.unsubscribe();
       }
       else if (listenerComponent.dataset.live === "false"){
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcPeoplePositions + "</span>";
         listener.unsubscribe();
       }
       else {
@@ -837,6 +839,7 @@ function subNode(listener, listenerComponent = null){
         listener.unsubscribe();
       }
       else if (listenerComponent.dataset.live === "false"){
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcNode + "</span>";
         listener.unsubscribe();
       }
       else {
@@ -873,6 +876,7 @@ function subBatteryPercentage(listener, listenerComponent = null){
         listener.unsubscribe();
       }
       else if (listenerComponent.dataset.live === "false"){
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcBatteryPercentage + "</span>";
         listener.unsubscribe();
       }
       else {
@@ -909,6 +913,7 @@ function subVolumePercent(listener, listenerComponent = null){
         listener.unsubscribe();
       }
       else if (listenerComponent.dataset.live === "false"){
+        listenerComponent.shadowRoot.innerHTML = "<span>" + rwcVolumePercent + "</span>";
         listener.unsubscribe();
       }
       else {
@@ -949,6 +954,49 @@ function rwcListenerGetQRCode(){
     return "No QR code detected!";
   }
 }
+
+// Listener function 'rwcListenerCustom'
+async function rwcListenerCustom(listenerComponent = null, fieldSelector = null){
+  // Topic info loaded from rwc-config JSON file
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.listeners[listenerComponent.dataset.listener].topicName,
+    messageType : configJSON.listeners[listenerComponent.dataset.listener].topicMessageType
+  });
+
+  rwcNode = await subCustom(listener, listenerComponent, fieldSelector);
+
+  return rwcNode;
+}
+
+// Promise returns value 50ms after subscribing to topic,
+// preventing old or undefined values from being returned
+function subCustom(listener, listenerComponent = null, fieldSelector = null){
+  return new Promise(function(resolve) {
+    listener.subscribe(function(message) {
+      fieldSelectorArr = fieldSelector.split(".");
+      var data = message;
+      fieldSelectorArr.forEach(function(field){
+        data = data[field];
+      });
+      data = JSON.stringify(data);
+      if (listenerComponent === null){
+        listener.unsubscribe();
+      }
+      else if (listenerComponent.dataset.live === "false"){
+        listenerComponent.shadowRoot.innerHTML = "<span>" + data + "</span>";
+        listener.unsubscribe();
+      }
+      else {
+        listenerComponent.shadowRoot.innerHTML = "<span>" + data + "</span>";
+      }
+      setTimeout(function(){
+        resolve(data);
+      }, 50);
+    });
+  });
+}
+
 
 // --- Web Components ---
 
@@ -1788,17 +1836,22 @@ class rwcImageCustomActionStart extends HTMLElement {
 customElements.define("rwc-img-custom-action-start", rwcImageCustomActionStart);
 
 // --- Listener Components ---
-async function prepareListenerData (listener, listenerComponent = null){
-  rwcListenerData = await awaitListenerData(listener, listenerComponent);
+async function prepareListenerData (listener, listenerComponent = null, fieldSelector = null){
+  rwcListenerData = await awaitListenerData(listener, listenerComponent, fieldSelector);
   return rwcListenerData;
 }
 
 // Promise returns value 50ms after subscribing to topic,
 // preventing old or undefined values from being returned
-function awaitListenerData(listener, listenerComponent = null){
+function awaitListenerData(listener, listenerComponent = null, fieldSelector = null){
   return new Promise(function(resolve) {
     setTimeout(function(){
-      rwcListenerData = listeners[listener](listenerComponent)
+      if (Object.keys(listeners).includes(listener)){
+        rwcListenerData = listeners[listener](listenerComponent)
+      }
+      else {
+        rwcListenerCustom(listenerComponent, fieldSelector);
+      }
       resolve(rwcListenerData);
     }, 50);
   });
@@ -1821,13 +1874,7 @@ class rwcTextListener extends HTMLElement {
   update() {
     if (configJSON != null && this.dataset != null){
       var thisListener = this;
-      prepareListenerData(this.dataset.listener, this).then(function(result){
-        if (String(result) != "[object Promise]"){
-          thisListener.shadowRoot.innerHTML = "<span>" + String(result) +"</span>";
-        } else {
-          thisListener.shadowRoot.innerHTML = "<span></span>";
-        }
-      });
+      prepareListenerData(this.dataset.listener, this, this.dataset.fieldSelector);
     }
   }
 }

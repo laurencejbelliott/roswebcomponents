@@ -59,9 +59,9 @@
             Volume: <rwc-text-listener
             data-listener="getVolumePercent"></rwc-text-listener>%
             <br>
-            Current node custom: <rwc-text-custom-listener
-            data-topic-name="/current_node"
-            data-topic-msg-type="std_msgs/String"></rwc-text-custom-listener>
+            Robot position custom: <rwc-text-listener
+            data-listener="odom_custom_example"
+            data-field-selector="pose.pose.position"></rwc-text-listener>
             <br>
             Click to say <rwc-text-action-start data-id="speakActionStartText"
             data-text="good day!"

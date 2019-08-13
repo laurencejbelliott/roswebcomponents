@@ -42,6 +42,10 @@
             "topicName": "/current_node",
             "topicMessageType": "std_msgs/String"
         },
+        "odom_custom_example": {
+            "topicName": "/odom",
+            "topicMessageType": "nav_msgs/Odometry"
+        },
         "battery_state": {
             "topicName": "/battery_state",
             "topicMessageType": "scitos_msgs/BatteryState"
