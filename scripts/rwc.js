@@ -558,6 +558,48 @@ function rwcActionGazeAtPosition(x, y, z, secs){
 }
 
 
+// Action function 'rwcActionCustom'
+function rwcActionCustom(actionComponent){
+  $.getJSON(actionComponent.dataset.goalMsgPath, function(json){
+    var msg = json;
+    console.log(actionComponent.dataset.action);
+
+    // Action name and action server name loaded from rwc-config JSON file
+    var serverName = configJSON.actions.actionServers[actionComponent.dataset.action].actionServerName;
+    var actionName = configJSON.actions.actionServers[actionComponent.dataset.action].actionName;
+  
+    var actionClient = new ROSLIB.ActionClient({
+      ros: ros,
+      serverName: serverName,
+      actionName: actionName
+    });
+  
+    currentActionClient = actionClient;
+    currentActionTopicString.data = currentActionClient.actionName;
+    currentActionTopic.publish(currentActionTopicString);
+  
+    console.log(msg);
+
+    var goal = new ROSLIB.Goal({
+      actionClient: actionClient,
+      goalMessage: msg
+    });
+  
+    goal.on('result', function (status) {
+      status = goal.status.status;
+      console.log("Action status: " + goalStatusNames[status]);
+      if (goalStatusNames[status] !== "PENDING"){enableInterface();}
+    });
+  
+    goal.send();
+    disableInterface();
+    console.log("Goal '" + serverName + "/goal' sent!");
+
+    console.log("Action '" + actionComponent.dataset.action + "' started!\nParameter(s): " +
+    actionComponent.dataset.actionParameters);
+  });
+}
+
 // --- Listener functions ---
 // Listener function 'rwcListenerGetCurrentPage'
 async function rwcListenerGetCurrentPage(listenerComponent = null){
@@ -956,52 +998,13 @@ class rwcButtonActionStart extends HTMLElement {
             actions[this.dataset.action](floatArray);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
-            $.getJSON(this.dataset.goalMsgPath, function(json){
-              var msg = json;
-              console.log(actionButton.dataset.action);
-
-              // Action name and action server name loaded from rwc-config JSON file
-              var serverName = configJSON.actions.actionServers[actionButton.dataset.action].actionServerName;
-              var actionName = configJSON.actions.actionServers[actionButton.dataset.action].actionName;
-            
-              var actionClient = new ROSLIB.ActionClient({
-                ros: ros,
-                serverName: serverName,
-                actionName: actionName
-              });
-            
-              currentActionClient = actionClient;
-              currentActionTopicString.data = currentActionClient.actionName;
-              currentActionTopic.publish(currentActionTopicString);
-            
-              console.log(msg);
-
-              var goal = new ROSLIB.Goal({
-                actionClient: actionClient,
-                goalMessage: msg
-              });
-            
-              goal.on('result', function (status) {
-                status = goal.status.status;
-                console.log("Action status: " + goalStatusNames[status]);
-                if (goalStatusNames[status] !== "PENDING"){enableInterface();}
-              });
-            
-              goal.send();
-              disableInterface();
-              console.log("Goal '" + serverName + "/goal' sent!");
-
-              console.log("Action '" + actionButton.dataset.action + "' started!\nParameter(s): " +
-              actionButton.dataset.actionParameters);
-            });
+            rwcActionCustom(this);
           }
-          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
-          this.dataset.actionParameters);
+          var actionButton = this;
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
         }
-        var actionButton = this;
-        setTimeout(function(){
-          actionButton.clicked = false;
-        }, 500);
       });
     } else {
       this.addEventListener('click', e => {
@@ -1019,44 +1022,7 @@ class rwcButtonActionStart extends HTMLElement {
             actions[this.dataset.action](floatArray);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
-            $.getJSON(this.dataset.goalMsgPath, function(json){
-              var msg = json;
-              console.log(actionButton.dataset.action);
-
-              // Action name and action server name loaded from rwc-config JSON file
-              var serverName = configJSON.actions.actionServers[actionButton.dataset.action].actionServerName;
-              var actionName = configJSON.actions.actionServers[actionButton.dataset.action].actionName;
-            
-              var actionClient = new ROSLIB.ActionClient({
-                ros: ros,
-                serverName: serverName,
-                actionName: actionName
-              });
-            
-              currentActionClient = actionClient;
-              currentActionTopicString.data = currentActionClient.actionName;
-              currentActionTopic.publish(currentActionTopicString);
-            
-              console.log(msg);
-
-              var goal = new ROSLIB.Goal({
-                actionClient: actionClient,
-                goalMessage: msg
-              });
-            
-              goal.on('result', function (status) {
-                status = goal.status.status;
-                console.log("Action status: " + goalStatusNames[status]);
-                if (goalStatusNames[status] !== "PENDING"){enableInterface();}
-              });
-            
-              goal.send();
-              disableInterface();
-              console.log("Goal '" + serverName + "/goal' sent!");
-
-              console.log("Action '" + actionButton.dataset.action + "' started!\nParameter(s): " +
-              actionButton.dataset.actionParameters);
-            });
+            rwcActionCustom(this);
           }
         }
         setTimeout(function(){
@@ -1308,52 +1274,13 @@ class rwcTextActionStart extends HTMLElement {
             actions[this.dataset.action](floatArray);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
-            $.getJSON(this.dataset.goalMsgPath, function(json){
-              var msg = json;
-              console.log(actionButton.dataset.action);
-
-              // Action name and action server name loaded from rwc-config JSON file
-              var serverName = configJSON.actions.actionServers[actionButton.dataset.action].actionServerName;
-              var actionName = configJSON.actions.actionServers[actionButton.dataset.action].actionName;
-            
-              var actionClient = new ROSLIB.ActionClient({
-                ros: ros,
-                serverName: serverName,
-                actionName: actionName
-              });
-            
-              currentActionClient = actionClient;
-              currentActionTopicString.data = currentActionClient.actionName;
-              currentActionTopic.publish(currentActionTopicString);
-            
-              console.log(msg);
-
-              var goal = new ROSLIB.Goal({
-                actionClient: actionClient,
-                goalMessage: msg
-              });
-            
-              goal.on('result', function (status) {
-                status = goal.status.status;
-                console.log("Action status: " + goalStatusNames[status]);
-                if (goalStatusNames[status] !== "PENDING"){enableInterface();}
-              });
-            
-              goal.send();
-              disableInterface();
-              console.log("Goal '" + serverName + "/goal' sent!");
-
-              console.log("Action '" + actionButton.dataset.action + "' started!\nParameter(s): " +
-              actionButton.dataset.actionParameters);
-            });
-          }
-          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
-          this.dataset.actionParameters);
+            rwcActionCustom(this);
         }
         var actionButton = this;
           setTimeout(function(){
             actionButton.clicked = false;
           }, 500);
+        }
       });
     } else {
       this.addEventListener('click', e => {
@@ -1371,52 +1298,13 @@ class rwcTextActionStart extends HTMLElement {
             actions[this.dataset.action](floatArray);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
-            $.getJSON(this.dataset.goalMsgPath, function(json){
-              var msg = json;
-              console.log(actionButton.dataset.action);
-
-              // Action name and action server name loaded from rwc-config JSON file
-              var serverName = configJSON.actions.actionServers[actionButton.dataset.action].actionServerName;
-              var actionName = configJSON.actions.actionServers[actionButton.dataset.action].actionName;
-            
-              var actionClient = new ROSLIB.ActionClient({
-                ros: ros,
-                serverName: serverName,
-                actionName: actionName
-              });
-            
-              currentActionClient = actionClient;
-              currentActionTopicString.data = currentActionClient.actionName;
-              currentActionTopic.publish(currentActionTopicString);
-            
-              console.log(msg);
-
-              var goal = new ROSLIB.Goal({
-                actionClient: actionClient,
-                goalMessage: msg
-              });
-            
-              goal.on('result', function (status) {
-                status = goal.status.status;
-                console.log("Action status: " + goalStatusNames[status]);
-                if (goalStatusNames[status] !== "PENDING"){enableInterface();}
-              });
-            
-              goal.send();
-              disableInterface();
-              console.log("Goal '" + serverName + "/goal' sent!");
-
-              console.log("Action '" + actionButton.dataset.action + "' started!\nParameter(s): " +
-              actionButton.dataset.actionParameters);
-            });
-          }
-          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
-          this.dataset.actionParameters);
+            rwcActionCustom(this);
         }
         var actionButton = this;
           setTimeout(function(){
             actionButton.clicked = false;
           }, 500);
+        }
       });
     }
 
@@ -1664,52 +1552,13 @@ class rwcImageActionStart extends HTMLElement {
             actions[this.dataset.action](floatArray);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
-            $.getJSON(this.dataset.goalMsgPath, function(json){
-              var msg = json;
-              console.log(actionButton.dataset.action);
-
-              // Action name and action server name loaded from rwc-config JSON file
-              var serverName = configJSON.actions.actionServers[actionButton.dataset.action].actionServerName;
-              var actionName = configJSON.actions.actionServers[actionButton.dataset.action].actionName;
-            
-              var actionClient = new ROSLIB.ActionClient({
-                ros: ros,
-                serverName: serverName,
-                actionName: actionName
-              });
-            
-              currentActionClient = actionClient;
-              currentActionTopicString.data = currentActionClient.actionName;
-              currentActionTopic.publish(currentActionTopicString);
-            
-              console.log(msg);
-
-              var goal = new ROSLIB.Goal({
-                actionClient: actionClient,
-                goalMessage: msg
-              });
-            
-              goal.on('result', function (status) {
-                status = goal.status.status;
-                console.log("Action status: " + goalStatusNames[status]);
-                if (goalStatusNames[status] !== "PENDING"){enableInterface();}
-              });
-            
-              goal.send();
-              disableInterface();
-              console.log("Goal '" + serverName + "/goal' sent!");
-
-              console.log("Action '" + actionButton.dataset.action + "' started!\nParameter(s): " +
-              actionButton.dataset.actionParameters);
-            });
-          }
-          console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
-          this.dataset.actionParameters);
+            rwcActionCustom(this);
         }
         var actionButton = this;
           setTimeout(function(){
             actionButton.clicked = false;
           }, 500);
+        }
       });
     } else {
       this.addEventListener('click', e => {
@@ -1727,44 +1576,7 @@ class rwcImageActionStart extends HTMLElement {
             actions[this.dataset.action](floatArray);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
-            $.getJSON(this.dataset.goalMsgPath, function(json){
-              var msg = json;
-              console.log(actionButton.dataset.action);
-
-              // Action name and action server name loaded from rwc-config JSON file
-              var serverName = configJSON.actions.actionServers[actionButton.dataset.action].actionServerName;
-              var actionName = configJSON.actions.actionServers[actionButton.dataset.action].actionName;
-            
-              var actionClient = new ROSLIB.ActionClient({
-                ros: ros,
-                serverName: serverName,
-                actionName: actionName
-              });
-            
-              currentActionClient = actionClient;
-              currentActionTopicString.data = currentActionClient.actionName;
-              currentActionTopic.publish(currentActionTopicString);
-            
-              console.log(msg);
-
-              var goal = new ROSLIB.Goal({
-                actionClient: actionClient,
-                goalMessage: msg
-              });
-            
-              goal.on('result', function (status) {
-                status = goal.status.status;
-                console.log("Action status: " + goalStatusNames[status]);
-                if (goalStatusNames[status] !== "PENDING"){enableInterface();}
-              });
-            
-              goal.send();
-              disableInterface();
-              console.log("Goal '" + serverName + "/goal' sent!");
-
-              console.log("Action '" + actionButton.dataset.action + "' started!\nParameter(s): " +
-              actionButton.dataset.actionParameters);
-            });
+            rwcActionCustom(this);
           }
           console.log("Action '" + this.dataset.action + "' started!\nParameter(s): " +
           this.dataset.actionParameters);
