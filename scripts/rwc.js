@@ -87,6 +87,18 @@ var toggleableComponents = [];
 window.rwcCurrentPage = window.location.pathname;
 
 $(document).ready(function(){
+  // Get disabled component IDs and disable components which were disabled
+  // before the page was loaded
+  disabledTopic.subscribe(function(message){
+    var disabledComponentIDsGlobal = JSON.parse(message.data);
+    toggleableComponents.forEach(function(element){
+      if (disabledComponentIDsGlobal.includes(element.dataset.id)){
+        element.disable();
+      }
+    });
+    disabledTopic.unsubscribe();
+  });
+
   // Check which elements are individually disabled
   window.rwcDisabledComponents = [];
   toggleableComponents.forEach(function(element){
