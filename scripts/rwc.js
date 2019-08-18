@@ -86,13 +86,19 @@ var toggleableComponents = [];
 // Global var to track currrent page
 window.rwcCurrentPage = window.location.pathname;
 
+// Global var to track IDs of individually disabled components
+var disabledComponentIDs = [];
+
+// Global var to track IDs of initially disabled components which are enabled
+var startDisabledEnabledComponentIDs = [];
+
 $(document).ready(function(){
   // Get disabled component IDs and disable components which were disabled
   // before the page was loaded
   disabledTopic.subscribe(function(message){
-    var disabledComponentIDsGlobal = JSON.parse(message.data);
+    disabledComponentIDs = JSON.parse(message.data);
     toggleableComponents.forEach(function(element){
-      if (disabledComponentIDsGlobal.includes(element.dataset.id)){
+      if (disabledComponentIDs.includes(element.dataset.id)){
         element.disable();
       }
     });
@@ -105,6 +111,16 @@ $(document).ready(function(){
     if (element.disabled == true) {
       window.rwcDisabledComponents.push(element);
     }
+  });
+
+  // Check if any components which are set to start disabled have been enabled
+  startDisabledEnabledTopic.subscribe(function(message){
+    startDisabledEnabledComponentIDs = JSON.parse(message.data);
+    window.rwcDisabledComponents.forEach(function(component){
+      if (startDisabledEnabledComponentIDs.includes(component.dataset.id)){
+        component.enable();
+      }
+    });
   });
 
   // Initial publication of '/rwc/current_page'
@@ -181,9 +197,11 @@ $(document).ready(function(){
     });
 
     // Publish `/rwc/disabled_components`
-    var disabledComponentIDs = [];
+    // disabledComponentIDs = [];
     window.rwcDisabledComponents.forEach(function(element){
-      disabledComponentIDs.push(element.dataset.id);
+      if (!(disabledComponentIDs.includes(element.dataset.id))){
+        disabledComponentIDs.push(element.dataset.id);
+      }
     });
     disabledTopicString.data = JSON.stringify(disabledComponentIDs);
     disabledTopic.publish(disabledTopicString);
@@ -280,6 +298,17 @@ var disabledTopic = new ROSLIB.Topic({
 });
 
 var disabledTopicString = new ROSLIB.Message({
+  data : ""
+});
+
+var startDisabledEnabledTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/start_disabled_enabled_components",
+  messageType : "std_msgs/String",
+  latch: true
+});
+
+var startDisabledEnabledTopicString = new ROSLIB.Message({
   data : ""
 });
 
@@ -1018,7 +1047,7 @@ class rwcButtonActionStart extends HTMLElement {
   connectedCallback() {
     this.clicked = false;
 
-    if (this.dataset.disabled) {
+    if (this.dataset.disabled && !(startDisabledEnabledComponentIDs.includes(this.dataset.id))) {
       this.isDisabled = true;
     } else {
       this.isDisabled = false;
@@ -1129,6 +1158,14 @@ class rwcButtonActionStart extends HTMLElement {
     if (!window.rwcDisabledComponents.includes(this)){
       window.rwcDisabledComponents.push(this);
     }
+    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+      if (index > -1){
+        startDisabledEnabledComponentIDs.splice(index, 1);
+        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+      }
+    }
     this.disabled = true;
   }
 
@@ -1140,6 +1177,22 @@ class rwcButtonActionStart extends HTMLElement {
         window.rwcDisabledComponents.push(element);
       }
     });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
   }
 }
 
@@ -1152,7 +1205,7 @@ class rwcButtonCustomActionStart extends HTMLElement {
       var msgJSON;
       $.getJSON(this.dataset.goalMsgPath, function(json){msgJSON = json;});
 
-      if (this.dataset.disabled) {
+      if (this.dataset.disabled && !(startDisabledEnabledComponentIDs.includes(this.dataset.id))) {
         this.isDisabled = true;
       } else {
         this.isDisabled = false;
@@ -1275,7 +1328,7 @@ class rwcButtonCustomActionStart extends HTMLElement {
       }
       this.disabled = true;
     }
-  
+
     enable(){
       this.disabled = false;
       window.rwcDisabledComponents = [];
@@ -1284,6 +1337,22 @@ class rwcButtonCustomActionStart extends HTMLElement {
           window.rwcDisabledComponents.push(element);
         }
       });
+  
+      if (this.dataset.disabled){
+        if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+          startDisabledEnabledComponentIDs.push(this.dataset.id);
+        }
+      }
+  
+      startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+      startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+  
+      var index = disabledComponentIDs.indexOf(this.dataset.id);
+      if (index > -1){
+        disabledComponentIDs.splice(index, 1);
+      }
+      disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+      disabledTopic.publish(disabledTopicString);
     }
 }
 
@@ -1417,6 +1486,22 @@ class rwcTextActionStart extends HTMLElement {
         window.rwcDisabledComponents.push(element);
       }
     });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
   }
 }
 
@@ -1562,6 +1647,22 @@ class rwcTextCustomActionStart extends HTMLElement {
         window.rwcDisabledComponents.push(element);
       }
     });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
   }
 }
 
@@ -1697,6 +1798,22 @@ class rwcImageActionStart extends HTMLElement {
         window.rwcDisabledComponents.push(element);
       }
     });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
   }
 }
 
@@ -1842,6 +1959,22 @@ class rwcImageCustomActionStart extends HTMLElement {
         window.rwcDisabledComponents.push(element);
       }
     });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
   }
 }
 
