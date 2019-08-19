@@ -191,10 +191,6 @@ class rwcButtonActionStart extends HTMLElement {
 
 customElements.define("rwc-button-action-start", rwcButtonActionStart);
 
-// Class for custom element 'rwc-button-custom-action-start'
-class rwcButtonCustomActionStart extends rwcButtonActionStart{}
-customElements.define("rwc-button-custom-action-start", rwcButtonCustomActionStart);
-
 
 // Run when page has finished loading
 $("document").ready(function(){
