@@ -145,12 +145,10 @@ $(document).ready(function(){
   window.rwcClickedComponents = clickedComponents;
 
   staticListenerComponents.forEach(function(item, index){
-    item.update();
     setTimeout(function(){item.update();}, 500);
   });
 
   liveListenerComponents.forEach(function(item, index){
-    item.update();
     setTimeout(function(){item.update();}, 500);
   });
 
@@ -1554,7 +1552,6 @@ class rwcTextListener extends HTMLElement {
 
   update() {
     if (configJSON != null && this.dataset != null){
-      var thisListener = this;
       prepareListenerData(this.dataset.listener, this, this.dataset.fieldSelector);
     }
   }

@@ -126,6 +126,16 @@ span.rwc-text-action-start:active{
     cursor:pointer;
 }
 
+/* Default styling on receiver interface */
+span.rwc-text-action-start-receiver{
+    font-weight: bold;
+    text-decoration: underline;
+    cursor:auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
 /* Same effect as active but for reciever interfaces */
 span.rwc-text-action-start-clicked{
     color: grey;
@@ -155,6 +165,13 @@ img.rwc-img-action-start {
 img.rwc-img-action-start:active{
     filter: saturate(0%);
     cursor:pointer;
+}
+
+img.rwc-img-action-start-receiver {
+    cursor:auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 /* Same effect as active but for reciever interfaces */
