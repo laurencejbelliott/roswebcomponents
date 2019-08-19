@@ -93,6 +93,10 @@ var disabledComponentIDs = [];
 var startDisabledEnabledComponentIDs = [];
 
 $(document).ready(function(){
+  // Publish '/rwc/page_loaded'
+  pageLoadedString.data = window.rwcCurrentPage;
+  pageLoadedTopic.publish(pageLoadedString);
+
   // Get disabled component IDs and disable components which were disabled
   // before the page was loaded
   disabledTopic.subscribe(function(message){
@@ -289,7 +293,7 @@ var clickedTopicString = new ROSLIB.Message({
   data : ""
 });
 
-// Variables for individually disabled components in a ROS topic
+// Variables for tracking individually disabled components in a ROS topic
 var disabledTopic = new ROSLIB.Topic({
   ros : ros,
   name : "/rwc/disabled_components",
@@ -301,6 +305,7 @@ var disabledTopicString = new ROSLIB.Message({
   data : ""
 });
 
+// ROS topic for tracking components which start disabled and are enabled
 var startDisabledEnabledTopic = new ROSLIB.Topic({
   ros : ros,
   name : "/rwc/start_disabled_enabled_components",
@@ -311,6 +316,18 @@ var startDisabledEnabledTopic = new ROSLIB.Topic({
 var startDisabledEnabledTopicString = new ROSLIB.Message({
   data : ""
 });
+
+// ROS topic for publishing `/rwc/page_loaded`
+var pageLoadedTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/page_loaded",
+  messageType : "std_msgs/String"
+});
+
+var pageLoadedString = new ROSLIB.Message({
+  data : ""
+});
+
 
 // ROS parameter '/interface_enabled'
 var interfaceEnabledParam = new ROSLIB.Param({

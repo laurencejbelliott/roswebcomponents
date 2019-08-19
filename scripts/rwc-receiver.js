@@ -31,6 +31,17 @@ ros.on('close', function(){
   }, 5000);
 });
 
+// ROS topic for reloading page to `/rwc/page_loaded`
+var pageLoadedTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/page_loaded",
+  messageType : "std_msgs/String"
+});
+
+pageLoadedTopic.subscribe(function(){
+  location.reload();
+});
+
 // Array to track components which may be disabled / enabled
 var toggleableComponents = [];
 
