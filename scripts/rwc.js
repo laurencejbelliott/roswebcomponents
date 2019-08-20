@@ -10,8 +10,14 @@ if (isPhone){
 // Load config of topic and action server names from 'rwc-config.json'
 var configJSON;
 var currentActionClient;
+var exhibitorsJSON;
 var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
+  // Get exhibitors data for Lindsey operations
+  $.getJSON("exhibitors_definition.json",
+  function(json){
+    exhibitorsJSON = json;
+  });
 });
 
 // Dictionary of listener functions, for matching 'data-listener' listener names to
@@ -352,9 +358,79 @@ function enableInterface(){
 }
 
 function cancelCurrentAction(){
-  currentActionClient.cancel();
+  if (typeof(currentActionClient) !== "undefined"){currentActionClient.cancel();}
+  Cancel_active_task();
   enableInterface();
 }
+
+// Lindsey strands_executive task functons
+function Start_tour_task(tour_key, duration=60*60) {
+  console.log("start tour: " + tour_key);
+
+  Demand_task("guided_tour", ["tours_main", tour_key], "", duration)
+}
+
+function Start_describe_task(exh_key, duration=60*5) {
+  console.log("start describe: " + exh_key);
+
+  Demand_task("describe_exhibit", [exh_key], "", duration)
+}
+
+function Start_gotoAndDescribe_task(exh_key, duration=60*30) {
+  console.log("start describe: " + exh_key);
+
+  Demand_task("goto_and_describe", [exh_key], "", duration)
+}
+
+function Demand_task(action, parameters, waypoint, duration) {
+  console.log("demand task: " + action + " " + parameters + " " + waypoint + " " + duration);
+  var service = new ROSLIB.Service({
+    ros: ros,
+    name: '/task_executor/demand_task',
+    serviceType: 'strands_executive_msgs/DemandTask'
+  });
+  var argument_list = [];
+  console.log(parameters);
+  if (parameters.length > 0) {
+    argument_list[0] = {first: "\"____str____\"", second: parameters[0]};
+    if (parameters.length > 1) {
+      argument_list[1] = {first: "\"____str____\"", second: parameters.slice(1).join()};
+    }
+  }
+  console.log(argument_list);
+
+  var request = new ROSLIB.ServiceRequest({
+    task : {
+      action : action,
+      start_node_id : waypoint,
+      expected_duration : {secs: duration, nsecs: 0},
+      max_duration : {secs: duration*2, nsecs:0},
+      arguments : argument_list,
+      priority : 3
+    }
+  });
+
+
+  service.callService(request, function(result) {
+    console.log('Task demand result: ');
+    console.log(result)
+  });
+}
+
+function Cancel_active_task() {
+  console.log("stopping active tasks");
+  var service = new ROSLIB.Service({
+    ros: ros,
+    name: '/task_executor/cancel_active_task',
+    serviceType: 'strands_executive_msgs/CancelActiveTask'
+  });
+
+  service.callService(new ROSLIB.ServiceRequest({}), function(result) {
+    console.log('Cancel active task result: ');
+    console.log(result)
+  });
+}
+
 
 // --- Action fuctions ---
 // Action function 'rwcActionSetPoseRelative'
@@ -652,6 +728,51 @@ function rwcActionCustom(actionComponent){
     actionComponent.dataset.actionParameters);
   });
 }
+
+// Action function 'rwcActionDescribeExhibit'
+function rwcActionDescribeExhibit(name_or_key, duration=60*5){
+  var isKey;
+  if (Number.isNaN(Number(name_or_key))){
+    isKey = false;
+    exhibitorsJSON.exhibitors.forEach(function(exhibitor){
+      if (name_or_key === exhibitor.title){
+        Start_describe_task(exhibitor.key, duration);
+      }
+    });
+  } else {
+    isKey = true;
+    Start_describe_task(name_or_key, duration);
+  }
+};
+
+// Action function 'rwcActionGoToAndDescribeExhibit'
+function rwcActionGoToAndDescribeExhibit(name_or_key, duration=60*30){
+  var isKey;
+  if (Number.isNaN(Number(name_or_key))){
+    isKey = false;
+    exhibitorsJSON.exhibitors.forEach(function(exhibitor){
+      if (name_or_key === exhibitor.title){
+        Start_gotoAndDescribe_task(exhibitor.key, duration);
+      }
+    });
+  } else {
+    isKey = true;
+    Start_gotoAndDescribe_task(name_or_key, duration);
+  }
+};
+
+// Action function 'rwcActionStartTour'
+function rwcActionStartTour(name_or_key, duration=60*60){
+  exhibitorsJSON.tours.forEach(function(exhibitor){
+    if (name_or_key === exhibitor.name){
+      Start_tour_task(exhibitor.key, duration);
+    }
+    if (name_or_key === exhibitor.key){
+      Start_tour_task(name_or_key, duration);
+    }
+  });
+}
+
 
 // --- Listener functions ---
 // Listener function 'rwcListenerGetCurrentPage'
@@ -1009,6 +1130,66 @@ function rwcListenerGetQRCode(){
   } else {
     return "No QR code detected!";
   }
+}
+
+// Listener function 'rwcListenerGetExhibitNames'
+function rwcListenerGetExhibitNames(){
+  exhibitors = exhibitorsJSON.exhibitors;
+  exhibitorNames = [];
+  exhibitors.forEach(function(exhibitor){
+    exhibitorNames.push(exhibitor.title);
+  });
+  return exhibitorNames;
+}
+
+// Listener function 'rwcListenerGetTourKeys'
+function rwcListenerGetExhibitKeys(){
+  exhibitors = exhibitorsJSON.exhibitors;
+  exhibitorKeys = [];
+  exhibitors.forEach(function(exhibit){
+    exhibitorKeys.push(exhibit.key);
+  });
+  return exhibitorKeys;
+}
+
+// Listener function 'rwcListenerGetExhibitKeysAndNames'
+function rwcListenerGetExhibitKeysAndNames(){
+  exhibitors = exhibitorsJSON.exhibitors;
+  exhibitorKeysAndNames = {};
+  exhibitors.forEach(function(exhibitor){
+    exhibitorKeysAndNames[exhibitor.key] = exhibitor.title;
+  });
+  return exhibitorKeysAndNames;
+}
+
+// Listener function 'rwcListenerGetTourNames'
+function rwcListenerGetTourNames(){
+  tours = exhibitorsJSON.tours;
+  tourNames = [];
+  tours.forEach(function(tour){
+    tourNames.push(tour.name);
+  });
+  return tourNames;
+}
+
+// Listener function 'rwcListenerGetTourKeys'
+function rwcListenerGetTourKeys(){
+  tours = exhibitorsJSON.tours;
+  tourKeys = [];
+  tours.forEach(function(tour){
+    tourKeys.push(tour.key);
+  });
+  return tourKeys;
+}
+
+// Listener function 'rwcListenerGetTourKeysAndNames'
+function rwcListenerGetTourKeysAndNames(){
+  tours = exhibitorsJSON.tours;
+  tourKeysAndNames = {};
+  tours.forEach(function(tour){
+    tourKeysAndNames[tour.key] = tour.name;
+  });
+  return tourKeysAndNames;
 }
 
 // Listener function 'rwcListenerCustom'
