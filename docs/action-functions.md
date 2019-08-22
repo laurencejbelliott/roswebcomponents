@@ -48,4 +48,11 @@
         - Tells Lindsey to describe the exhibit titled 'Claudia Crysis tombstone'.
     - Example: `rwcActionDescribeExhibit(1.2);`
         - Tells Lindsey to describe the exhibit with the key '1.2'.
+ - rwcActionGoToAndDescribeExhibit
+    - Arguments: `name_or_key, duration=60*30`
+    - Description: Tells Lindsey to navigate to and describe the exhibit corresponding to the given name or key, taking up to a maximum of `duration` seconds to complete this task. While doing so Lindsey will ask nearby people to follow her to the exhibit, and when at exhibit will ask if people wan't to know more via a speech and touchscreen prompt. Names and keys of exhibits can be obtained with the [listener functions](/docs/listener-functions.md) `rwcListenerGetExhibitNames`, `rwcListenerGetExhibitKeys`, and `rwcListenerGetExhibitKeysAndNames`.
+    - Example: `rwcActionGoToAndDescribeExhibit("Claudia Crysis tombstone");`
+        - Tells Lindsey to navigate to and describe the exhibit titled 'Claudia Crysis tombstone'.
+    - Example: `rwcActionGoToAndDescribeExhibit(1.2);`
+        - Tells Lindsey to navigate to and describe the exhibit with the key '1.2'.
  - And more to follow shortly...
