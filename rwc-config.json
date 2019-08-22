@@ -20,8 +20,12 @@
             }
         },
         "topics": {
-            "volume": {
+            "volumeChange": {
                 "topicName": "/volume/percentChange",
+                "topicMessageType": "std_msgs/Int8"
+            },
+            "volumeSet": {
+                "topicName": "/volume/percentSet",
                 "topicMessageType": "std_msgs/Int8"
             }
         }

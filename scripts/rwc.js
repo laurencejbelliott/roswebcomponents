@@ -578,8 +578,8 @@ function rwcActionVolumePercentChange(percentage_change){
   // Topic info loaded from rwc-config JSON file
   var pcntChangeTopic = new ROSLIB.Topic({
     ros : ros,
-    name : configJSON.actions.topics.volume.topicName,
-    messageType : configJSON.actions.topics.volume.topicMessageType
+    name : configJSON.actions.topics.volumeChange.topicName,
+    messageType : configJSON.actions.topics.volumeChange.topicMessageType
   });
 
   var Int8 = new ROSLIB.Message({
@@ -591,6 +591,23 @@ function rwcActionVolumePercentChange(percentage_change){
   } else { 
     console.log("Volume changed by " + percentage_change + "%");
   }
+}
+
+
+// Action function 'rwcActionVolumePercentSet'
+function rwcActionVolumePercentSet(percentage){
+  // Topic info loaded from rwc-config JSON file
+  var pcntSetTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.actions.topics.volumeSet.topicName,
+    messageType : configJSON.actions.topics.volumeSet.topicMessageType
+  });
+
+  var Int8 = new ROSLIB.Message({
+    data : percentage
+  });
+  pcntSetTopic.publish(Int8);
+  console.log("Volume set to " + percentage + "%");
 }
 
 
