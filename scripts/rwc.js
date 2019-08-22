@@ -759,7 +759,7 @@ function rwcActionDescribeExhibit(name_or_key, duration=60*5){
     });
   } else {
     isKey = true;
-    Start_describe_task(name_or_key, duration);
+    Start_describe_task(String(name_or_key), duration);
   }
 };
 
@@ -775,7 +775,7 @@ function rwcActionGoToAndDescribeExhibit(name_or_key, duration=60*30){
     });
   } else {
     isKey = true;
-    Start_gotoAndDescribe_task(name_or_key, duration);
+    Start_gotoAndDescribe_task(String(name_or_key), duration);
   }
 };
 

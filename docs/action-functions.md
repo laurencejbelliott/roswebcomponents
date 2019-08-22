@@ -6,7 +6,7 @@
     - Example: `rwcActionSetPoseRelative(1, 0, 0);`
         - Tells the robot to move forward 1m. 
  - rwcActionSetPoseMap
-    - Arguments: x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
+    - Arguments: `x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}`
     - Description: Tells the robot to move to a new pose relative to the origin of its map.
     - Example: `rwcActionSetPoseMap(5, 5, 0);`
         - Tells the robot to move to x: 5, y: 5 in its metric map. 
@@ -22,9 +22,30 @@
         - Changes the master audio volume of the robot's speaker by +20%.
     - Example: `rwcActionVolumePercentChange(-100);`
         - Changes the master audio volume of the robot's speaker by -100%, effectively muting the speaker.
+- rwcActionVolumePercentSet
+    - Arguments: `percentage`
+    - Description: Set the master audio volume of the robot's speaker to `percentage` percent.
+    - Example: `rwcActionVolumePercentSet(20);`
+        - Sets the master audio volume of the robot's speaker at 20%.
+    - Example: `rwcActionVolumePercentSet(0);`
+        - Sets the master audio volume of the robot's speaker at 0%, effectively muting the speaker.
  - rwcActionSay
-     - Arguments: `phrase`
+    - Arguments: `phrase`
     - Description: Asks the robot to speak the given `phrase` using TTS (Text To Speech). By default this library uses [MaryTTS](https://github.com/strands-project/strands_ui/tree/hydro-devel/mary_tts), but you can specify an ActionServer name and goal message type for your own TTS ActionServer in [rwc-config.json](/rwc-config.json) under "actions" > "actionServers" > "speak".
     - Example: `rwcActionSay("Hello world!");`
         - Tells the robot to speak the phrase "Hello world!" using TTS.
+
+## [Lindsey](https://lcas.lincoln.ac.uk/wp/projects/lindsey-a-robot-tour-guide/) functions
+- rwcActionGazeAtPosition
+    - Arguments: `x, y, z, secs`
+    - Description: Tells the robot to gaze at the given position for `secs` seconds. This function relies on the ROS package [strands_gazing](https://github.com/strands-project/strands_hri/tree/hydro-devel/strands_gazing), and is intended for use with STRANDS project robots.
+    - Example: `rwcActionGazeAtPosition(1, 2, 0, 60)`
+        - Tells the robot to gaze at the co-ordinates x: 1, y: 2, z: 0 on its metric map for 60 seconds.
+ - rwcActionDescribeExhibit
+    - Arguments: `name_or_key, duration=60*5`
+    - Description: Tells Lindsey to describe the exhibit corresponding to the given name or key, taking up to a maximum of `duration` seconds to complete this task. Names and keys of exhibits can be obtained with the [listener functions](/docs/listener-functions.md) `rwcListenerGetExhibitNames`, `rwcListenerGetExhibitKeys`, and `rwcListenerGetExhibitKeysAndNames`.
+    - Example: `rwcActionDescribeExhibit("Claudia Crysis tombstone");`
+        - Tells Lindsey to describe the exhibit titled 'Claudia Crysis tombstone'.
+    - Example: `rwcActionDescribeExhibit(1.2);`
+        - Tells Lindsey to describe the exhibit with the key '1.2'.
  - And more to follow shortly...
