@@ -41,6 +41,7 @@ var actions = {
   "setPoseMap": rwcActionSetPoseMap,
   "goToNode": rwcActionGoToNode,
   "volumePercentChange": rwcActionVolumePercentChange,
+  "volumePercentSet": rwcActionVolumePercentSet,
   "say": rwcActionSay,
   "gazeAtPosition": rwcActionGazeAtPosition
 };
