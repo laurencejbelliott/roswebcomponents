@@ -205,3 +205,21 @@ Example JSON in [rwc-config.json](/rwc-config.json), inside `actions.actionServe
         - data-live
             - Description: If set to false then the value returned by the chosen listener function will displayed when the element is loaded, and will not be updated thereafter.
             - Example: `data-live="false"`
+
+### Subscribing listener components to custom topics
+To create an `rwc-text-listener` which subscibes to a custom topic for which this library does not provide a listener function, you must first define this topic in the `listeners` field of [rwc-config.json](/rwc-config.json), specifying the topic name and topic message type, for example:
+```json
+"odom_custom_example": {
+    "topicName": "/odom",
+    "topicMessageType": "nav_msgs/Odometry"
+}
+```
+Then you simply have to use the name you have given this topic, e.g. `odom_custom_example` as the value for the `data-listener` attribute of your `rwc-text-listener`'s HTML tag, and define the attribute `data-field-selector`: the selector for the particular part of the topic's message that you wish to display. Here's an example which displays the robot's position:
+```html
+Robot position custom: <rwc-text-listener
+data-listener="odom_custom_example"
+data-field-selector="pose.pose.position"></rwc-text-listener>
+```
+When `data-field-selector` selects a single variable within a topic's message, the variable will be displayed as expected, but it should be noted that for collections of variables, these collections will be displayed in JSON format. To illustrate this, here is what the above example displays:
+
+![alt text](/images/text-listener-custom.png "Text which reads 'Robot position custom:', followed by coordinates")
