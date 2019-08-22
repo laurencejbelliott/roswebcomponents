@@ -55,4 +55,11 @@
         - Tells Lindsey to navigate to and describe the exhibit titled 'Claudia Crysis tombstone'.
     - Example: `rwcActionGoToAndDescribeExhibit(1.2);`
         - Tells Lindsey to navigate to and describe the exhibit with the key '1.2'.
+ - rwcActionStartTour
+    - Arguments: `name_or_key, duration=60*60`
+    - Description: Tells Lindsey to start the tour corresponding to the given name or key, taking up to a maximum of `duration` seconds to complete this task. Names and keys of exhibits can be obtained with the [listener functions](/docs/listener-functions.md) `rwcListenerGetTourNames`, `rwcListenerGetTourKeys`, and `rwcListenerGetTourKeysAndNames`.
+    - Example: `rwcActionStartTour("Death and Burial tour");`
+        - Tells Lindsey to start the tour titled 'Death and Burial tour'.
+    - Example: `rwcActionStartTour("religion");`
+        - Tells Lindsey to start the tour with the key 'religion'.
  - And more to follow shortly...
