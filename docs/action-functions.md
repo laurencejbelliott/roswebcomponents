@@ -35,7 +35,7 @@
     - Example: `rwcActionSay("Hello world!");`
         - Tells the robot to speak the phrase "Hello world!" using TTS.
 
-## [Lindsey](https://lcas.lincoln.ac.uk/wp/projects/lindsey-a-robot-tour-guide/) functions
+## [Lindsey](https://lcas.lincoln.ac.uk/wp/projects/lindsey-a-robot-tour-guide/) action functions
 - rwcActionGazeAtPosition
     - Arguments: `x, y, z, secs`
     - Description: Tells the robot to gaze at the given position for `secs` seconds. This function relies on the ROS package [strands_gazing](https://github.com/strands-project/strands_hri/tree/hydro-devel/strands_gazing), and is intended for use with STRANDS project robots.
