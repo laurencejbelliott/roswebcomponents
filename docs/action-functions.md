@@ -35,6 +35,25 @@
     - Example: `rwcActionSay("Hello world!");`
         - Tells the robot to speak the phrase "Hello world!" using TTS.
 
+
+## Action function callbacks
+Each action function returns a [ROSLIB.Goal](http://robotwebtools.org/jsdoc/roslibjs/r2/symbols/ROSLIB.Goal.html) object. By using the jQuery `.on` method, you can define a callback function to be executed when the goal is completed (sucessfully or otherwise). For example, you can define a callback function for the completion of the goal sent by `rwcActionGoToNode("WayPoint2")` with the following code:
+```javascript
+rwcActionGoToNode("WayPoint2").on('result', function(){
+    console.log("Navigation to waypoint 2 ended!");
+});
+```
+If you want to access the goal's status to see for example if the goal completed sucessfully, it's best to assign the goal returned by an action function to variable, then define the callback, within which you can access the goal's status as so:
+```javascript
+var myAction = rwcActionGoToNode("WayPoint2");
+myAction.on('result', function(){console.log(myAction.status.status)});
+```
+This status is a number which corresponds to a particular string describing the status of the goal, as seen in the [documentation of actionlib_msgs/GoalStatus Message](http://docs.ros.org/kinetic/api/actionlib_msgs/html/msg/GoalStatus.html). This library provides a global array of these strings indexed according to their ID, so that you can quickly find the meaning of a goal's status. Using this to display the status of a goal upon its completion can be done as follows:
+```javascript
+var myAction = rwcActionGoToNode("WayPoint2");
+myAction.on('result', function(){console.log(goalStatusNames[myActionSay.status.status])});
+```
+
 ## [Lindsey](https://lcas.lincoln.ac.uk/wp/projects/lindsey-a-robot-tour-guide/) action functions
 - rwcActionGazeAtPosition
     - Arguments: `x, y, z, secs`

@@ -24,7 +24,7 @@ crossorigin="anonymous"></script>
 <script src="scripts/rwc.js?v=0.18"></script>
 ```
 
-You must be running [ROS (Robot Operating System)](https://www.ros.org/) and [rosbridge](http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge) on your robot, and must change the value of `rosbridge_websocket_url` in [rwc-config.json](/rwc-config.json) to the URL of your rosbridge websocket, e.g. `"ws://localhost:9090"` (shown in the output from the commmand `roslaunch rosbridge_server rosbridge_websocket.launch`, as in [this tutorial](http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge)).
+You must be running [ROS (Robot Operating System)](https://www.ros.org/) and [rosbridge](http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge) on your robot, and must change the value of `rosbridge_websocket_url` in [rwc-config.json](/rwc-config.json) to the URL of your rosbridge websocket, e.g. `"ws://localhost:9090"` (shown in the output from the commmand `roslaunch rosbridge_server rosbridge_websocket.launch`, as in [this tutorial](http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge)). Pages which run `rwc.js` or `rwc-receiver.js` will continously refresh, and interactive components will be disabled until they are connected to a [rosbridge](http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge) websocket.
 
 If you wish to run an interactive UI on one device and mirror the appearance and state of this interface on other secondary devices without allowing these secondary devices to interact with the interface, simply connect the internet browser of any secondary devices to the page [rwc-receiver.html](/rwc-receiver.html), while the main interface is running on the primary device.
 
