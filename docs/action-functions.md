@@ -17,14 +17,14 @@
         - Tells the robot to move to the topological node 'WayPoint32'. 
  - rwcActionVolumePercentChange
     - Arguments: `percentage_change`
-    - Description: Changes the master audio volume of the robot's speaker by `percentage_change` percent.
+    - Description: Changes the master audio volume of the robot's speaker by `percentage_change` percent. Depends on the [audio-volume](https://github.com/laurencejbelliott/audio-volume) ROS package.
     - Example: `rwcActionVolumePercentChange(20);`
         - Changes the master audio volume of the robot's speaker by +20%.
     - Example: `rwcActionVolumePercentChange(-100);`
         - Changes the master audio volume of the robot's speaker by -100%, effectively muting the speaker.
 - rwcActionVolumePercentSet
     - Arguments: `percentage`
-    - Description: Set the master audio volume of the robot's speaker to `percentage` percent.
+    - Description: Set the master audio volume of the robot's speaker to `percentage` percent. Depends on the [audio-volume](https://github.com/laurencejbelliott/audio-volume) ROS package.
     - Example: `rwcActionVolumePercentSet(20);`
         - Sets the master audio volume of the robot's speaker at 20%.
     - Example: `rwcActionVolumePercentSet(0);`
@@ -62,4 +62,3 @@
         - Tells Lindsey to start the tour titled 'Death and Burial tour'.
     - Example: `rwcActionStartTour("religion");`
         - Tells Lindsey to start the tour with the key 'religion'.
- - And more to follow shortly...

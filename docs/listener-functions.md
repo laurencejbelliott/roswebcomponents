@@ -10,6 +10,9 @@ console.log(myValue);
 ```
 
 Asynchronous Listener functions:
+ - rwcListenerGetCurrentPage
+    - Return type: String.
+    - Description: Gets the path of the current HTML page being displayed on the primary client's browser. This information is used by [rwc-receiver.js](/scripts/rwc-receiver.js) to track which page to load HTML from on secondary clients.
  - rwcListenerGetPosition
     - Return type: Number array.
     - Description: Gets the co-ordinates of the robot's position from odometry.
@@ -33,7 +36,7 @@ Asynchronous Listener functions:
      - Description: Gets the percentage of how completely the  robot's battery is charged.
  - rwcListenerGetVolumePercent
      - Return type: Number.
-     - Description: Gets the percentage of the master audio volume of the robot's speaker.
+     - Description: Gets the percentage of the master audio volume of the robot's speaker. Depends on the [audio-volume](https://github.com/laurencejbelliott/audio-volume) ROS package.
  
  Other Listener functions (return a value instead of a `Promise`):
 
@@ -43,4 +46,24 @@ Asynchronous Listener functions:
  - rwcListenerGetQRCode
      - Return type: String.
      - Description:  Uses [jsQR](https://github.com/cozmo/jsQR) to detect the presence of a QR code in a snapshot of the latest frame of video from a camera on the robot. If a QR code is present then the function gets the encoded String data, otherwise the String `"No QR code detected!"` is returned. The URI of this snapshot is made avaiable using the [web_video_server](http://wiki.ros.org/web_video_server) ROS package. And can be specified in [rwc-config.json](/rwc-config.json) under "listeners" > "camera_snapshot" > "uri".
- - And more to follow shortly...
+
+ [Lindsey](https://lcas.lincoln.ac.uk/wp/projects/lindsey-a-robot-tour-guide/) Listener functions (also return a value instead of a `Promise`):
+
+ - rwcListenerGetExhibitNames
+     - Return type: String array. 
+     - Description: Gets an array of the names of [The Collection museum](https://www.thecollectionmuseum.com/)'s exhibits which can each be used as a parameter of the `rwcActionDescribeExhibit` or `rwcActionGoToAndDescribeExhibit` [action functions](/docs/action-functions.md) with Lindsey.
+ - rwcListenerGetExhibitKeys
+     - Return type: String array. 
+     - Description: Gets an array of the keys which correspond to each of [The Collection museum](https://www.thecollectionmuseum.com/)'s exhibits, and can each be used as a parameter of the `rwcActionDescribeExhibit` or `rwcActionGoToAndDescribeExhibit` [action functions](/docs/action-functions.md) with Lindsey.
+ - rwcListenerGetExhibitKeysAndNames
+     - Return type: Object.
+     - Description: Gets an object containing key:name pairs which correspond to each of [The Collection museum](https://www.thecollectionmuseum.com/)'s exhibits. Exhibit keys or names can be used as a parameter of the `rwcActionDescribeExhibit` or `rwcActionGoToAndDescribeExhibit` [action functions](/docs/action-functions.md) with Lindsey.
+ - rwcListenerGetTourNames
+     - Return type: String array. 
+     - Description: Gets an array of the names of [The Collection museum](https://www.thecollectionmuseum.com/)'s tours which can each be used as a parameter of the `rwcActionStartTour` [action function](/docs/action-functions.md) with Lindsey.
+ - rwcListenerGetTourKeys
+     - Return type: String array. 
+     - Description: Gets an array of the keys of [The Collection museum](https://www.thecollectionmuseum.com/)'s tours which can each be used as a parameter of the `rwcActionStartTour` [action function](/docs/action-functions.md) with Lindsey.
+ - rwcListenerGetTourKeysAndNames
+     - Return type: Object.
+     - Description: Gets an object containing key:name pairs which correspond to each of [The Collection museum](https://www.thecollectionmuseum.com/)'s tours. Tour keys or names can be used as a parameter of the `rwcActionStartTour` [action function](/docs/action-functions.md) with Lindsey.
