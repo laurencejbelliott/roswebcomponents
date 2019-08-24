@@ -339,6 +339,13 @@ var pageLoadedString = new ROSLIB.Message({
   data : ""
 });
 
+// ROS topic for tracking task events, `/task_executor/events`
+var taskEventsTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/task_executor/events",
+  messageType : "strands_executive_msgs/TaskEvent"
+});
+
 
 // ROS parameter '/interface_enabled'
 var interfaceEnabledParam = new ROSLIB.Param({
@@ -767,6 +774,25 @@ function rwcActionDescribeExhibit(name_or_key, duration=60*5){
     isKey = true;
     Start_describe_task(String(name_or_key), duration);
   }
+  disableInterface();
+
+  goal = document.createElement("span");
+  var resultEvent = new Event('result');
+
+  goal.addEventListener('result', function(status) {
+      console.log("Task completed!");
+      enableInterface();
+  },);
+
+
+  taskEventsTopic.subscribe(function(message){
+    var event = message.event;
+    if (event === 13 || event === 16){
+      taskEventsTopic.unsubscribe();
+      goal.dispatchEvent(resultEvent);
+    }
+  });
+  return goal;
 };
 
 // Action function 'rwcActionGoToAndDescribeExhibit'
@@ -783,6 +809,25 @@ function rwcActionGoToAndDescribeExhibit(name_or_key, duration=60*30){
     isKey = true;
     Start_gotoAndDescribe_task(String(name_or_key), duration);
   }
+  disableInterface();
+
+  goal = document.createElement("span");
+  var resultEvent = new Event('result');
+
+  goal.addEventListener('result', function(status) {
+      console.log("Task completed!");
+      enableInterface();
+  },);
+
+
+  taskEventsTopic.subscribe(function(message){
+    var event = message.event;
+    if (event === 13 || event === 16){
+      taskEventsTopic.unsubscribe();
+      goal.dispatchEvent(resultEvent);
+    }
+  });
+  return goal;
 };
 
 // Action function 'rwcActionStartTour'
@@ -795,6 +840,25 @@ function rwcActionStartTour(name_or_key, duration=60*60){
       Start_tour_task(name_or_key, duration);
     }
   });
+  disableInterface();
+
+  goal = document.createElement("span");
+  var resultEvent = new Event('result');
+
+  goal.addEventListener('result', function(status) {
+      console.log("Task completed!");
+      enableInterface();
+  },);
+
+
+  taskEventsTopic.subscribe(function(message){
+    var event = message.event;
+    if (event === 13 || event === 16){
+      taskEventsTopic.unsubscribe();
+      goal.dispatchEvent(resultEvent);
+    }
+  });
+  return goal;
 }
 
 
