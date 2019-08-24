@@ -792,7 +792,7 @@ function rwcActionDescribeExhibit(name_or_key, duration=60*5){
       goal.dispatchEvent(resultEvent);
     }
   });
-  return goal;
+  return $(goal);
 };
 
 // Action function 'rwcActionGoToAndDescribeExhibit'
@@ -827,7 +827,7 @@ function rwcActionGoToAndDescribeExhibit(name_or_key, duration=60*30){
       goal.dispatchEvent(resultEvent);
     }
   });
-  return goal;
+  return $(goal);
 };
 
 // Action function 'rwcActionStartTour'
@@ -858,7 +858,7 @@ function rwcActionStartTour(name_or_key, duration=60*60){
       goal.dispatchEvent(resultEvent);
     }
   });
-  return goal;
+  return $(goal);
 }
 
 
