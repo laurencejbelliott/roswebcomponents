@@ -105,6 +105,47 @@ var disabledComponentIDs = [];
 // Global var to track IDs of initially disabled components which are enabled
 var startDisabledEnabledComponentIDs = [];
 
+// --- Speech bubbles ---
+// Load CSS
+var cssLink = $("<link rel='stylesheet' type='text/css' href='/roswebcomponents/styles/speechbubble.css'>");
+$("head").append(cssLink);
+
+function robot_speech_bubble(text) {
+  bubble_el = '<p class="speech" style="display:none">' + text + '</p>';
+  $("body").append(bubble_el);
+  return $(".speech");
+}
+
+// List of speech bubbles to populate
+var $speech_bubbles = {};
+
+// show the robot's speech dialog bubble
+function Show_robot_speech(str, id, mode) {
+  $speech_bubbles[id] = robot_speech_bubble(str);
+  $speech_bubbles[id].slideDown();
+  $speech_bubbles[id].attr("style", "display: block");
+  console.log("open bubble" + id);
+}
+
+// close the robot's dialog bubble when the robot finished to speak
+function Receive_robot_speech_result(str, id, mode) {
+  if(mode=='nonblock' && id in $speech_bubbles) {
+    $speech_bubbles[id].slideUp();
+    $speech_bubbles[id].remove();
+    delete $speech_bubbles[id];
+    console.log("removed bubble" + id);
+  } else {
+    for (var i=0; i<$speech_bubbles.length; i++) {
+      $speech_bubbles[i].slideUp();
+      $speech_bubbles[i].remove();
+      delete $speech_bubbles[i];
+    }
+    console.log("removed all the speech bubbles")
+  }
+}
+
+
+
 $(document).ready(function(){
   // Publish '/rwc/page_loaded'
   pageLoadedString.data = window.rwcCurrentPage;
@@ -445,6 +486,40 @@ function Cancel_active_task() {
   });
 }
 
+// Subscribe to `/speak` topics for speech bubbles
+var speakGoalTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/speak/goal",
+  messageType : "mary_tts/maryttsActionGoal"
+});
+
+var speakResultTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/speak/result",
+  messageType : "mary_tts/maryttsActionResult"
+});
+
+var speakCancelTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/speak/cancel",
+  messageType : "actionlib_msgs/GoalID"
+});
+
+speakGoalTopic.subscribe(function(msg) {
+  console.log('listener_speech_goal msg.goal='+msg.goal.text);
+  Show_robot_speech(msg.goal.text, msg.goal_id.id, 'nonblock');
+});
+
+speakResultTopic.subscribe(function(msg) {
+  console.log('listener_speech_result msg.result='+msg.result);
+  Receive_robot_speech_result(msg.result.text, msg.status.goal_id.id,'nonblock');
+});
+
+speakCancelTopic.subscribe(function(msg) {
+  console.log('listener_speech_result msg.result='+msg);
+  Receive_robot_speech_result();
+});
+
 
 // --- Action fuctions ---
 // Action function 'rwcActionSetPoseRelative'
@@ -602,7 +677,7 @@ function rwcActionVolumePercentChange(percentage_change){
   pcntChangeTopic.publish(Int8);
   if(percentage_change >= 0){
     console.log("Volume changed by +" + percentage_change + "%");
-  } else { 
+  } else {
     console.log("Volume changed by " + percentage_change + "%");
   }
 }
