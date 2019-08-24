@@ -43,14 +43,20 @@ var actions = {
   "volumePercentChange": rwcActionVolumePercentChange,
   "volumePercentSet": rwcActionVolumePercentSet,
   "say": rwcActionSay,
-  "gazeAtPosition": rwcActionGazeAtPosition
+  "gazeAtPosition": rwcActionGazeAtPosition,
+  "describeExhibit": rwcActionDescribeExhibit,
+  "goToAndDescribeExhibit": rwcActionGoToAndDescribeExhibit,
+  "startTour": rwcActionStartTour
 };
 
 // List of 'data-action' action names which require their parameter to be parsed as
 // string
 strActions = [
   "goToNode",
-  "say"
+  "say",
+  "describeExhibit",
+  "goToAndDescribeExhibit",
+  "startTour"
 ];
 
 // List of 'data-action' action names which require their parameter to be parsed as
@@ -1290,6 +1296,7 @@ class rwcButtonActionStart extends HTMLElement {
         this.clicked = true;
         if (!this.isDisabled){
           if (strActions.includes(this.dataset.action)) {
+            console.log(actions[this.dataset.action]);
             actions[this.dataset.action](this.dataset.actionParameters);
           }
           if (intActions.includes(this.dataset.action)) {
