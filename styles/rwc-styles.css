@@ -87,6 +87,10 @@ div.rwc-button-action-start-clicked{
     -ms-user-select: none;
 }
 
+div.rwc-button-action-start-clicked > span{
+    margin: 5px;
+}
+
 div.rwc-button-action-start-receiver > span{
     margin: 5px;
 }
@@ -140,6 +144,8 @@ span.rwc-text-action-start-receiver{
 span.rwc-text-action-start-clicked{
     color: grey;
     cursor:pointer;
+    text-decoration: underline;
+    font-weight: bold;
 }
 
 

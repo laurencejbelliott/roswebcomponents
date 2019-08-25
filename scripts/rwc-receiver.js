@@ -100,10 +100,6 @@ messageType : "std_msgs/String",
 latch: true
 });
 
-var clickedTopicString = new ROSLIB.Message({
-data : ""
-});
-
 // Variables for individually disabled components in a ROS topic
 var disabledTopic = new ROSLIB.Topic({
   ros : ros,
@@ -484,7 +480,6 @@ async function rwcListenerGetCurrentPage(listenerComponent = null){
 function subCurrentPage(listener, listenerComponent = null){
   var rwcCurrentPage = currentPage;
   return new Promise(function(resolve) {
-    console.log(rwcCurrentPage);
     if (listenerComponent === null){
       listener.unsubscribe();
     }
@@ -890,14 +885,104 @@ $("document").ready(function(){
     });
   }, 500);
 
+  //Subscibe to `/rwc/components_currently_clicked` to signify clicks with CSS change
+  clickedTopic.subscribe(function(message){
+    var componentsClicked = JSON.parse(message.data);
+    toggleableComponents.forEach(function(component){
+      if (componentsClicked[component.dataset.id]){
+        if (component.constructor.name === "rwcButtonActionStart"){
+          component.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start-clicked");
+        } else if (component.constructor.name === "rwcTextActionStart"){
+          component.shadowRoot.querySelector("span").setAttribute("class", "rwc-text-action-start-clicked");
+        } else if (component.constructor.name === "rwcImageActionStart"){
+          component.shadowRoot.querySelector("img").setAttribute("class", "rwc-img-action-start-clicked");
+        }
+      }
+    });
+  });
+
+
   // Subscribe text listeners
   setTimeout(function(){
     staticListenerComponents.forEach(function(item, index){
       setTimeout(function(){item.update();}, 500);
     });
-  
+
     liveListenerComponents.forEach(function(item, index){
       setTimeout(function(){item.update();}, 500);
     });
   }, 500);
+
+  // --- Speech bubbles ---
+  // Load CSS
+  var cssLink = $("<link rel='stylesheet' type='text/css' href='/roswebcomponents/styles/speechbubble.css'>");
+  $("head").append(cssLink);
+
+  function robot_speech_bubble(text) {
+    bubble_el = '<p class="speech" style="display:none">' + text + '</p>';
+    $("body").append(bubble_el);
+    return $(".speech");
+  }
+
+  // List of speech bubbles to populate
+  var $speech_bubbles = {};
+
+  // show the robot's speech dialog bubble
+  function Show_robot_speech(str, id, mode) {
+    $speech_bubbles[id] = robot_speech_bubble(str);
+    $speech_bubbles[id].slideDown();
+    $speech_bubbles[id].attr("style", "display: block");
+    console.log("open bubble" + id);
+  }
+
+  // close the robot's dialog bubble when the robot finished to speak
+  function Receive_robot_speech_result(str, id, mode) {
+    if(mode=='nonblock' && id in $speech_bubbles) {
+      $speech_bubbles[id].slideUp();
+      $speech_bubbles[id].remove();
+      delete $speech_bubbles[id];
+      console.log("removed bubble" + id);
+    } else {
+      for (var i=0; i<$speech_bubbles.length; i++) {
+        $speech_bubbles[i].slideUp();
+        $speech_bubbles[i].remove();
+        delete $speech_bubbles[i];
+      }
+      console.log("removed all the speech bubbles")
+    }
+  }
+
+  // Subscribe to `/speak` topics for speech bubbles
+  var speakGoalTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : "/speak/goal",
+    messageType : "mary_tts/maryttsActionGoal"
+  });
+
+  var speakResultTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : "/speak/result",
+    messageType : "mary_tts/maryttsActionResult"
+  });
+
+  var speakCancelTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : "/speak/cancel",
+    messageType : "actionlib_msgs/GoalID"
+  });
+
+  speakGoalTopic.subscribe(function(msg) {
+    console.log('listener_speech_goal msg.goal='+msg.goal.text);
+    Show_robot_speech(msg.goal.text, msg.goal_id.id, 'nonblock');
+  });
+
+  speakResultTopic.subscribe(function(msg) {
+    console.log('listener_speech_result msg.result='+msg.result);
+    Receive_robot_speech_result(msg.result.text, msg.status.goal_id.id,'nonblock');
+  });
+
+  speakCancelTopic.subscribe(function(msg) {
+    console.log('listener_speech_result msg.result='+msg);
+    Receive_robot_speech_result();
+  });
 });
