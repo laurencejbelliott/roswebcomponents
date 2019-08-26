@@ -115,9 +115,9 @@ var disabledTopicString = new ROSLIB.Message({
 var disabledComponentIDs = [];
 
 // ROS parameter '/interface_enabled'
-var interfaceEnabledParam = new ROSLIB.Param({
+var interfaceBusyParam = new ROSLIB.Param({
 ros: ros,
-name: "/interface_enabled"
+name: "/rwc/interface_busy"
 });
 
 // Names of elements which appear in the head tag and should be removed from
@@ -859,8 +859,8 @@ $("document").ready(function(){
 
   // Get `/interface_enabled` param and style elements accordingly
   window.setInterval(function(){
-    interfaceEnabledParam.get(function(interface_enabled){
-      if (!(interface_enabled)) {
+    interfaceBusyParam.get(function(interface_busy){
+      if (interface_busy) {
         toggleableComponents.forEach(function (element) {
           element.disabled = true;
         });

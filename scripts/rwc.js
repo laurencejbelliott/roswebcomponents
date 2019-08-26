@@ -157,7 +157,7 @@ $(document).ready(function(){
     disabledComponentIDs = JSON.parse(message.data);
     toggleableComponents.forEach(function(element){
       if (disabledComponentIDs.includes(element.dataset.id)){
-        element.disable();
+        element.disable(true);
       }
     });
     disabledTopic.unsubscribe();
@@ -227,20 +227,44 @@ $(document).ready(function(){
   document.body.appendChild(stopButton);
 
   window.setInterval(function(){
+    // Get interfaceBusy ROS parameter
+    interfaceBusyParam.get(function(param){
+      window.rwcInterfaceBusy = param;
+    });
+
+    // Get interfaceEnabled ROS parameter
     interfaceEnabledParam.get(function(param){
       window.rwcInterfaceEnabled = param;
     });
 
-    if (window.rwcInterfaceEnabled == 1){
+    if (window.rwcInterfaceBusy == 0){
       toggleableComponents.forEach(function(element){
         if (!window.rwcDisabledComponents.includes(element)){
           element.disabled = false;
+          element.busy = false;
         }
       });
       $(".spin").spin("hide");
-    } else if(window.rwcInterfaceEnabled == 0){
-      toggleableComponents.forEach(function(element){element.disabled = true;});
+    } else if(window.rwcInterfaceBusy == 1){
+      toggleableComponents.forEach(function(element){
+        element.disabled = true;
+        element.busy = true;
+      });
       $(".spin").spin("show");
+    }
+
+    if (window.rwcInterfaceBusy == 0){
+      if (window.rwcInterfaceEnabled == 1){
+        toggleableComponents.forEach(function(element){
+          if (!window.rwcDisabledComponents.includes(element)){
+            element.disabled = false;
+          }
+        });
+      } else if(window.rwcInterfaceEnabled == 0){
+        toggleableComponents.forEach(function(element){
+          element.disabled = true;
+        });
+      }
     }
 
     // Publish '/rwc/current_page'
@@ -287,13 +311,13 @@ var ros = new ROSLIB.Ros({
 
 ros.on('connection', function(){
     console.log('Connected to websocket server.');
-    enableInterface();
+    freeInterface();
     $(".spin").spin("hide");
 });
 
 ros.on('error', function(){
     console.log('Error connecting to websocket server.');
-    disableInterface();
+    busyInterface();
     $(".spin").spin("show");
     setTimeout(function(){
       location.reload();
@@ -302,7 +326,7 @@ ros.on('error', function(){
 
 ros.on('close', function(){
     console.log('Closed connection to websocket server.');
-    disableInterface();
+    busyInterface();
     $(".spin").spin("show");
     setTimeout(function(){
       location.reload();
@@ -388,12 +412,35 @@ var taskEventsTopic = new ROSLIB.Topic({
 });
 
 
+// ROS parameter '/rwc/interface_busy'
+var interfaceBusyParam = new ROSLIB.Param({
+  ros: ros,
+  name: "/rwc/interface_busy"
+});
+
 // ROS parameter '/interface_enabled'
 var interfaceEnabledParam = new ROSLIB.Param({
   ros: ros,
   name: "/interface_enabled"
 });
 
+
+// General functions
+function busyInterface(){
+  window.rwcDisabledComponents = [];
+  toggleableComponents.forEach(function(element){
+    if (element.disabled == true) {
+      window.rwcDisabledComponents.push(element);
+    }
+  });
+  interfaceBusyParam.set(1);
+  $(".spin").show();
+}
+
+function freeInterface(){
+  interfaceBusyParam.set(0);
+  $(".spin").hide();
+}
 
 // General functions
 function disableInterface(){
@@ -404,18 +451,16 @@ function disableInterface(){
     }
   });
   interfaceEnabledParam.set(0);
-  $(".spin").show();
 }
 
 function enableInterface(){
   interfaceEnabledParam.set(1);
-  $(".spin").hide();
 }
 
 function cancelCurrentAction(){
   if (typeof(currentActionClient) !== "undefined"){currentActionClient.cancel();}
   Cancel_active_task();
-  enableInterface();
+  freeInterface();
 }
 
 // Lindsey strands_executive task functons
@@ -561,11 +606,11 @@ function rwcActionSetPoseRelative(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}
 
   goal.on('result', function (status) {
     console.log(goal.status.text);
-    enableInterface();
+    freeInterface();
   });
 
   goal.send();
-  disableInterface();
+  busyInterface();
   console.log("Goal '" + serverName + "/goal' sent!");
 
   return goal;
@@ -611,11 +656,11 @@ function rwcActionSetPoseMap(x, y, z, quaternion = {x: 0, y: 0, z: 0, w: 1}){
 
   goal.on('result', function (status) {
     console.log(goal.status.text);
-    enableInterface();
+    freeInterface();
   });
 
   goal.send();
-  disableInterface();
+  busyInterface();
   console.log("Goal '" + serverName + "/goal' sent!");
 
   return goal;
@@ -651,11 +696,11 @@ function rwcActionGoToNode(node_name, no_orientation = false){
   goal.on('result', function (status) {
     status = goal.status.status;
     console.log("Action status: " + goalStatusNames[status]);
-    if (goalStatusNames[status] !== "PENDING"){enableInterface();}
+    if (goalStatusNames[status] !== "PENDING"){freeInterface();}
   });
 
   goal.send();
-  disableInterface();
+  busyInterface();
   console.log("Goal '" + serverName + "/goal' sent!");
 
   return goal;
@@ -823,11 +868,11 @@ function rwcActionCustom(actionComponent){
     goal.on('result', function (status) {
       status = goal.status.status;
       console.log("Action status: " + goalStatusNames[status]);
-      if (goalStatusNames[status] !== "PENDING"){enableInterface();}
+      if (goalStatusNames[status] !== "PENDING"){freeInterface();}
     });
   
     goal.send();
-    disableInterface();
+    busyInterface();
     console.log("Goal '" + serverName + "/goal' sent!");
 
     console.log("Action '" + actionComponent.dataset.action + "' started!\nParameter(s): " +
@@ -849,14 +894,14 @@ function rwcActionDescribeExhibit(name_or_key, duration=60*5){
     isKey = true;
     Start_describe_task(String(name_or_key), duration);
   }
-  disableInterface();
+  busyInterface();
 
   goal = document.createElement("span");
   var resultEvent = new Event('result');
 
   goal.addEventListener('result', function(status) {
       console.log("Task completed!");
-      enableInterface();
+      freeInterface();
   },);
 
 
@@ -884,14 +929,14 @@ function rwcActionGoToAndDescribeExhibit(name_or_key, duration=60*30){
     isKey = true;
     Start_gotoAndDescribe_task(String(name_or_key), duration);
   }
-  disableInterface();
+  busyInterface();
 
   goal = document.createElement("span");
   var resultEvent = new Event('result');
 
   goal.addEventListener('result', function(status) {
       console.log("Task completed!");
-      enableInterface();
+      freeInterface();
   },);
 
 
@@ -915,14 +960,14 @@ function rwcActionStartTour(name_or_key, duration=60*60){
       Start_tour_task(name_or_key, duration);
     }
   });
-  disableInterface();
+  busyInterface();
 
   goal = document.createElement("span");
   var resultEvent = new Event('result');
 
   goal.addEventListener('result', function(status) {
       console.log("Task completed!");
-      enableInterface();
+      freeInterface();
   },);
 
 
@@ -1404,6 +1449,7 @@ function subCustom(listener, listenerComponent = null, fieldSelector = null){
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {
   connectedCallback() {
+    this.busy = false;
     this.clicked = false;
 
     if (this.dataset.disabled && !(startDisabledEnabledComponentIDs.includes(this.dataset.id))) {
@@ -1414,12 +1460,14 @@ class rwcButtonActionStart extends HTMLElement {
 
     this.rwcClass;
 
-    if (this.isDisabled) {
+    if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-disabled-class")) {
         this.rwcClass = this.dataset.disabledClass;
       } else {
         this.rwcClass = "rwc-button-action-start-disabled";
       }
+    } else if (this.isDisabled && !(this.busy)) {
+        this.rwcClass = "rwc-button-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1492,12 +1540,14 @@ class rwcButtonActionStart extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
-    if (this.isDisabled) {
+    if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-disabled-class")) {
         this.rwcClass = this.dataset.disabledClass;
       } else {
         this.rwcClass = "rwc-button-action-start-disabled";
       }
+    } else if (this.isDisabled && !(this.busy)) {
+      this.rwcClass = "rwc-button-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1514,7 +1564,8 @@ class rwcButtonActionStart extends HTMLElement {
     return this.isDisabled;
   }
 
-  disable(){
+  disable(busy = false){
+    this.busy = busy;
     if (!window.rwcDisabledComponents.includes(this)){
       window.rwcDisabledComponents.push(this);
     }
@@ -1671,7 +1722,7 @@ class rwcTextActionStart extends HTMLElement {
     return this.isDisabled;
   }
 
-  disable(){
+  disable(interface_busy){
     if (!window.rwcDisabledComponents.includes(this)){
       window.rwcDisabledComponents.push(this);
     }
@@ -1822,7 +1873,7 @@ class rwcImageActionStart extends HTMLElement {
     return this.isDisabled;
   }
 
-  disable(){
+  disable(interface_busy){
     if (!window.rwcDisabledComponents.includes(this)){
       window.rwcDisabledComponents.push(this);
     }
