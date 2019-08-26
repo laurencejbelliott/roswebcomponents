@@ -112,6 +112,20 @@ var disabledTopicString = new ROSLIB.Message({
   data : ""
 });
 
+// ROS topic `/interface/showmodal` for displaying modal when prompted by Lindsey
+var showModalTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/interface/showmodal",
+  messageType : "std_msgs/String"
+});
+
+// ROS topic `/interface/showmodal` for closing modal when prompted by Lindsey
+var showModalCloseTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/interface/showmodalclose",
+  messageType : "std_msgs/String"
+});
+
 var disabledComponentIDs = [];
 
 // ROS parameter '/interface_enabled'
@@ -127,6 +141,25 @@ var headElementNames = [
   "HTMLLinkElement",
   "HTMLMetaElement"
 ];
+
+// Modal (y/n dialogue) functions
+function Show_modal(text) {
+  $("[role=modal]").load("modal-receiver.html", function() {
+    $('[role=dialog]').modal({
+      backdrop: 'static',
+      keyboard: false,
+      focus: true
+    });
+    $('.modal-title').html(text.split("_").join(" "));
+    $('[role=dialog]').modal('show');
+  });
+  console.log("showing dialog");
+}
+
+function Close_modal(text) {
+  $('[role=dialog]').modal('hide');
+  console.log("hiding dialog");
+}
 
 // --- Action Components ---
 // Class for custom element 'rwc-button-action-start'
@@ -984,5 +1017,21 @@ $("document").ready(function(){
   speakCancelTopic.subscribe(function(msg) {
     console.log('listener_speech_result msg.result='+msg);
     Receive_robot_speech_result();
+  });
+
+  // Insert modal div element
+  var modalDiv = document.createElement('div');
+  modalDiv.setAttribute('role', 'modal');
+  document.body.appendChild(modalDiv);
+
+  // Subscribe to modal topics
+  showModalTopic.subscribe(function(msg) {
+    console.log('listener interface show modal msg.data='+msg.data);
+    Show_modal(msg.data);
+  });
+
+  showModalCloseTopic.subscribe(function(msg) {
+    console.log('listener interface show modal msg.data='+msg.data);
+    Close_modal(msg.data);
   });
 });
