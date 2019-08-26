@@ -302,6 +302,11 @@ $(document).ready(function(){
 
     window.rwcClickedComponents = clickedComponents;
   }, 250);
+
+  // Insert modal div element
+  var modalDiv = document.createElement('div');
+  modalDiv.setAttribute('role', 'modal');
+  document.body.appendChild(modalDiv);
 });
 
 // Connection to ROSbridge server websocket
@@ -411,6 +416,26 @@ var taskEventsTopic = new ROSLIB.Topic({
   messageType : "strands_executive_msgs/TaskEvent"
 });
 
+// ROS topic `/interface/buttonPressed` for tracking Lindsey button presses
+var buttonPressedTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/interface/buttonPressed",
+  messageType : "std_msgs/String"
+});
+
+// ROS topic `/interface/showmodal` for displaying modal when prompted by Lindsey
+var showModalTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/interface/showmodal",
+  messageType : "std_msgs/String"
+});
+
+// ROS topic `/interface/showmodal` for closing modal when prompted by Lindsey
+var showModalCloseTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/interface/showmodalclose",
+  messageType : "std_msgs/String"
+});
 
 // ROS parameter '/rwc/interface_busy'
 var interfaceBusyParam = new ROSLIB.Param({
@@ -442,7 +467,6 @@ function freeInterface(){
   $(".spin").hide();
 }
 
-// General functions
 function disableInterface(){
   window.rwcDisabledComponents = [];
   toggleableComponents.forEach(function(element){
@@ -462,6 +486,51 @@ function cancelCurrentAction(){
   Cancel_active_task();
   freeInterface();
 }
+
+// Modal (y/n dialogue) functions
+function Show_modal(text) {
+  $("[role=modal]").load("modal.html", function() {
+    $('[role=dialog]').modal({
+      backdrop: 'static',
+      keyboard: false,
+      focus: true
+    });
+    $('.modal-title').html(text.split("_").join(" "));
+    $('[role=dialog]').modal('show');
+
+    $('#no_btn').mousedown(function(){
+      Signal_buttonPressed("modalNo");
+    });
+    $('#yes_btn').mousedown(function(){
+      Signal_buttonPressed("modalYes");
+    });
+  });
+  console.log("showing dialog");
+}
+
+function Close_modal(text) {
+  $('[role=dialog]').modal('hide');
+  console.log("hiding dialog");
+}
+
+function Signal_buttonPressed(button) {
+  console.log('Signal_buttonPressed' + button);
+  msg = new ROSLIB.Message({
+    data: button
+  });
+
+  buttonPressedTopic.publish(msg);
+}
+
+showModalTopic.subscribe(function(msg) {
+  console.log('listener interface show modal msg.data='+msg.data);
+  Show_modal(msg.data);
+});
+
+showModalCloseTopic.subscribe(function(msg) {
+  console.log('listener interface show modal msg.data='+msg.data);
+  Close_modal(msg.data);
+});
 
 // Lindsey strands_executive task functons
 function Start_tour_task(tour_key, duration=60*60) {
