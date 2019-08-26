@@ -115,14 +115,14 @@ var disabledTopicString = new ROSLIB.Message({
 // ROS topic `/interface/showmodal` for displaying modal when prompted by Lindsey
 var showModalTopic = new ROSLIB.Topic({
   ros : ros,
-  name : "/interface/showmodal",
+  name : "/rwc/show_modal_receiver",
   messageType : "std_msgs/String"
 });
 
 // ROS topic `/interface/showmodal` for closing modal when prompted by Lindsey
 var showModalCloseTopic = new ROSLIB.Topic({
   ros : ros,
-  name : "/interface/showmodalclose",
+  name : "/rwc/show_modal_close_receiver",
   messageType : "std_msgs/String"
 });
 

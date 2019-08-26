@@ -430,11 +430,33 @@ var showModalTopic = new ROSLIB.Topic({
   messageType : "std_msgs/String"
 });
 
-// ROS topic `/interface/showmodal` for closing modal when prompted by Lindsey
+// ROS topic `/rwc/show_modal_receiver` for displaying modal on receiver
+var showModalReceiverTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/show_modal_receiver",
+  messageType : "std_msgs/String"
+});
+
+var showModalReceiverTopicString = new ROSLIB.Message({
+  data : ""
+});
+
+// ROS topic `/interface/showmodalclose` for closing modal when prompted by Lindsey
 var showModalCloseTopic = new ROSLIB.Topic({
   ros : ros,
   name : "/interface/showmodalclose",
   messageType : "std_msgs/String"
+});
+
+// ROS topic `/rwc/show_modal_close_receiver` for closing modal on receiver
+var showModalCloseReceiverTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/show_modal_close_receiver",
+  messageType : "std_msgs/String"
+});
+
+var showModalCloseReceiverTopicString = new ROSLIB.Message({
+  data : ""
 });
 
 // ROS parameter '/rwc/interface_busy'
@@ -506,6 +528,13 @@ function Show_modal(text) {
     });
   });
   console.log("showing dialog");
+  showModalReceiverTopicString.data = text.split(" ").join("_");
+  showModalReceiverTopic.publish(showModalReceiverTopicString);
+
+  $("[role=modal]").on('hide.bs.modal', function(){
+    showModalCloseReceiverTopicString.data = text;
+    showModalCloseReceiverTopic.publish(showModalCloseReceiverTopicString);
+  });
 }
 
 function Close_modal(text) {
