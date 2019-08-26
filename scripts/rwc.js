@@ -1711,6 +1711,7 @@ customElements.define("rwc-button-action-start", rwcButtonActionStart);
 // Class for custom element 'rwc-text-action-start'
 class rwcTextActionStart extends HTMLElement {
   connectedCallback() {
+    this.busy = false;
     this.clicked = false;
     if (this.dataset.disabled) {
       this.isDisabled = true;
@@ -1720,12 +1721,14 @@ class rwcTextActionStart extends HTMLElement {
 
     this.rwcClass;
 
-    if (this.isDisabled) {
+    if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-disabled-class")) {
         this.rwcClass = this.dataset.disabledClass;
       } else {
         this.rwcClass = "rwc-text-action-start-disabled";
       }
+    } else if (this.isDisabled && !(this.busy)) {
+        this.rwcClass = "rwc-text-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1798,12 +1801,14 @@ class rwcTextActionStart extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
-    if (this.isDisabled) {
+    if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-disabled-class")) {
         this.rwcClass = this.dataset.disabledClass;
       } else {
         this.rwcClass = "rwc-text-action-start-disabled";
       }
+    } else if (this.isDisabled && !(this.busy)) {
+      this.rwcClass = "rwc-text-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1820,9 +1825,18 @@ class rwcTextActionStart extends HTMLElement {
     return this.isDisabled;
   }
 
-  disable(interface_busy){
+  disable(busy = false){
+    this.busy = busy;
     if (!window.rwcDisabledComponents.includes(this)){
       window.rwcDisabledComponents.push(this);
+    }
+    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+      if (index > -1){
+        startDisabledEnabledComponentIDs.splice(index, 1);
+        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+      }
     }
     this.disabled = true;
   }
@@ -1860,6 +1874,7 @@ customElements.define("rwc-text-action-start", rwcTextActionStart);
 // Class for custom element 'rwc-img-action-start'
 class rwcImageActionStart extends HTMLElement {
   connectedCallback() {
+    this.busy = false;
     this.clicked = false;
     if (this.dataset.disabled) {
       this.isDisabled = true;
@@ -1869,12 +1884,14 @@ class rwcImageActionStart extends HTMLElement {
 
     this.rwcClass;
 
-    if (this.isDisabled) {
+    if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-disabled-class")) {
         this.rwcClass = this.dataset.disabledClass;
       } else {
         this.rwcClass = "rwc-img-action-start-disabled";
       }
+    } else if (this.isDisabled && !(this.busy)) {
+        this.rwcClass = "rwc-img-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1949,12 +1966,14 @@ class rwcImageActionStart extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
-    if (this.isDisabled) {
+    if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-disabled-class")) {
         this.rwcClass = this.dataset.disabledClass;
       } else {
         this.rwcClass = "rwc-img-action-start-disabled";
       }
+    } else if (this.isDisabled && !(this.busy)) {
+      this.rwcClass = "rwc-img-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
