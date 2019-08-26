@@ -510,7 +510,7 @@ function cancelCurrentAction(){
 }
 
 // Modal (y/n dialogue) functions
-function rwcYesNoModal(text) {
+function rwcActionYesNoModal(text) {
   $("[role=modal]").load("modal.html", function() {
     $('[role=dialog]').modal({
       backdrop: 'static',
@@ -553,7 +553,7 @@ function Signal_buttonPressed(button) {
 
 showModalTopic.subscribe(function(msg) {
   console.log('listener interface show modal msg.data='+msg.data);
-  rwcYesNoModal(msg.data);
+  rwcActionYesNoModal(msg.data);
 });
 
 showModalCloseTopic.subscribe(function(msg) {

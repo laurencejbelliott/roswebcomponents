@@ -143,7 +143,7 @@ var headElementNames = [
 ];
 
 // Modal (y/n dialogue) functions
-function Show_modal(text) {
+function rwcActionYesNoModal(text) {
   $("[role=modal]").load("modal-receiver.html", function() {
     $('[role=dialog]').modal({
       backdrop: 'static',
@@ -1027,7 +1027,7 @@ $("document").ready(function(){
   // Subscribe to modal topics
   showModalTopic.subscribe(function(msg) {
     console.log('listener interface show modal msg.data='+msg.data);
-    Show_modal(msg.data);
+    rwcActionYesNoModal(msg.data);
   });
 
   showModalCloseTopic.subscribe(function(msg) {
