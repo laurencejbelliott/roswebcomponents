@@ -936,19 +936,19 @@ $("document").ready(function(){
     var componentsClicked = JSON.parse(message.data);
     toggleableComponents.forEach(function(component){
       if (componentsClicked[component.dataset.id]){
-        if (component.constructor.name === "rwcButtonActionStart"){
+        if (component.constructor.name === "rwcButtonActionStart" || component.constructor.name === "rwcButtonLoadPage"){
           if (component.hasAttribute("data-clicked-class")){
             component.shadowRoot.querySelector("div").setAttribute("class", component.dataset.clickedClass);  
           } else {
             component.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start-clicked");
           }
-        } else if (component.constructor.name === "rwcTextActionStart"){
+        } else if (component.constructor.name === "rwcTextActionStart" || component.constructor.name === "rwcTextLoadPage"){
           if (component.hasAttribute("data-clicked-class")){
             component.shadowRoot.querySelector("div").setAttribute("class", component.dataset.clickedClass);  
           } else {
             component.shadowRoot.querySelector("span").setAttribute("class", "rwc-text-action-start-clicked");
           }
-        } else if (component.constructor.name === "rwcImageActionStart"){
+        } else if (component.constructor.name === "rwcImageActionStart" || component.constructor.name === "rwcImageLoadPage"){
           if (component.hasAttribute("data-clicked-class")){
             component.shadowRoot.querySelector("div").setAttribute("class", component.dataset.clickedClass);  
           } else {
