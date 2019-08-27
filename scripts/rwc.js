@@ -1680,6 +1680,268 @@ class rwcButtonLoadPage extends HTMLElement {
 customElements.define("rwc-button-load-page", rwcButtonLoadPage);
 
 
+// Class for custom element 'rwc-text-load-page'
+class rwcTextLoadPage extends HTMLElement {
+  connectedCallback() {
+    this.busy = false;
+    this.clicked = false;
+    if (this.dataset.disabled) {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+
+    this.rwcClass;
+
+    if (this.isDisabled && this.busy) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-text-action-start-disabled";
+      }
+    } else if (this.isDisabled && !(this.busy)) {
+        this.rwcClass = "rwc-text-action-start-receiver";
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-text-action-start";
+      }
+    }
+
+    var actionButton = this;
+
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        this.clicked = true;
+        if (!this.isDisabled){
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
+          window.location.href = this.dataset.href;
+        }
+      });
+    } else {
+      this.addEventListener('click', e => {
+        this.clicked = true;
+        if (!this.isDisabled){
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
+          window.location.href = this.dataset.href;
+        }
+      });
+    }
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
+    + '<style>@import url("styles/rwc-user-styles.css")</style><span id="'
+    + this.dataset.id + '" class="' + this.rwcClass
+    + '">' + this.dataset.text + '</span>';
+
+    toggleableComponents.push(this);
+  }
+
+  set disabled(bool){
+    this.isDisabled = bool;
+
+    if (this.isDisabled && this.busy) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-text-action-start-disabled";
+      }
+    } else if (this.isDisabled && !(this.busy)) {
+      this.rwcClass = "rwc-text-action-start-receiver";
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-text-action-start";
+      }
+    }
+
+    this.shadowRoot.querySelector("span").setAttribute("class", this.rwcClass);
+
+  }
+
+  get disabled(){
+    return this.isDisabled;
+  }
+
+  disable(busy = false){
+    this.busy = busy;
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+      if (index > -1){
+        startDisabledEnabledComponentIDs.splice(index, 1);
+        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+      }
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
+  }
+}
+
+customElements.define("rwc-text-load-page", rwcTextLoadPage);
+
+
+// Class for custom element 'rwc-img-load-page'
+class rwcImageLoadPage extends HTMLElement {
+  connectedCallback() {
+    this.busy = false;
+    this.clicked = false;
+    if (this.dataset.disabled) {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+
+    this.rwcClass;
+
+    if (this.isDisabled && this.busy) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-img-action-start-disabled";
+      }
+    } else if (this.isDisabled && !(this.busy)) {
+        this.rwcClass = "rwc-img-action-start-receiver";
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-img-action-start";
+      }
+    }
+
+    var actionButton = this;
+
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        this.clicked = true;
+        if (!this.isDisabled){
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
+          window.location.href = this.dataset.href;
+        }
+      });
+    } else {
+      this.addEventListener('click', e => {
+        this.clicked = true;
+        if (!this.isDisabled){
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
+          window.location.href = this.dataset.href;
+        }
+      });
+    }
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
+    + '<style>@import url("styles/rwc-user-styles.css")</style><img id="'
+    + this.dataset.id + '" class="' + this.rwcClass
+    + '" src="' + this.getAttribute("src") + '"></img>';
+
+    toggleableComponents.push(this);
+  }
+
+  set disabled(bool){
+    this.isDisabled = bool;
+
+    if (this.isDisabled && this.busy) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-img-action-start-disabled";
+      }
+    } else if (this.isDisabled && !(this.busy)) {
+      this.rwcClass = "rwc-img-action-start-receiver";
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-img-action-start";
+      }
+    }
+
+    this.shadowRoot.querySelector("img").setAttribute("class", this.rwcClass);
+
+  }
+
+  get disabled(){
+    return this.isDisabled;
+  }
+
+  disable(interface_busy){
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
+  }
+}
+
+customElements.define("rwc-img-load-page", rwcImageLoadPage);
+
+
+
 // --- Action Components ---
 // Class for custom element 'rwc-button-action-start'
 class rwcButtonActionStart extends HTMLElement {

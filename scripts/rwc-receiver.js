@@ -243,6 +243,11 @@ class rwcButtonActionStart extends HTMLElement {
 
 customElements.define("rwc-button-action-start", rwcButtonActionStart);
 
+// Class for custom element 'rwc-button-load-page'
+class rwcButtonLoadPage extends rwcButtonActionStart{}
+customElements.define("rwc-button-load-page", rwcButtonLoadPage);
+
+
 // Class for custom element 'rwc-text-action-start'
 class rwcTextActionStart extends HTMLElement {
   connectedCallback() {
@@ -323,6 +328,10 @@ class rwcTextActionStart extends HTMLElement {
 }
 
 customElements.define("rwc-text-action-start", rwcTextActionStart);
+
+// Class for custom element 'rwc-text-load-page'
+class rwcTextLoadPage extends rwcTextActionStart{}
+customElements.define("rwc-text-load-page", rwcTextLoadPage);
 
 
 // Class for custom element 'rwc-img-action-start'
@@ -405,6 +414,10 @@ class rwcImageActionStart extends HTMLElement {
 }
 
 customElements.define("rwc-img-action-start", rwcImageActionStart);
+
+// Class for custom element 'rwc-img-load-page'
+class rwcImageLoadPage extends rwcImageActionStart{}
+customElements.define("rwc-img-load-page", rwcImageLoadPage);
 
 
 // --- Listener Components ---
