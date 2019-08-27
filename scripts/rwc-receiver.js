@@ -1047,4 +1047,6 @@ $("document").ready(function(){
     console.log('listener interface show modal msg.data='+msg.data);
     Close_modal(msg.data);
   });
+
+  document.body.setAttribute("pointer-events", "none");
 });
