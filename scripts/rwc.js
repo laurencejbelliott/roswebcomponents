@@ -107,7 +107,7 @@ var startDisabledEnabledComponentIDs = [];
 
 // --- Speech bubbles ---
 // Load CSS
-var cssLink = $("<link rel='stylesheet' type='text/css' href='/roswebcomponents/styles/speechbubble.css'>");
+var cssLink = $("<link rel='stylesheet' type='text/css' href='styles/speechbubble.css'>");
 $("head").append(cssLink);
 
 function robot_speech_bubble(text) {
@@ -1542,6 +1542,143 @@ function subCustom(listener, listenerComponent = null, fieldSelector = null){
 
 
 // --- Web Components ---
+
+// --- Load Page Components ---
+// Class for custom element 'rwc-button-load-page'
+class rwcButtonLoadPage extends HTMLElement {
+  connectedCallback() {
+    this.busy = false;
+    this.clicked = false;
+
+    if (this.dataset.disabled && !(startDisabledEnabledComponentIDs.includes(this.dataset.id))) {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
+
+    this.rwcClass;
+
+    if (this.isDisabled && this.busy) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-button-action-start-disabled";
+      }
+    } else if (this.isDisabled && !(this.busy)) {
+        this.rwcClass = "rwc-button-action-start-receiver";
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-button-action-start";
+      }
+    }
+
+    var actionButton = this;
+
+    if(isPhone){
+      this.addEventListener('touchstart', e => {
+        this.clicked = true;
+        if (!this.isDisabled){
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
+          window.location.href = this.dataset.href;
+        }
+      });
+    } else {
+      this.addEventListener('click', e => {
+        this.clicked = true;
+        if (!this.isDisabled){
+          setTimeout(function(){
+            actionButton.clicked = false;
+          }, 500);
+          window.location.href = this.dataset.href;
+        }
+      });
+    }
+
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = '<style>@import url("styles/rwc-styles.css")</style>'
+    + '<style>@import url("styles/rwc-user-styles.css")</style><div id="'
+    + this.dataset.id + '" class="' + this.rwcClass
+    + '"><span>' + this.dataset.text + '</span></div>';
+
+    toggleableComponents.push(this);
+  }
+
+  set disabled(bool){
+    this.isDisabled = bool;
+
+    if (this.isDisabled && this.busy) {
+      if (this.hasAttribute("data-disabled-class")) {
+        this.rwcClass = this.dataset.disabledClass;
+      } else {
+        this.rwcClass = "rwc-button-action-start-disabled";
+      }
+    } else if (this.isDisabled && !(this.busy)) {
+      this.rwcClass = "rwc-button-action-start-receiver";
+    } else {
+      if (this.hasAttribute("data-class")) {
+        this.rwcClass = this.dataset.class;
+      } else {
+        this.rwcClass = "rwc-button-action-start";
+      }
+    }
+
+    this.shadowRoot.querySelector("div").setAttribute("class", this.rwcClass);
+
+  }
+
+  get disabled(){
+    return this.isDisabled;
+  }
+
+  disable(busy = false){
+    this.busy = busy;
+    if (!window.rwcDisabledComponents.includes(this)){
+      window.rwcDisabledComponents.push(this);
+    }
+    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+      if (index > -1){
+        startDisabledEnabledComponentIDs.splice(index, 1);
+        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+      }
+    }
+    this.disabled = true;
+  }
+
+  enable(){
+    this.disabled = false;
+    window.rwcDisabledComponents = [];
+    toggleableComponents.forEach(function(element){
+      if (element.disabled == true) {
+        window.rwcDisabledComponents.push(element);
+      }
+    });
+
+    if (this.dataset.disabled){
+      if (!(startDisabledEnabledComponentIDs.includes(this.dataset.id))){
+        startDisabledEnabledComponentIDs.push(this.dataset.id);
+      }
+    }
+
+    startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+    startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    var index = disabledComponentIDs.indexOf(this.dataset.id);
+    if (index > -1){
+      disabledComponentIDs.splice(index, 1);
+    }
+    disabledTopicString.data = JSON.stringify(disabledComponentIDs);
+    disabledTopic.publish(disabledTopicString);
+  }
+}
+
+customElements.define("rwc-button-load-page", rwcButtonLoadPage);
+
 
 // --- Action Components ---
 // Class for custom element 'rwc-button-action-start'
