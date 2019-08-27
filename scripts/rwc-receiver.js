@@ -937,11 +937,23 @@ $("document").ready(function(){
     toggleableComponents.forEach(function(component){
       if (componentsClicked[component.dataset.id]){
         if (component.constructor.name === "rwcButtonActionStart"){
-          component.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start-clicked");
+          if (component.hasAttribute("data-clicked-class")){
+            component.shadowRoot.querySelector("div").setAttribute("class", component.dataset.clickedClass);  
+          } else {
+            component.shadowRoot.querySelector("div").setAttribute("class", "rwc-button-action-start-clicked");
+          }
         } else if (component.constructor.name === "rwcTextActionStart"){
-          component.shadowRoot.querySelector("span").setAttribute("class", "rwc-text-action-start-clicked");
+          if (component.hasAttribute("data-clicked-class")){
+            component.shadowRoot.querySelector("div").setAttribute("class", component.dataset.clickedClass);  
+          } else {
+            component.shadowRoot.querySelector("span").setAttribute("class", "rwc-text-action-start-clicked");
+          }
         } else if (component.constructor.name === "rwcImageActionStart"){
-          component.shadowRoot.querySelector("img").setAttribute("class", "rwc-img-action-start-clicked");
+          if (component.hasAttribute("data-clicked-class")){
+            component.shadowRoot.querySelector("div").setAttribute("class", component.dataset.clickedClass);  
+          } else {
+            component.shadowRoot.querySelector("img").setAttribute("class", "rwc-img-action-start-clicked");
+          }
         }
       }
     });
