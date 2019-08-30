@@ -2444,7 +2444,7 @@ function awaitListenerData(listener, listenerComponent = null, fieldSelector = n
         rwcListenerData = listeners[listener](listenerComponent)
       }
       else {
-        rwcListenerCustom(listenerComponent, fieldSelector);
+        rwcListenerData = rwcListenerCustom(listenerComponent, fieldSelector);
       }
       resolve(rwcListenerData);
     }, 50);
