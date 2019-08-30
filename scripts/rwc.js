@@ -105,6 +105,9 @@ var disabledComponentIDs = [];
 // Global var to track IDs of initially disabled components which are enabled
 var startDisabledEnabledComponentIDs = [];
 
+// Global var for stop button element
+var stopButton;
+
 // --- Speech bubbles ---
 // Load CSS
 var cssLink = $("<link rel='stylesheet' type='text/css' href='styles/speechbubble.css'>");
