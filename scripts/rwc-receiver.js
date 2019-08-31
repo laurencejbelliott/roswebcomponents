@@ -145,6 +145,13 @@ var headElementNames = [
   "HTMLMetaElement"
 ];
 
+// Stop button global variable
+var stopButton = document.createElement("div");
+stopButton.setAttribute("class", "cancel-button-receiver");
+stopButtonSpan = document.createElement("span");
+stopButtonSpan.innerHTML = "Cancel action";
+stopButton.appendChild(stopButtonSpan);
+
 // Modal (y/n dialogue) functions
 function rwcActionYesNoModal(text) {
   $("[role=modal]").load("modal-receiver.html", function() {
@@ -1055,11 +1062,6 @@ $("document").ready(function(){
     Close_modal(msg.data);
 
   // Create stop button element
-  stopButton = document.createElement("div");
-  stopButton.setAttribute("class", "cancel-button-receiver");
-  stopButtonSpan = document.createElement("span");
-  stopButtonSpan.innerHTML = "Cancel action";
-  stopButton.appendChild(stopButtonSpan);
   document.body.appendChild(stopButton);
   });
 });
