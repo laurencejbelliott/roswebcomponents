@@ -1,8 +1,6 @@
 /* Default styling for cancel button */
 div.cancel-button{
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
+    position: relative;
     background-color: darkred !important;
     font-size: 30px !important;
 }
@@ -95,8 +93,8 @@ div.rwc-button-action-start-receiver > span{
     margin: 5px;
 }
 
-/* Default styling for rwc-button-action-start-disabled */
-div.rwc-button-action-start-disabled{
+/* Default styling for rwc-button-action-start-busy */
+div.rwc-button-action-start-busy{
     font-size: 20px;
     display: inline-block;
     border-style: solid;
@@ -110,7 +108,7 @@ div.rwc-button-action-start-disabled{
     -ms-user-select: none;
 }
 
-div.rwc-button-action-start-disabled > span{
+div.rwc-button-action-start-busy > span{
     margin: 5px;
 }
 
@@ -149,8 +147,8 @@ span.rwc-text-action-start-clicked{
 }
 
 
-/* Default styling for rwc-text-action-start-disabled */
-span.rwc-text-action-start-disabled{
+/* Default styling for rwc-text-action-start-busy */
+span.rwc-text-action-start-busy{
     color: grey;
     font-weight: bold;
     text-decoration: underline;
@@ -186,6 +184,6 @@ img.rwc-img-action-start-clicked{
     cursor:pointer;
 }
 
-img.rwc-img-action-start-disabled{
+img.rwc-img-action-start-busy{
     filter: saturate(0%);
 }
