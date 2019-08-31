@@ -13,6 +13,13 @@ var currentActionClient;
 var exhibitorsJSON;
 var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
+
+  // Set rosbridge_websocket URL
+  ros = new ROSLIB.Ros({
+    url: configJSON["rosbridge_websocket_url"]
+  });
+  console.log("rosbridge_websocket URL: " +  ros.socket.url);
+
   // Get exhibitors data for Lindsey operations
   $.getJSON("exhibitors_definition.json",
   function(json){

@@ -3,6 +3,12 @@ var configJSON;
 var currentActionClient;
 var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
+
+  // Set rosbridge_websocket URL
+  ros = new ROSLIB.Ros({
+    url: configJSON["rosbridge_websocket_url"]
+  });
+  console.log("rosbridge_websocket URL: " +  ros.socket.url);
 });
 
 // Dictionary of listener functions, for matching 'data-listener' listener names to

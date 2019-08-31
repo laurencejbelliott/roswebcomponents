@@ -1,5 +1,5 @@
 {
-    "rosbridge_websocket_url": "ws://localhost:9090",
+    "rosbridge_websocket_url": "ws://127.0.0.1:9090",
     "actions": {
         "actionServers": {
             "move_base": {
