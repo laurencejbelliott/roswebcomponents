@@ -213,22 +213,6 @@ $(document).ready(function(){
   spinner.setAttribute("class", "spin");
   document.body.appendChild(spinner);
 
-  stopButton = document.createElement("div");
-  stopButton.setAttribute("class", "cancel-button rwc-button-action-start");
-  stopButtonSpan = document.createElement("span");
-  stopButtonSpan.innerHTML = "Cancel action";
-  stopButton.appendChild(stopButtonSpan);
-  if(isPhone){
-    stopButton.addEventListener('touchstart', function(event){
-      cancelCurrentAction();
-    });
-  } else {
-    stopButton.addEventListener('click', e => {
-      cancelCurrentAction();
-    });
-  }
-  document.body.appendChild(stopButton);
-
   window.setInterval(function(){
     // Get interfaceBusy ROS parameter
     interfaceBusyParam.get(function(param){
@@ -263,10 +247,12 @@ $(document).ready(function(){
             element.disabled = false;
           }
         });
+        $(document.body).attr("pointer-events", "auto");
       } else if(window.rwcInterfaceEnabled == 0){
         toggleableComponents.forEach(function(element){
           element.disabled = true;
         });
+        $(document.body).attr("pointer-events", "none");
       }
     }
 
@@ -310,6 +296,24 @@ $(document).ready(function(){
   var modalDiv = document.createElement('div');
   modalDiv.setAttribute('role', 'modal');
   document.body.appendChild(modalDiv);
+
+  // Create and append stop button
+  stopButton = document.createElement("div");
+  stopButton.setAttribute("class", "cancel-button rwc-button-action-start");
+  stopButton.setAttribute("style", "z-index: 9999;");
+  stopButtonSpan = document.createElement("span");
+  stopButtonSpan.innerHTML = "Cancel action";
+  stopButton.appendChild(stopButtonSpan);
+  if(isPhone){
+    stopButton.addEventListener('touchstart', function(event){
+      cancelCurrentAction();
+    });
+  } else {
+    stopButton.addEventListener('click', e => {
+      cancelCurrentAction();
+    });
+  }
+  document.body.appendChild(stopButton);
 });
 
 // Connection to ROSbridge server websocket
@@ -1567,8 +1571,6 @@ class rwcButtonLoadPage extends HTMLElement {
       } else {
         this.rwcClass = "rwc-button-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-        this.rwcClass = "rwc-button-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1619,8 +1621,6 @@ class rwcButtonLoadPage extends HTMLElement {
       } else {
         this.rwcClass = "rwc-button-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-      this.rwcClass = "rwc-button-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1702,8 +1702,6 @@ class rwcTextLoadPage extends HTMLElement {
       } else {
         this.rwcClass = "rwc-text-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-        this.rwcClass = "rwc-text-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1754,8 +1752,6 @@ class rwcTextLoadPage extends HTMLElement {
       } else {
         this.rwcClass = "rwc-text-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-      this.rwcClass = "rwc-text-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1837,8 +1833,6 @@ class rwcImageLoadPage extends HTMLElement {
       } else {
         this.rwcClass = "rwc-img-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-        this.rwcClass = "rwc-img-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1889,8 +1883,6 @@ class rwcImageLoadPage extends HTMLElement {
       } else {
         this.rwcClass = "rwc-img-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-      this.rwcClass = "rwc-img-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -1966,8 +1958,6 @@ class rwcButtonActionStart extends HTMLElement {
       } else {
         this.rwcClass = "rwc-button-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-        this.rwcClass = "rwc-button-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -2046,8 +2036,6 @@ class rwcButtonActionStart extends HTMLElement {
       } else {
         this.rwcClass = "rwc-button-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-      this.rwcClass = "rwc-button-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -2129,8 +2117,6 @@ class rwcTextActionStart extends HTMLElement {
       } else {
         this.rwcClass = "rwc-text-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-        this.rwcClass = "rwc-text-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -2209,8 +2195,6 @@ class rwcTextActionStart extends HTMLElement {
       } else {
         this.rwcClass = "rwc-text-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-      this.rwcClass = "rwc-text-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -2292,8 +2276,6 @@ class rwcImageActionStart extends HTMLElement {
       } else {
         this.rwcClass = "rwc-img-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-        this.rwcClass = "rwc-img-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;
@@ -2374,8 +2356,6 @@ class rwcImageActionStart extends HTMLElement {
       } else {
         this.rwcClass = "rwc-img-action-start-disabled";
       }
-    } else if (this.isDisabled && !(this.busy)) {
-      this.rwcClass = "rwc-img-action-start-receiver";
     } else {
       if (this.hasAttribute("data-class")) {
         this.rwcClass = this.dataset.class;

@@ -73,7 +73,6 @@ var currentActionTopic = new ROSLIB.Topic({
 ros : ros,
 name : "/rwc/current_action",
 messageType : "std_msgs/String",
-latch: true
 });
 
 var currentActionTopicString = new ROSLIB.Message({
@@ -85,7 +84,6 @@ var currentPageTopic = new ROSLIB.Topic({
 ros : ros,
 name : "/rwc/current_page",
 messageType : "std_msgs/String",
-latch: true
 });
 
 var currentPageTopicString = new ROSLIB.Message({
@@ -97,7 +95,6 @@ var clickedTopic = new ROSLIB.Topic({
 ros : ros,
 name : "/rwc/components_currently_clicked",
 messageType : "std_msgs/String",
-latch: true
 });
 
 // Variables for individually disabled components in a ROS topic
@@ -105,7 +102,7 @@ var disabledTopic = new ROSLIB.Topic({
   ros : ros,
   name : "/rwc/disabled_components",
   messageType : "std_msgs/String",
-  latch: true
+
 });
 
 var disabledTopicString = new ROSLIB.Message({
@@ -890,14 +887,6 @@ $("document").ready(function(){
     });
   });
 
-  // Create stop button element
-  stopButton = document.createElement("div");
-  stopButton.setAttribute("class", "cancel-button-receiver");
-  stopButtonSpan = document.createElement("span");
-  stopButtonSpan.innerHTML = "Cancel action";
-  stopButton.appendChild(stopButtonSpan);
-  document.body.appendChild(stopButton);
-
   // Create spinner element
   spinner = document.createElement("div");
   spinner.setAttribute("class", "spin");
@@ -1058,7 +1047,13 @@ $("document").ready(function(){
   showModalCloseTopic.subscribe(function(msg) {
     console.log('listener interface show modal msg.data='+msg.data);
     Close_modal(msg.data);
-  });
 
-  document.body.setAttribute("pointer-events", "none");
+  // Create stop button element
+  stopButton = document.createElement("div");
+  stopButton.setAttribute("class", "cancel-button-receiver");
+  stopButtonSpan = document.createElement("span");
+  stopButtonSpan.innerHTML = "Cancel action";
+  stopButton.appendChild(stopButtonSpan);
+  document.body.appendChild(stopButton);
+  });
 });
