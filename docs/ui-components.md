@@ -10,6 +10,42 @@ Note: Action components should each be assigned a unique ID using their HTML tag
 - Example:
 
     ![alt text](/images/cancel-button.png "A red button with the text 'Cancel action'")
+
+Note: Should you want to hide or modify the cancel button, you can access it via the global JS variable `stopButton`. To hide it for example you can use the following JS code:
+```javascript
+stopButton.hidden = true;
+```
+
+If you then wish to place your own custom cancel button somewhere other than the default location in which this library automatically places it, you can insert it using either HTML or JavaScript.
+
+HTML example:
+```html
+<div class="cancel-button rwc-button-action-start"
+style="z-index: 9999;" onmousedown="cancelCurrentAction();">
+    <span>Cancel action</span>
+</div>
+```
+JavaScript example:
+```javascript
+var myCancelButton = document.createElement("div");
+myCancelButton.setAttribute("class", "cancel-button rwc-button-action-start");
+myCancelButton.setAttribute("style", "z-index: 9999;");
+myCancelButtonSpan = document.createElement("span");
+myCancelButtonSpan.innerHTML = "Cancel action";
+myCancelButton.appendChild(myCancelButtonSpan);
+if(isPhone){
+    myCancelButton.addEventListener('touchstart', function(event){
+        cancelCurrentAction();
+    });
+} else {
+    myCancelButton.addEventListener('click', e => {
+        cancelCurrentAction();
+    });
+}
+document.body.appendChild(myCancelButton);
+```
+
+
 ### rwc-button-action-start
 - Description: A button which calls an [action function](/docs/action-functions.md) when clicked.
     - Example:
