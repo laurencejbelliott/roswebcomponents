@@ -54,6 +54,13 @@ var myAction = rwcActionGoToNode("WayPoint2");
 myAction.on('result', function(){console.log(goalStatusNames[myActionSay.status.status])});
 ```
 
+## ROS topic functions
+- `/rwc/load_page`
+    - Fields: `data`
+    - Description: Prompts the interface to load the page given as a String in the `data` field.
+    - Example: `rostopic pub /rwc/load_page std_msgs/String "data: 'map-page.html'"`
+        - Redirects the interface to the page `map-page.html`.
+
 ## [Lindsey](https://lcas.lincoln.ac.uk/wp/projects/lindsey-a-robot-tour-guide/) action functions
 - rwcActionGazeAtPosition
     - Arguments: `x, y, z, secs`
