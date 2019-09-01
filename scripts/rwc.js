@@ -53,7 +53,8 @@ var actions = {
   "gazeAtPosition": rwcActionGazeAtPosition,
   "describeExhibit": rwcActionDescribeExhibit,
   "goToAndDescribeExhibit": rwcActionGoToAndDescribeExhibit,
-  "startTour": rwcActionStartTour
+  "startTour": rwcActionStartTour,
+  "yesNoModal": rwcActionYesNoModal
 };
 
 // List of 'data-action' action names which require their parameter to be parsed as
@@ -63,7 +64,8 @@ strActions = [
   "say",
   "describeExhibit",
   "goToAndDescribeExhibit",
-  "startTour"
+  "startTour",
+  "yesNoModal"
 ];
 
 // List of 'data-action' action names which require their parameter to be parsed as

@@ -34,6 +34,13 @@
     - Description: Asks the robot to speak the given `phrase` using TTS (Text To Speech). By default this library uses [MaryTTS](https://github.com/strands-project/strands_ui/tree/hydro-devel/mary_tts), but you can specify an ActionServer name and goal message type for your own TTS ActionServer in [rwc-config.json](/rwc-config.json) under "actions" > "actionServers" > "speak".
     - Example: `rwcActionSay("Hello world!");`
         - Tells the robot to speak the phrase "Hello world!" using TTS.
+- rwcActionYesNoModal
+    - Arguments: `text`
+    - Description: Displays a prompt with `text` at its head, and two buttons for the user's reply: 'No' and 'Yes'. The user's choice is published on the topic `/interface/buttonPressed`, as either "modalNo" or "modalYes". The prompt will persist until the user has chosen their response, and the rest of the interface will be dimmed and disabled while it is displayed.
+    - Example: `rwcActionYesNoModal("What will you choose?");`
+        - Displays a prompt with the text "What will you choose, and two buttons for the user's reply: 'No' and 'Yes'.
+        
+            ![alt text](/images/modal.png "A red button with the text 'Cancel action'")
 
 
 ## Action function callbacks
