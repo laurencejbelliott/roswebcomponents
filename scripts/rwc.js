@@ -501,7 +501,7 @@ var interfaceEnabledParam = new ROSLIB.Param({
 function busyInterface(){
   window.rwcDisabledComponents = [];
   toggleableComponents.forEach(function(element){
-    if (element.disabled == true) {
+    if (element.busy == true) {
       window.rwcDisabledComponents.push(element);
     }
   });
@@ -515,12 +515,6 @@ function freeInterface(){
 }
 
 function disableInterface(){
-  window.rwcDisabledComponents = [];
-  toggleableComponents.forEach(function(element){
-    if (element.disabled == true) {
-      window.rwcDisabledComponents.push(element);
-    }
-  });
   interfaceEnabledParam.set(0);
 }
 
@@ -1450,7 +1444,7 @@ function rwcListenerGetQRCode(){
   var img = new Image();
   img.src = configJSON.listeners.camera_snapshot.uri;
 
-  // Temporary HTML5 canvas created to call getImageData 
+  // Temporary HTML5 canvas created to call getImageData
   var canvas = document.createElement('canvas');
   var context = canvas.getContext('2d');
   canvas.width = img.width;
