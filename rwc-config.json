@@ -17,6 +17,10 @@
             "move_base_custom_example": {
                 "actionServerName": "/move_base",
                 "actionName": "move_base_msgs/MoveBaseAction"
+            },
+            "gaze": {
+                "actionServerName": "/gaze_at_pose",
+                "actionName": "strands_gazing/GazeAtPoseAction"
             }
         },
         "topics": {
@@ -58,6 +62,14 @@
         "volume": {
             "topicName": "/volume/percent",
             "topicMessageType": "std_msgs/Int8"
+        },
+        "gaze": {
+            "topicName": "/rwc/gaze_pose",
+            "topicMessageType": "geometry_msgs/PoseStamped"
+        },
+        "task_events": {
+            "topicName": "/task_executor/events",
+            "topicMessageType": "strands_executive_msgs/TaskEvent"
         },
         "camera_snapshot": {
             "uri": "http://localhost:8080/snapshot?topic=/head_xtion/rgb/image_color"

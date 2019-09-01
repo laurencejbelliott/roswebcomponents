@@ -11,6 +11,10 @@ if (isPhone){
 var configJSON;
 var currentActionClient;
 var exhibitorsJSON;
+var taskEventsTopic;
+var speakGoalTopic;
+var speakResultTopic;
+var speakCancelTopic;
 var JSONreq = $.getJSON("rwc-config.json", function(json){
   configJSON = json;
 
@@ -24,6 +28,47 @@ var JSONreq = $.getJSON("rwc-config.json", function(json){
   $.getJSON("exhibitors_definition.json",
   function(json){
     exhibitorsJSON = json;
+  });
+
+  // ROS topic for tracking task events, `/task_executor/events`
+  taskEventsTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.listeners.task_events.topicName,
+    messageType : configJSON.listeners.task_events.topicMessageType
+  });
+
+  // `/speak` topics for speech bubbles
+  speakGoalTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.actions.actionServers.speak.actionServerName + "/goal",
+    messageType : configJSON.actions.actionServers.speak.actionName + "Goal"
+  });
+
+  speakResultTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.actions.actionServers.speak.actionServerName + "/result",
+    messageType : configJSON.actions.actionServers.speak.actionName + "Result"
+  });
+
+  speakCancelTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : configJSON.actions.actionServers.speak.actionServerName + "/cancel",
+    messageType : "actionlib_msgs/GoalID"
+  });
+
+  speakGoalTopic.subscribe(function(msg) {
+    console.log('listener_speech_goal msg.goal='+msg.goal.text);
+    Show_robot_speech(msg.goal.text, msg.goal_id.id, 'nonblock');
+  });
+
+  speakResultTopic.subscribe(function(msg) {
+    console.log('listener_speech_result msg.result='+msg.result);
+    Receive_robot_speech_result(msg.result.text, msg.status.goal_id.id,'nonblock');
+  });
+
+  speakCancelTopic.subscribe(function(msg) {
+    console.log('listener_speech_result msg.result='+msg);
+    Receive_robot_speech_result();
   });
 });
 
@@ -155,8 +200,6 @@ function Receive_robot_speech_result(str, id, mode) {
     console.log("removed all the speech bubbles")
   }
 }
-
-
 
 $(document).ready(function(){
   // Publish '/rwc/page_loaded'
@@ -436,13 +479,6 @@ var pageLoadedString = new ROSLIB.Message({
   data : ""
 });
 
-// ROS topic for tracking task events, `/task_executor/events`
-var taskEventsTopic = new ROSLIB.Topic({
-  ros : ros,
-  name : "/task_executor/events",
-  messageType : "strands_executive_msgs/TaskEvent"
-});
-
 // ROS topic `/interface/buttonPressed` for tracking Lindsey button presses
 var buttonPressedTopic = new ROSLIB.Topic({
   ros : ros,
@@ -649,40 +685,6 @@ function Cancel_active_task() {
     console.log(result)
   });
 }
-
-// Subscribe to `/speak` topics for speech bubbles
-var speakGoalTopic = new ROSLIB.Topic({
-  ros : ros,
-  name : "/speak/goal",
-  messageType : "mary_tts/maryttsActionGoal"
-});
-
-var speakResultTopic = new ROSLIB.Topic({
-  ros : ros,
-  name : "/speak/result",
-  messageType : "mary_tts/maryttsActionResult"
-});
-
-var speakCancelTopic = new ROSLIB.Topic({
-  ros : ros,
-  name : "/speak/cancel",
-  messageType : "actionlib_msgs/GoalID"
-});
-
-speakGoalTopic.subscribe(function(msg) {
-  console.log('listener_speech_goal msg.goal='+msg.goal.text);
-  Show_robot_speech(msg.goal.text, msg.goal_id.id, 'nonblock');
-});
-
-speakResultTopic.subscribe(function(msg) {
-  console.log('listener_speech_result msg.result='+msg.result);
-  Receive_robot_speech_result(msg.result.text, msg.status.goal_id.id,'nonblock');
-});
-
-speakCancelTopic.subscribe(function(msg) {
-  console.log('listener_speech_result msg.result='+msg);
-  Receive_robot_speech_result();
-});
 
 
 // --- Action fuctions ---
@@ -904,8 +906,8 @@ function rwcActionSay(phrase){
 function rwcActionGazeAtPosition(x, y, z, secs){
   var rwcPoseTopic = new ROSLIB.Topic({
     ros : ros,
-    name : "/rwc_gaze_pose",
-    messageType : "geometry_msgs/PoseStamped"
+    name : configJSON.listeners.gaze.topicName,
+    messageType : configJSON.listeners.gaze.topicMessageType
   });
 
   header = {
@@ -932,15 +934,15 @@ function rwcActionGazeAtPosition(x, y, z, secs){
 
   var gazeActionClient = new ROSLIB.ActionClient({
     ros: ros,
-    serverName: "/gaze_at_pose",
-    actionName: "strands_gazing/GazeAtPoseAction"
+    serverName: configJSON.actions.actionServers.gaze.actionServerName,
+    actionName: configJSON.actions.actionServers.gaze.actionName
   });
 
   currentActionClient = gazeActionClient;
 
   msg = {
     runtime_sec: secs,
-    topic_name: "/rwc_gaze_pose"
+    topic_name: configJSON.listeners.gaze.topicName
   };
 
   goal = new ROSLIB.Goal({
@@ -949,11 +951,11 @@ function rwcActionGazeAtPosition(x, y, z, secs){
   });
 
   goal.on('result', function (status) {
-    console.log("Action '/gaze_at_pose/' completed!");
+    console.log("Action " + configJSON.actions.actionServers.gaze.actionServerName + " completed!");
   });
 
   goal.send();
-  console.log("Goal '/gaze_at_pose/goal' sent!");
+  console.log("Goal " + configJSON.actions.actionServers.gaze.actionServerName + "/goal sent!");
 
   return goal;
 }
