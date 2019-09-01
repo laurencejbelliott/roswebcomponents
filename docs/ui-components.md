@@ -222,6 +222,25 @@ Example JSON in [rwc-config.json](/rwc-config.json), inside `actions.actionServe
     </rwc-button-action-start>
     ```
 
+## Load Page Components
+Load page components are identical to action components, except that when clicked, they load a given HTML page, as opposed to sending an action goal. The major differences are:
+ - Any attributes that begin with `data-action` will not apply.
+ - The relative or full URL of the page you want to load when the button is pressed is defined with the `data-href` attribute.
+
+Names of 'load page' components tags are:
+ - `rwc-button-load-page`
+ - `rwc-text-load-page`
+ - `rwc-img-load-page`
+
+Example HTML for a button which loads the page `foo.html` when pressed:
+```html
+<rwc-button-load-page
+data-id="loadPageFooButton"
+data-text="To foo"
+data-href="foo.html">
+</rwc-button-load-page>
+```
+
 ## Listener Components
 ### rwc-text-listener
 - Description: Text which displays the data returned by a [listener function](/docs/listener-functions.md), updating continuously to reflect changes in the returned data.
