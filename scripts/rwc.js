@@ -1577,10 +1577,20 @@ class rwcButtonLoadPage extends HTMLElement {
     this.busy = false;
     this.clicked = false;
 
+    this.alwaysEnabled = false;
+    if (this.hasAttribute("data-always-enabled")){
+      this.alwaysEnabled = true;
+    }
+
     if (this.dataset.disabled && !(startDisabledEnabledComponentIDs.includes(this.dataset.id))) {
       this.isDisabled = true;
     } else {
       this.isDisabled = false;
+    }
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
     }
 
     this.rwcClass;
@@ -1635,6 +1645,11 @@ class rwcButtonLoadPage extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    }
+
     if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-busy-class")) {
         this.rwcClass = this.dataset.busyClass;
@@ -1659,18 +1674,24 @@ class rwcButtonLoadPage extends HTMLElement {
 
   disable(busy = false){
     this.busy = busy;
-    if (!window.rwcDisabledComponents.includes(this)){
-      window.rwcDisabledComponents.push(this);
-    }
-    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
-      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
-      if (index > -1){
-        startDisabledEnabledComponentIDs.splice(index, 1);
-        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
-        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    } else {
+      if (!window.rwcDisabledComponents.includes(this)){
+        window.rwcDisabledComponents.push(this);
       }
+      if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+        var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+        if (index > -1){
+          startDisabledEnabledComponentIDs.splice(index, 1);
+          startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+          startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+        }
+      }
+      this.disabled = true;
     }
-    this.disabled = true;
   }
 
   enable(){
@@ -1708,10 +1729,21 @@ class rwcTextLoadPage extends HTMLElement {
   connectedCallback() {
     this.busy = false;
     this.clicked = false;
+
+    this.alwaysEnabled = false;
+    if (this.hasAttribute("data-always-enabled")){
+      this.alwaysEnabled = true;
+    }
+
     if (this.dataset.disabled) {
       this.isDisabled = true;
     } else {
       this.isDisabled = false;
+    }
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
     }
 
     this.rwcClass;
@@ -1766,6 +1798,11 @@ class rwcTextLoadPage extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    }
+
     if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-busy-class")) {
         this.rwcClass = this.dataset.busyClass;
@@ -1790,18 +1827,24 @@ class rwcTextLoadPage extends HTMLElement {
 
   disable(busy = false){
     this.busy = busy;
-    if (!window.rwcDisabledComponents.includes(this)){
-      window.rwcDisabledComponents.push(this);
-    }
-    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
-      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
-      if (index > -1){
-        startDisabledEnabledComponentIDs.splice(index, 1);
-        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
-        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    } else {
+      if (!window.rwcDisabledComponents.includes(this)){
+        window.rwcDisabledComponents.push(this);
       }
+      if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+        var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+        if (index > -1){
+          startDisabledEnabledComponentIDs.splice(index, 1);
+          startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+          startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+        }
+      }
+      this.disabled = true;
     }
-    this.disabled = true;
   }
 
   enable(){
@@ -1839,10 +1882,21 @@ class rwcImageLoadPage extends HTMLElement {
   connectedCallback() {
     this.busy = false;
     this.clicked = false;
+
+    this.alwaysEnabled = false;
+    if (this.hasAttribute("data-always-enabled")){
+      this.alwaysEnabled = true;
+    }
+
     if (this.dataset.disabled) {
       this.isDisabled = true;
     } else {
       this.isDisabled = false;
+    }
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
     }
 
     this.rwcClass;
@@ -1897,6 +1951,11 @@ class rwcImageLoadPage extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    }
+
     if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-busy-class")) {
         this.rwcClass = this.dataset.busyClass;
@@ -1919,11 +1978,26 @@ class rwcImageLoadPage extends HTMLElement {
     return this.isDisabled;
   }
 
-  disable(interface_busy){
-    if (!window.rwcDisabledComponents.includes(this)){
-      window.rwcDisabledComponents.push(this);
+  disable(busy = false){
+    this.busy = busy;
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    } else {
+      if (!window.rwcDisabledComponents.includes(this)){
+        window.rwcDisabledComponents.push(this);
+      }
+      if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+        var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+        if (index > -1){
+          startDisabledEnabledComponentIDs.splice(index, 1);
+          startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+          startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+        }
+      }
+      this.disabled = true;
     }
-    this.disabled = true;
   }
 
   enable(){
@@ -1964,10 +2038,20 @@ class rwcButtonActionStart extends HTMLElement {
     this.busy = false;
     this.clicked = false;
 
+    this.alwaysEnabled = false;
+    if (this.hasAttribute("data-always-enabled")){
+      this.alwaysEnabled = true;
+    }
+
     if (this.dataset.disabled && !(startDisabledEnabledComponentIDs.includes(this.dataset.id))) {
       this.isDisabled = true;
     } else {
       this.isDisabled = false;
+    }
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
     }
 
     this.rwcClass;
@@ -2050,6 +2134,11 @@ class rwcButtonActionStart extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    }
+
     if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-busy-class")) {
         this.rwcClass = this.dataset.busyClass;
@@ -2074,18 +2163,24 @@ class rwcButtonActionStart extends HTMLElement {
 
   disable(busy = false){
     this.busy = busy;
-    if (!window.rwcDisabledComponents.includes(this)){
-      window.rwcDisabledComponents.push(this);
-    }
-    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
-      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
-      if (index > -1){
-        startDisabledEnabledComponentIDs.splice(index, 1);
-        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
-        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    } else {
+      if (!window.rwcDisabledComponents.includes(this)){
+        window.rwcDisabledComponents.push(this);
       }
+      if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+        var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+        if (index > -1){
+          startDisabledEnabledComponentIDs.splice(index, 1);
+          startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+          startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+        }
+      }
+      this.disabled = true;
     }
-    this.disabled = true;
   }
 
   enable(){
@@ -2123,10 +2218,21 @@ class rwcTextActionStart extends HTMLElement {
   connectedCallback() {
     this.busy = false;
     this.clicked = false;
+
+    this.alwaysEnabled = false;
+    if (this.hasAttribute("data-always-enabled")){
+      this.alwaysEnabled = true;
+    }
+
     if (this.dataset.disabled) {
       this.isDisabled = true;
     } else {
       this.isDisabled = false;
+    }
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
     }
 
     this.rwcClass;
@@ -2209,6 +2315,11 @@ class rwcTextActionStart extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    }
+
     if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-busy-class")) {
         this.rwcClass = this.dataset.busyClass;
@@ -2233,18 +2344,24 @@ class rwcTextActionStart extends HTMLElement {
 
   disable(busy = false){
     this.busy = busy;
-    if (!window.rwcDisabledComponents.includes(this)){
-      window.rwcDisabledComponents.push(this);
-    }
-    if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
-      var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
-      if (index > -1){
-        startDisabledEnabledComponentIDs.splice(index, 1);
-        startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
-        startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    } else {
+      if (!window.rwcDisabledComponents.includes(this)){
+        window.rwcDisabledComponents.push(this);
       }
+      if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+        var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+        if (index > -1){
+          startDisabledEnabledComponentIDs.splice(index, 1);
+          startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+          startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+        }
+      }
+      this.disabled = true;
     }
-    this.disabled = true;
   }
 
   enable(){
@@ -2282,10 +2399,21 @@ class rwcImageActionStart extends HTMLElement {
   connectedCallback() {
     this.busy = false;
     this.clicked = false;
+
+    this.alwaysEnabled = false;
+    if (this.hasAttribute("data-always-enabled")){
+      this.alwaysEnabled = true;
+    }
+
     if (this.dataset.disabled) {
       this.isDisabled = true;
     } else {
       this.isDisabled = false;
+    }
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
     }
 
     this.rwcClass;
@@ -2370,6 +2498,11 @@ class rwcImageActionStart extends HTMLElement {
   set disabled(bool){
     this.isDisabled = bool;
 
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    }
+
     if (this.isDisabled && this.busy) {
       if (this.hasAttribute("data-busy-class")) {
         this.rwcClass = this.dataset.busyClass;
@@ -2392,11 +2525,26 @@ class rwcImageActionStart extends HTMLElement {
     return this.isDisabled;
   }
 
-  disable(interface_busy){
-    if (!window.rwcDisabledComponents.includes(this)){
-      window.rwcDisabledComponents.push(this);
+  disable(busy = false){
+    this.busy = busy;
+
+    if (this.alwaysEnabled){
+      this.isDisabled = false;
+      this.busy = false;
+    } else {
+      if (!window.rwcDisabledComponents.includes(this)){
+        window.rwcDisabledComponents.push(this);
+      }
+      if (startDisabledEnabledComponentIDs.includes(this.dataset.id)){
+        var index = startDisabledEnabledComponentIDs.indexOf(this.dataset.id);
+        if (index > -1){
+          startDisabledEnabledComponentIDs.splice(index, 1);
+          startDisabledEnabledTopicString.data = JSON.stringify(startDisabledEnabledComponentIDs);
+          startDisabledEnabledTopic.publish(startDisabledEnabledTopicString);
+        }
+      }
+      this.disabled = true;
     }
-    this.disabled = true;
   }
 
   enable(){
