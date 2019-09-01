@@ -1012,7 +1012,7 @@ function rwcActionDescribeExhibit(name_or_key, duration=60*5){
   var resultEvent = new Event('result');
 
   goal.addEventListener('result', function(status) {
-      console.log("Task completed!");
+      console.log("Exhibit described!");
       freeInterface();
   },);
 
@@ -1047,8 +1047,9 @@ function rwcActionGoToAndDescribeExhibit(name_or_key, duration=60*30){
   var resultEvent = new Event('result');
 
   goal.addEventListener('result', function(status) {
-      console.log("Task completed!");
+      console.log("Exhibit navigated to and described!");
       freeInterface();
+      location.reload();
   },);
 
 
@@ -1078,8 +1079,9 @@ function rwcActionStartTour(name_or_key, duration=60*60){
   var resultEvent = new Event('result');
 
   goal.addEventListener('result', function(status) {
-      console.log("Task completed!");
+      console.log("Tour completed!");
       freeInterface();
+      location.reload();
   },);
 
 
