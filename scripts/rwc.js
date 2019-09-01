@@ -352,6 +352,17 @@ ros.on('close', function(){
     }, 5000);
 });
 
+// Variables for listening for `/rwc/load_page` topic
+var loadPageTopic = new ROSLIB.Topic({
+  ros : ros,
+  name : "/rwc/load_page",
+  messageType : "std_msgs/String"
+});
+
+loadPageTopic.subscribe(function(msg){
+  window.location.href = msg.data;
+});
+
 // Variables for tracking current action in a ROS topic
 var currentActionTopic = new ROSLIB.Topic({
   ros : ros,
