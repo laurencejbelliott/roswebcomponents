@@ -1107,14 +1107,18 @@ function rwcActionStartTour(name_or_key, duration=60*60){
 
 // --- Listener functions ---
 // Listener function 'rwcListenerGetCurrentPage'
-async function rwcListenerGetCurrentPage(listenerComponent = null){
+async function rwcListenerGetCurrentPage(listenerComponent = null, returnTopic = false){
   var listener = currentPageTopic;
 
   // promise function called and function execution halts until
   // the promise is resolved
   rwcCurrentPage = await subCurrentPage(listener, listenerComponent);
 
-  return rwcCurrentPage;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcCurrentPage;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -1142,7 +1146,7 @@ function subCurrentPage(listener, listenerComponent = null){
 
 
 // Listener function 'rwcListenerGetPosition'
-async function rwcListenerGetPosition(listenerComponent = null){
+async function rwcListenerGetPosition(listenerComponent = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1154,7 +1158,11 @@ async function rwcListenerGetPosition(listenerComponent = null){
   // the promise is resolved
   rwcPosition = await subPosition(listener, listenerComponent);
 
-  return rwcPosition;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcPosition;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -1183,7 +1191,7 @@ function subPosition(listener, listenerComponent = null){
 }
 
 // Listener function 'rwcListenerGetOrientation'
-async function rwcListenerGetOrientation(listenerComponent = null){
+async function rwcListenerGetOrientation(listenerComponent = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1193,7 +1201,11 @@ async function rwcListenerGetOrientation(listenerComponent = null){
 
   rwcOrientation = await subOrientation(listener, listenerComponent);
 
-  return rwcOrientation;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcOrientation;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -1223,7 +1235,7 @@ function subOrientation(listener, listenerComponent = null){
 }
 
 // Listener function 'rwcListenerGetNearestPersonPosition'
-async function rwcListenerGetNearestPersonPosition(listenerComponent = null){
+async function rwcListenerGetNearestPersonPosition(listenerComponent = null, returnTopic){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1235,11 +1247,15 @@ async function rwcListenerGetNearestPersonPosition(listenerComponent = null){
   // the promise is resolved
   rwcNearestPersonPosition = await subNearestPersonPosition(listener, listenerComponent);
 
-  return rwcNearestPersonPosition;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcNearestPersonPosition;
+  }
 }
 
-// Promise returns value 50ms after subscribing to topic,
-// preventing old or undefined values from being returned
+// Promise returns value 50ms afbing to topic,
+// preventing old or undefined v  being returned
 function subNearestPersonPosition(listener, listenerComponent = null){
   return new Promise(function(resolve) {
     listener.subscribe(function(message) {
@@ -1264,7 +1280,7 @@ function subNearestPersonPosition(listener, listenerComponent = null){
 }
 
 // Listener function 'rwcListenerGetPeoplePositions'
-async function rwcListenerGetPeoplePositions(listenerComponent = null){
+async function rwcListenerGetPeoplePositions(listenerComponent = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1281,7 +1297,11 @@ async function rwcListenerGetPeoplePositions(listenerComponent = null){
     rwcPeoplePositions.push([person_pose.position.x, person_pose.position.y, person_pose.position.z]);
   });
 
-  return rwcPeoplePositions;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcPeoplePositions;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -1308,7 +1328,7 @@ function subPeoplePositions(listener, listenerComponent = null){
 }
 
 // Listener function 'rwcListenerGetNumberOfPeople'
-async function rwcListenerGetNumberOfPeople(listenerComponent = null){
+async function rwcListenerGetNumberOfPeople(listenerComponent = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1320,11 +1340,15 @@ async function rwcListenerGetNumberOfPeople(listenerComponent = null){
   // the promise is resolved
   rwcPeoplePoses = await subPeoplePositions(listener, listenerComponent);
 
-  return rwcPeoplePositions.length;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcPeoplePositions.length;
+  }
 }
 
 // Listener function 'rwcListenerGetNode'
-async function rwcListenerGetNode(listenerComponent = null){
+async function rwcListenerGetNode(listenerComponent = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1334,7 +1358,11 @@ async function rwcListenerGetNode(listenerComponent = null){
 
   rwcNode = await subNode(listener, listenerComponent);
 
-  return rwcNode;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcNode;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -1361,7 +1389,7 @@ function subNode(listener, listenerComponent = null){
 }
 
 // Listener function 'rwcListenerGetBatteryPercentage'
-async function rwcListenerGetBatteryPercentage(listenerComponent = null){
+async function rwcListenerGetBatteryPercentage(listenerComponent = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1371,7 +1399,11 @@ async function rwcListenerGetBatteryPercentage(listenerComponent = null){
 
   rwcBatteryPercentage = await subBatteryPercentage(listener, listenerComponent);
 
-  return rwcBatteryPercentage;
+  if (returnTopic){
+    return listener;
+  } else{
+    return rwcBatteryPercentage;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -1398,7 +1430,7 @@ function subBatteryPercentage(listener, listenerComponent = null){
 }
 
 // Listener function 'rwcListenerGetVolumePercent'
-async function rwcListenerGetVolumePercent(listenerComponent = null){
+async function rwcListenerGetVolumePercent(listenerComponent = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1408,7 +1440,11 @@ async function rwcListenerGetVolumePercent(listenerComponent = null){
 
   rwcVolumePercent = await subVolumePercent(listener, listenerComponent);
 
-  return rwcVolumePercent;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcVolumePercent;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
@@ -1524,7 +1560,7 @@ function rwcListenerGetTourKeysAndNames(){
 }
 
 // Listener function 'rwcListenerCustom'
-async function rwcListenerCustom(listenerComponent = null, fieldSelector = null){
+async function rwcListenerCustom(listenerComponent = null, fieldSelector = null, returnTopic = false){
   // Topic info loaded from rwc-config JSON file
   var listener = new ROSLIB.Topic({
     ros : ros,
@@ -1532,9 +1568,13 @@ async function rwcListenerCustom(listenerComponent = null, fieldSelector = null)
     messageType : configJSON.listeners[listenerComponent.dataset.listener].topicMessageType
   });
 
-  rwcNode = await subCustom(listener, listenerComponent, fieldSelector);
+  rwcCustom = await subCustom(listener, listenerComponent, fieldSelector);
 
-  return rwcNode;
+  if (returnTopic){
+    return listener;
+  } else {
+    return rwcCustom;
+  }
 }
 
 // Promise returns value 50ms after subscribing to topic,
