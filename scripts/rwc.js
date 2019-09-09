@@ -2084,7 +2084,8 @@ class rwcButtonActionStart extends HTMLElement {
           if (numArrayActions.includes(this.dataset.action)) {
             var strArray = this.dataset.actionParameters.split(",");
             var floatArray = strArray.map(Number);
-            actions[this.dataset.action](floatArray);
+            console.log(floatArray);
+            actions[this.dataset.action](floatArray[0],floatArray[1],floatArray[2]);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
             rwcActionCustom(this);
@@ -2108,7 +2109,8 @@ class rwcButtonActionStart extends HTMLElement {
           if (numArrayActions.includes(this.dataset.action)) {
             var strArray = this.dataset.actionParameters.split(",");
             var floatArray = strArray.map(Number);
-            actions[this.dataset.action](floatArray);
+            console.log(floatArray);
+            actions[this.dataset.action](floatArray[0],floatArray[1],floatArray[2]);
           }
           if (!(Object.keys(actions).includes(this.dataset.action))){
             rwcActionCustom(this);
