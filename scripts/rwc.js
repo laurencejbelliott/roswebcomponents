@@ -1110,13 +1110,13 @@ function rwcActionStartTour(name_or_key, duration=60*60){
 async function rwcListenerGetCurrentPage(listenerComponent = null, returnTopic = false){
   var listener = currentPageTopic;
 
-  // promise function called and function execution halts until
-  // the promise is resolved
-  rwcCurrentPage = await subCurrentPage(listener, listenerComponent);
-
-  if (returnTopic){
+  
+if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcCurrentPage = await subCurrentPage(listener, listenerComponent);
     return rwcCurrentPage;
   }
 }
@@ -1154,13 +1154,12 @@ async function rwcListenerGetPosition(listenerComponent = null, returnTopic = fa
     messageType : configJSON.listeners.odom.topicMessageType
   });
 
-  // promise function called and function execution halts until
-  // the promise is resolved
-  rwcPosition = await subPosition(listener, listenerComponent);
-
   if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcPosition = await subPosition(listener, listenerComponent);
     return rwcPosition;
   }
 }
@@ -1199,11 +1198,12 @@ async function rwcListenerGetOrientation(listenerComponent = null, returnTopic =
     messageType : configJSON.listeners.odom.topicMessageType
   });
 
-  rwcOrientation = await subOrientation(listener, listenerComponent);
-
   if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcOrientation = await subOrientation(listener, listenerComponent);
     return rwcOrientation;
   }
 }
@@ -1243,13 +1243,13 @@ async function rwcListenerGetNearestPersonPosition(listenerComponent = null, ret
     messageType : configJSON.listeners.nearest_person_pose.topicMessageType
   });
 
-  // promise function called and function execution halts until
-  // the promise is resolved
-  rwcNearestPersonPosition = await subNearestPersonPosition(listener, listenerComponent);
 
   if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcNearestPersonPosition = await subNearestPersonPosition(listener, listenerComponent);
     return rwcNearestPersonPosition;
   }
 }
@@ -1288,18 +1288,17 @@ async function rwcListenerGetPeoplePositions(listenerComponent = null, returnTop
     messageType : configJSON.listeners.people_pose_array.topicMessageType
   });
 
-  // promise function called and function execution halts until
-  // the promise is resolved
-  rwcPeoplePoses = await subPeoplePositions(listener, listenerComponent);
-
-  rwcPeoplePositions = [];
-  rwcPeoplePoses.forEach(function(person_pose){
-    rwcPeoplePositions.push([person_pose.position.x, person_pose.position.y, person_pose.position.z]);
-  });
-
   if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcPeoplePoses = await subPeoplePositions(listener, listenerComponent);
+
+    rwcPeoplePositions = [];
+    rwcPeoplePoses.forEach(function(person_pose){
+      rwcPeoplePositions.push([person_pose.position.x, person_pose.position.y, person_pose.position.z]);
+    });
     return rwcPeoplePositions;
   }
 }
@@ -1336,13 +1335,13 @@ async function rwcListenerGetNumberOfPeople(listenerComponent = null, returnTopi
     messageType : configJSON.listeners.people_pose_array.topicMessageType
   });
 
-  // promise function called and function execution halts until
-  // the promise is resolved
-  rwcPeoplePoses = await subPeoplePositions(listener, listenerComponent);
 
   if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcPeoplePoses = await subPeoplePositions(listener, listenerComponent);
     return rwcPeoplePositions.length;
   }
 }
@@ -1356,11 +1355,13 @@ async function rwcListenerGetNode(listenerComponent = null, returnTopic = false)
     messageType : configJSON.listeners.current_node.topicMessageType
   });
 
-  rwcNode = await subNode(listener, listenerComponent);
 
   if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcNode = await subNode(listener, listenerComponent);
     return rwcNode;
   }
 }
@@ -1397,11 +1398,13 @@ async function rwcListenerGetBatteryPercentage(listenerComponent = null, returnT
     messageType : configJSON.listeners.battery_state.topicMessageType
   });
 
-  rwcBatteryPercentage = await subBatteryPercentage(listener, listenerComponent);
 
   if (returnTopic){
     return listener;
   } else{
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcBatteryPercentage = await subBatteryPercentage(listener, listenerComponent);
     return rwcBatteryPercentage;
   }
 }
@@ -1438,11 +1441,12 @@ async function rwcListenerGetVolumePercent(listenerComponent = null, returnTopic
     messageType : configJSON.listeners.volume.topicMessageType
   });
 
-  rwcVolumePercent = await subVolumePercent(listener, listenerComponent);
-
   if (returnTopic){
     return listener;
   } else {
+    // promise function called and function execution halts until
+    // the promise is resolved
+    rwcVolumePercent = await subVolumePercent(listener, listenerComponent);
     return rwcVolumePercent;
   }
 }
