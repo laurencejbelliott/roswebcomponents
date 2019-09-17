@@ -67,3 +67,27 @@ Asynchronous Listener functions:
  - rwcListenerGetTourKeysAndNames
      - Return type: Object.
      - Description: Gets an object containing key:name pairs which correspond to each of [The Collection museum](https://www.thecollectionmuseum.com/)'s tours. Tour keys or names can be used as a parameter of the `rwcActionStartTour` [action function](/docs/action-functions.md) with Lindsey.
+
+## Listener function callbacks
+By default, listener functions return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), containing a value accessed using the `then` method of this `Promise` object. Listener function's promises can be made to instead contain the [roslibjs topic](http://robotwebtools.org/jsdoc/roslibjs/current/Topic.html) to which the function subscribes to receive the data that is typically contained in its returned promise. This is achieved by calling a listener function with the first optional argument, `listenerComponent` set to `null`, and the second optional argument of a listener function, `returnTopic`, set to `true`. E.g.
+```javascript
+rwcListenerGetNode(null, true);
+```
+This example returns a `Promise` with its `PromiseValue` set to the topic object used to subscribe to the robot's position. Then to define a callback function which runs when new data is published on this topic we can use the `Promise.then` method to access the topic, and the `Topic.subscribe` method to assign an anonymous function to run when a message is published on the topic. Here's an example which prints the robot's current node to the console whenever a new value is published:
+```javascript
+rwcListenerGetNode(null, true).then(function(myTopic){
+    myTopic.subscribe(function(msg){
+        console.log(msg.data);
+    })
+});
+```
+Some topics messages may contain more fields than simply `.data`, such as the `nav_msgs/Odometry` message used by `rwcListenerGetPosition`'s topic. The selector of a field may refer to an object, such as with `.pose.pose.position`, which will be converted to a `String` as `[object Object]`. These can be be converted to JSON using `JSON.stringify`, showing the object's key-value pairs. An example: 
+
+```javascript
+rwcListenerGetPosition(null, true).then(function(myTopic){
+	myTopic.subscribe(function(msg){
+		console.log("Robot position: " + JSON.stringify(msg.pose.pose.position));
+	});
+});
+```
+logs the robot's position to the console whenever a new value is published, in the format: `Robot position: {"y":-3.2725882530212402,"x":4.9845781326293945,"z":0}`.
