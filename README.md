@@ -1,6 +1,6 @@
 [Home](https://github.com/laurencejbelliott/roswebcomponents) | [Action Functions](/docs/action-functions.md) | [Listener Functions](/docs/listener-functions.md) | [UI Components](/docs/ui-components.md)
 # ROS Web Components
-A JavaScript library for rapid development of [ROS](https://www.ros.org/) connected web interfaces. Presented via [research poster and blog post in the University of Lincoln's UROS Exhibition 2019](https://lalt.lincoln.ac.uk/portfolio/uros-2019-project-a-human-robot-interaction-javascript-library-ros-web-components/).
+A JavaScript library for rapid development of [ROS](https://www.ros.org/) connected web interfaces. Presented via [research poster and blog post in the University of Lincoln's UROS Exhibition 2019](https://lalt.lincoln.ac.uk/portfolio/uros-2019-project-a-human-robot-interaction-javascript-library-ros-web-components/). Used in [Onis Brown](https://github.com/OnisBrown/)'s [block-based visual programming interface for the Collection Museum's robot tour-guide 'Lindsey'](https://github.com/OnisBrown/TeachLindseyUI).
 
 This library provides [custom HTML UI components](/docs/ui-components.md) which interface with JavaScript functions to abstract [roslibjs](https://github.com/RobotWebTools/roslibjs), simplifying publishing and subscribing to topics down to making a one-line function call, or simply writing a HTML tag, for a set of common robot behaviours and data sources. The functions are split into two categories:
 1. [Action functions](/docs/action-functions.md), which trigger robot behaviours.
